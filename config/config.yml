@@ -42,7 +42,7 @@ keywordRules:
     maxPrice: 100
 
 # 定时任务多长执行一次 单位秒 默认 3个小时
-tickTime: 3
+tickTime: 10800
 # 钉钉token
 dingdingToken: ""
 
