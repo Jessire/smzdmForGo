@@ -3,7 +3,7 @@ FROM golang:1.23-alpine AS builder
 RUN apk add --no-cache gcc git musl-dev sqlite-dev
 ENV CGO_ENABLED=1
 ENV GO111MODULE=on
-ENV GOPROXY=https://goproxy.io,direct
+ENV GOPROXY=https://proxy.golang.org,direct
 
 WORKDIR /src
 COPY go.mod go.sum ./
