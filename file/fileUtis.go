@@ -7,6 +7,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,17 +17,35 @@ import (
 
 // 配置文件
 type Config struct {
-	LowCommentNum int     `yaml:"lowCommentNum"`
-	MaxPrice      float64 `yaml:"maxPrice"`
-	MinPrice      float64 `yaml:"minPrice"`
-	LowWorthyNum  int     `yaml:"lowWorthyNum"`
+	LowCommentNum int           `yaml:"lowCommentNum" mapstructure:"lowCommentNum"`
+	MaxPrice      float64       `yaml:"maxPrice" mapstructure:"maxPrice"`
+	MinPrice      float64       `yaml:"minPrice" mapstructure:"minPrice"`
+	LowWorthyNum  int           `yaml:"lowWorthyNum" mapstructure:"lowWorthyNum"`
+	SatisfyNum    int           `yaml:"satisfyNum" mapstructure:"satisfyNum"`
+	TickTime      int           `yaml:"tickTime" mapstructure:"tickTime"`
+	FilterWords   []string      `yaml:"filterWords" mapstructure:"filterWords"`
+	KeyWords      []string      `yaml:"keyWords" mapstructure:"keyWords"`
+	KeywordRules  []KeywordRule `yaml:"keywordRules" mapstructure:"keywordRules"`
+	DingdingToken string        `yaml:"dingdingToken" mapstructure:"dingdingToken"`
+	WxPusher      WxPusher      `yaml:"wxPusher" mapstructure:"wxPusher"`
+	Cron          string        `yaml:"cron" mapstructure:"cron"`
+}
 
-	SatisfyNum    int      `yaml:"satisfyNum"`
-	TickTime      int      `yaml:"tickTime"`
-	FilterWords   []string `yaml:"filterWords"`
-	KeyWords      []string `yaml:"keyWords"`
-	DingdingToken string   `yaml:"dingdingToken"`
-	Cron          string   `yaml:"cron"`
+type KeywordRule struct {
+	Words         []string `yaml:"words" mapstructure:"words"`
+	FilterWords   []string `yaml:"filterWords" mapstructure:"filterWords"`
+	LowCommentNum *int     `yaml:"lowCommentNum" mapstructure:"lowCommentNum"`
+	LowWorthyNum  *int     `yaml:"lowWorthyNum" mapstructure:"lowWorthyNum"`
+	MinPrice      *float64 `yaml:"minPrice" mapstructure:"minPrice"`
+	MaxPrice      *float64 `yaml:"maxPrice" mapstructure:"maxPrice"`
+}
+
+type WxPusher struct {
+	Enabled     bool     `yaml:"enabled" mapstructure:"enabled"`
+	AppToken    string   `yaml:"appToken" mapstructure:"appToken"`
+	UIDs        []string `yaml:"uids" mapstructure:"uids"`
+	TopicIDs    []int    `yaml:"topicIds" mapstructure:"topicIds"`
+	ContentType int      `yaml:"contentType" mapstructure:"contentType"`
 }
 
 // 签到信息
@@ -172,6 +192,7 @@ func ReadConf(pwd string) Config {
 	if err != nil {
 		log.Fatal("读取配置错误：", err)
 	}
+	applyEnvOverrides(c)
 	fmt.Print("读取配置文件成功。。")
 	return cnf
 }
@@ -202,8 +223,51 @@ func ReadPathConf(path string) Config {
 	if err != nil {
 		log.Fatal("读取配置错误：", err)
 	}
+	applyEnvOverrides(c)
 	fmt.Print("读取配置文件成功。。")
 	return cnf
+}
+
+func applyEnvOverrides(c *Config) {
+	if value := os.Getenv("DINGDING_TOKEN"); value != "" {
+		c.DingdingToken = value
+	}
+	if value := os.Getenv("WXPUSHER_ENABLED"); value != "" {
+		c.WxPusher.Enabled = strings.EqualFold(value, "true") || value == "1"
+	}
+	if value := os.Getenv("WXPUSHER_APP_TOKEN"); value != "" {
+		c.WxPusher.AppToken = value
+	}
+	if value := os.Getenv("WXPUSHER_UIDS"); value != "" {
+		c.WxPusher.UIDs = splitCSV(value)
+	}
+	if value := os.Getenv("WXPUSHER_TOPIC_IDS"); value != "" {
+		c.WxPusher.TopicIDs = parseIntCSV(value)
+	}
+}
+
+func splitCSV(value string) []string {
+	items := strings.Split(value, ",")
+	result := make([]string, 0, len(items))
+	for _, item := range items {
+		item = strings.TrimSpace(item)
+		if item != "" {
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+func parseIntCSV(value string) []int {
+	items := splitCSV(value)
+	result := make([]int, 0, len(items))
+	for _, item := range items {
+		number, err := strconv.Atoi(item)
+		if err == nil {
+			result = append(result, number)
+		}
+	}
+	return result
 }
 
 func UpdateCheckInfoById(id int, resultCode string, resultMsg string) {

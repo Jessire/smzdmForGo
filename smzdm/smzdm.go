@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -104,7 +105,7 @@ func GetSatisfiedGoods(conf file.Config) ([]Product, []Product) {
 
 	// 根据评论数排序
 	sort.SliceStable(satisfyGoodsList, func(a, b int) bool {
-		return strings.Compare(satisfyGoodsList[a].ArticleComment, satisfyGoodsList[b].ArticleComment) > 0
+		return parseMetric(satisfyGoodsList[a].ArticleComment) > parseMetric(satisfyGoodsList[b].ArticleComment)
 	})
 
 	fmt.Println("结束爬取符合条件商品。。")
@@ -168,7 +169,7 @@ func removeByFilterRules(good Product, pushedMap map[string]interface{}) bool {
 	var noNeed = false
 	// 1. 文章名称 包含过滤字符 一概不要
 	for j := 0; j < len(globalConf.FilterWords); j++ {
-		if strings.Contains(good.ArticleTitle, globalConf.FilterWords[j]) || strings.Contains(good.ArticlePrice, globalConf.FilterWords[j]) {
+		if containsWord(good, globalConf.FilterWords[j]) {
 			noNeed = true
 			break
 		}
@@ -186,12 +187,14 @@ func removeByFilterRules(good Product, pushedMap map[string]interface{}) bool {
 	nTime := time.Now()
 	// 前天
 	beforeYesDate := nTime.AddDate(0, 0, -2)
+	if good.ArticleDate == "" {
+		return noNeed
+	}
 	dateInt64, err1 := strconv.ParseInt(good.ArticleDate, 10, 64)
 
 	if err1 != nil {
-		panic(err1)
+		return true
 	}
-
 	arDate := time.Unix(dateInt64, 0)
 	// fmt.Println("文章时间：" + arDate.Format(timeLayoutStr) + "昨天时间：" + beforeYesDate.Format(timeLayoutStr))
 	if arDate.Before(beforeYesDate) {
@@ -203,22 +206,12 @@ func removeByFilterRules(good Product, pushedMap map[string]interface{}) bool {
 
 // 根据规则判断符合规则的商品
 func satisfy(good Product, satisfyGoodsList []Product) bool {
-
-	// 文章名称,爆料人包含关键词 直接添加
-	// if strings.Contains(good.ArticleTitle, globalConf.KeyWord) || strings.Contains(good.Referral, globalConf.KeyWord) {
-	// 	// fmt.Printf("appear satisfy good: %#v", good)
-	// 	return true
-	// }
-
-	// 评论 和 值率 转int
-	articleComment, err1 := strconv.Atoi(good.ArticleComment)
-	articleWorthy, err2 := strconv.Atoi(good.ArticleWorthy)
-
-	// || err2 != nil
-	if err1 != nil || err2 != nil {
-		fmt.Println("goods:", good)
-		panic(err1)
+	if !priceInRange(good, globalConf.MinPrice, globalConf.MaxPrice) {
+		return false
 	}
+
+	articleComment := parseMetric(good.ArticleComment)
+	articleWorthy := parseMetric(good.ArticleWorthy)
 
 	// 评论，值率满足要求 则添加商品
 	if articleComment >= globalConf.LowCommentNum || articleWorthy >= globalConf.LowWorthyNum {
@@ -245,13 +238,124 @@ func filterMyselfProduct(satisfyGoodsList []Product) []Product {
 	var satisfyGoodsListBySelf []Product
 
 	for _, value := range satisfyGoodsList {
-		for _, word := range globalConf.KeyWords {
-			if strings.Contains(value.ArticleTitle, word) {
-				fmt.Printf("appear myself satisfy good: %#v", value)
-				satisfyGoodsListBySelf = append(satisfyGoodsListBySelf, value)
-			}
+		if matchesPersonalRules(value) {
+			fmt.Printf("appear myself satisfy good: %#v", value)
+			satisfyGoodsListBySelf = append(satisfyGoodsListBySelf, value)
 		}
 	}
 	return satisfyGoodsListBySelf
 
+}
+
+func matchesPersonalRules(good Product) bool {
+	if len(globalConf.KeywordRules) == 0 {
+		return containsAnyWord(good, globalConf.KeyWords)
+	}
+
+	for _, rule := range globalConf.KeywordRules {
+		if len(rule.Words) == 0 || !containsAnyWord(good, rule.Words) {
+			continue
+		}
+		if containsAnyWord(good, rule.FilterWords) {
+			continue
+		}
+
+		minPrice := globalConf.MinPrice
+		if rule.MinPrice != nil {
+			minPrice = *rule.MinPrice
+		}
+		maxPrice := globalConf.MaxPrice
+		if rule.MaxPrice != nil {
+			maxPrice = *rule.MaxPrice
+		}
+		if !priceInRange(good, minPrice, maxPrice) {
+			continue
+		}
+
+		lowCommentNum := globalConf.LowCommentNum
+		if rule.LowCommentNum != nil {
+			lowCommentNum = *rule.LowCommentNum
+		}
+		lowWorthyNum := globalConf.LowWorthyNum
+		if rule.LowWorthyNum != nil {
+			lowWorthyNum = *rule.LowWorthyNum
+		}
+		if parseMetric(good.ArticleComment) < lowCommentNum {
+			continue
+		}
+		if parseMetric(good.ArticleWorthy) < lowWorthyNum {
+			continue
+		}
+		return true
+	}
+	return false
+}
+
+func priceInRange(good Product, minPrice float64, maxPrice float64) bool {
+	if minPrice <= 0 && maxPrice <= 0 {
+		return true
+	}
+	price, ok := parsePrice(good.ArticlePrice)
+	if !ok {
+		return false
+	}
+	if minPrice > 0 && price < minPrice {
+		return false
+	}
+	if maxPrice > 0 && price > maxPrice {
+		return false
+	}
+	return true
+}
+
+func containsAnyWord(good Product, words []string) bool {
+	for _, word := range words {
+		if containsWord(good, word) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsWord(good Product, word string) bool {
+	word = strings.TrimSpace(strings.ToLower(word))
+	if word == "" {
+		return false
+	}
+	return strings.Contains(strings.ToLower(good.ArticleTitle), word) ||
+		strings.Contains(strings.ToLower(good.ArticlePrice), word) ||
+		strings.Contains(strings.ToLower(good.Referral), word)
+}
+
+var numberPattern = regexp.MustCompile(`\d+(?:,\d{3})*(?:\.\d+)?`)
+
+func parseMetric(value string) int {
+	value = strings.TrimSpace(strings.ToLower(value))
+	if value == "" {
+		return 0
+	}
+	matches := numberPattern.FindAllString(value, -1)
+	if len(matches) == 0 {
+		return 0
+	}
+	number, err := strconv.ParseFloat(strings.ReplaceAll(matches[0], ",", ""), 64)
+	if err != nil {
+		return 0
+	}
+	if strings.Contains(value, "万") {
+		number *= 10000
+	} else if strings.Contains(value, "k") {
+		number *= 1000
+	}
+	return int(number)
+}
+
+func parsePrice(value string) (float64, bool) {
+	value = strings.TrimSpace(value)
+	match := numberPattern.FindString(value)
+	if match == "" {
+		return 0, false
+	}
+	price, err := strconv.ParseFloat(strings.ReplaceAll(match, ",", ""), 64)
+	return price, err == nil
 }

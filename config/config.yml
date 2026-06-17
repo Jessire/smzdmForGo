@@ -10,6 +10,10 @@ keyWords:
 lowCommentNum: 1
 # 最低值率
 lowWorthyNum: 6
+# 最低价格, 0 表示不限制
+minPrice: 0
+# 最高价格, 0 表示不限制
+maxPrice: 0
 # 满意商品数量
 satisfyNum: 5
 # 过滤词
@@ -17,10 +21,39 @@ filterWords:
   - "过期"
   - "售罄"
 
+# 每组关键词的独立规则. 配置后会覆盖仅按 keyWords 命中的关注商品推送逻辑.
+keywordRules:
+  - words:
+      - 显示器
+    filterWords:
+      - 二手
+      - 支架
+    lowCommentNum: 5
+    lowWorthyNum: 20
+    minPrice: 300
+    maxPrice: 2000
+  - words:
+      - 面包
+      - 零食
+    filterWords:
+      - 临期
+    lowCommentNum: 1
+    lowWorthyNum: 5
+    maxPrice: 100
+
 # 定时任务多长执行一次 单位秒 默认 3个小时
 tickTime: 3
 # 钉钉token
-dingdingToken: "9e4044952fe5c599afed3815ccaa387c650fd07bda96512648acfceb1b202ada"
+dingdingToken: ""
+
+# WxPusher 推送. Render 上推荐使用 WXPUSHER_* 环境变量覆盖.
+wxPusher:
+  enabled: false
+  appToken: ""
+  uids: []
+  topicIds: []
+  # 1 文本, 2 HTML, 3 Markdown
+  contentType: 3
 
 # 签到时间(默认早上8:30)
 cron: "0 10 10 ? * *"

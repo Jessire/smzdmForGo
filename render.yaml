@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: smzdm-for-go
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: master
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: TZ
+        value: Asia/Shanghai
+      - key: DINGDING_TOKEN
+        sync: false
+      - key: WXPUSHER_ENABLED
+        value: "true"
+      - key: WXPUSHER_APP_TOKEN
+        sync: false
+      - key: WXPUSHER_UIDS
+        sync: false
+      - key: WXPUSHER_TOPIC_IDS
+        sync: false

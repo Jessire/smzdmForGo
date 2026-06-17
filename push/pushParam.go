@@ -42,3 +42,18 @@ type Markdown struct {
 	Title string `json:"title"`
 	Text  string `json:"text"`
 }
+
+type WxPusherMessageParam struct {
+	AppToken    string   `json:"appToken"`
+	Content     string   `json:"content"`
+	Summary     string   `json:"summary,omitempty"`
+	ContentType int      `json:"contentType"`
+	UIDs        []string `json:"uids,omitempty"`
+	TopicIDs    []int    `json:"topicIds,omitempty"`
+	URL         string   `json:"url,omitempty"`
+}
+
+type WxPusherResponse struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+}

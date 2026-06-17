@@ -1,19 +1,19 @@
 package trick
 
-import (
-	"fmt"
-	"testing"
-)
-
-func TestDemoCron(t *testing.T) {
-	DemoCron()
-}
+import "testing"
 
 func TestNewMyTicker(t *testing.T) {
-	tick := NewMyTick(1, testPrint)
-	tick.Start()
-}
+	called := false
+	tick := NewMyTick(1, func() {
+		called = true
+	})
+	defer tick.MyTick.Stop()
 
-func testPrint() {
-	fmt.Println(" 滴答 1 次")
+	if tick.MyTick == nil {
+		t.Fatal("expected ticker to be initialized")
+	}
+	tick.Runner()
+	if !called {
+		t.Fatal("expected runner to be callable")
+	}
 }

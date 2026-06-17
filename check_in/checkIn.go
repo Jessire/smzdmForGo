@@ -9,15 +9,15 @@ import (
 	"reflect"
 	"strconv"
 
+	"ggball.com/smzdm/db"
 	"ggball.com/smzdm/file"
 	"ggball.com/smzdm/push"
-	"ggball.com/smzdm/db"
 )
 
 type CheckIn struct {
-	db       *db.DB
-	conf     file.Config
-	checks   []file.CheckInfo
+	db     *db.DB
+	conf   file.Config
+	checks []file.CheckInfo
 }
 
 func NewCheckIn(dbPath string) (*CheckIn, error) {
@@ -25,7 +25,7 @@ func NewCheckIn(dbPath string) (*CheckIn, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	if err := database.InitTables(); err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *CheckIn) CheckInAllUsers() error {
 		// 使用用户信息执行签到
 		// 根据具体平台执行不同的签到逻辑
 		if msg, err := c.doCheckIn(user); err != nil {
-			log.Printf("Failed to check in for user %s: %v,msg:%s", user.Name, err,msg)
+			log.Printf("Failed to check in for user %s: %v,msg:%s", user.Name, err, msg)
 		}
 	}
 	return nil
@@ -55,7 +55,7 @@ func (c *CheckIn) CheckInAllUsers() error {
 func (c *CheckIn) doCheckIn(user db.User) (string, error) {
 	client := &http.Client{}
 	url := "https://zhiyou.smzdm.com/user/checkin/jsonp_checkin"
-	
+
 	reqest, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "请求失败", err
@@ -76,9 +76,9 @@ func (c *CheckIn) doCheckIn(user db.User) (string, error) {
 	log.Println(returnText)
 
 	// 推送结果
-	push.PushTextWithDingDing(returnText, c.conf)
+	push.PushText(returnText, c.conf)
 
-	return returnText,nil
+	return returnText, nil
 }
 
 func (c *CheckIn) SetConfig(conf file.Config, checks []file.CheckInfo) error {

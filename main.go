@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"ggball.com/smzdm/check_in"
@@ -23,9 +24,12 @@ func main() {
 	go cronForProduct()
 	go cronForCheckIn()
 
-	// 启动web服务，监听9090端口
-	fmt.Println("启动web服务，监听9090端口")
-	err := http.ListenAndServe(":9090", nil)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9090"
+	}
+	fmt.Println("启动web服务，监听" + port + "端口")
+	err := http.ListenAndServe(":"+port, nil)
 
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
@@ -50,6 +54,7 @@ func cronForCheckIn() {
 		if err != nil {
 			log.Fatal("Failed to initialize check-in service:", err)
 		}
+		chekIn.SetConfig(conf, checks)
 		chekIn.CheckInAllUsers()
 	})
 	c.Start()
@@ -63,10 +68,10 @@ func requestSmzdm() {
 		return
 	}
 	// 推送商品
-	push.PushProWithDingDing(satisfyGoodsList, conf)
+	push.PushProducts(satisfyGoodsList, conf)
 	// 推送自己关注的商品
 	atMobiles := []string{"13217913287"}
-	push.PushTextWithDingDingWIthMoblie(satisfyGoodsMyselfList, conf, atMobiles)
+	push.PushTargetProducts(satisfyGoodsMyselfList, conf, atMobiles)
 	time.Sleep(1 * time.Second)
 }
 
@@ -81,5 +86,6 @@ func init() {
 	http.HandleFunc("/conf", ReadCheckInfoHandler)
 	http.HandleFunc("/addConf", AddCheckInfoHandler)
 	http.HandleFunc("/check", CheckInHandler)
+	http.HandleFunc("/health", HealthHandler)
 	http.HandleFunc("/html/", HtmlHandler)
 }

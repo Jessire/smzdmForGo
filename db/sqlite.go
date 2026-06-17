@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	// _ "github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type User struct {
@@ -89,4 +89,4 @@ func (db *DB) GetAllUsers() ([]User, error) {
 		users = append(users, user)
 	}
 	return users, nil
-} 
+}

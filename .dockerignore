@@ -1,0 +1,8 @@
+.git
+.github
+*.exe
+*.log
+pushed.json
+tmp
+work
+outputs

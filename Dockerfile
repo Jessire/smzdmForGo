@@ -1,15 +1,25 @@
-FROM golang:alpine
-MAINTAINER 1667834841@qq.com
-RUN go env -w GO111MODULE=on && go env -w GOPROXY=https://goproxy.io,direct
-
-RUN mkdir /opt/go
-WORKDIR /opt/go
-COPY . /opt/go/
-RUN cd /opt/go
-RUN go build -o smzdmPusher
-CMD ./smzdmPusher
+FROM golang:1.23-alpine AS builder
 
 RUN apk add --no-cache gcc musl-dev sqlite-dev
+ENV CGO_ENABLED=1
+ENV GO111MODULE=on
+ENV GOPROXY=https://goproxy.io,direct
 
-RUN mkdir -p /data
-VOLUME /data
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN go build -o /out/smzdmPusher .
+
+FROM alpine:3.20
+
+RUN apk add --no-cache ca-certificates sqlite-libs tzdata
+
+WORKDIR /opt/go
+COPY --from=builder /out/smzdmPusher ./smzdmPusher
+COPY config ./config
+COPY template ./template
+COPY data ./data
+
+EXPOSE 9090
+CMD ["./smzdmPusher"]

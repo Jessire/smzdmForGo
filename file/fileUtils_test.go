@@ -1,30 +1,25 @@
 package file
 
 import (
-	"fmt"
+	"path/filepath"
 	"testing"
 )
 
-func TestReadPushed(t *testing.T) {
-	readPusedInfo := ReadPusedInfo("../pushed.json")
-	value, b := readPusedInfo["222"]
-	if b {
-		fmt.Println(value)
-	} else {
-		fmt.Println("不存在")
+func TestReadAndWritePushed(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "pushed.json")
+
+	readPushedInfo := ReadPusedInfo(path)
+	if len(readPushedInfo) != 0 {
+		t.Fatalf("new pushed map len=%d, want 0", len(readPushedInfo))
 	}
-}
 
-func TestWritePushed(t *testing.T) {
-	readPusedInfo := ReadPusedInfo("../pushed.json")
+	pushedMap := map[string]interface{}{
+		"222": "222",
+	}
+	WritePushedInfo(pushedMap, readPushedInfo, path)
 
-	pushedMap := make(map[string]interface{})
-
-	pushedMap["222"] = "222"
-
-	WritePushedInfo(pushedMap, readPusedInfo, "../pushed.json")
-}
-
-func TestInputConfig(t *testing.T) {
-
+	got := ReadPusedInfo(path)
+	if got["222"] != "222" {
+		t.Fatalf("pushed value=%v, want 222", got["222"])
+	}
 }

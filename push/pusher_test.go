@@ -1,74 +1,62 @@
 package push
 
 import (
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"testing"
+
+	"ggball.com/smzdm/file"
+	"ggball.com/smzdm/smzdm"
 )
 
-// 图文推送
-func TestDingPusher(t *testing.T) {
-	dingPusher := DingPusher{
-		Token: "9e4044952fe5c599afed3815ccaa387c650fd07bda96512648acfceb1b202ada",
+func TestPushProWithWxPusher(t *testing.T) {
+	var got WxPusherMessageParam
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			t.Fatalf("method=%s, want POST", r.Method)
+		}
+		if err := json.NewDecoder(r.Body).Decode(&got); err != nil {
+			t.Fatalf("decode body: %v", err)
+		}
+		w.Write([]byte(`{"code":1000,"msg":"ok"}`))
+	}))
+	defer server.Close()
+
+	oldEndpoint := wxPusherEndpoint
+	wxPusherEndpoint = server.URL
+	defer func() { wxPusherEndpoint = oldEndpoint }()
+
+	conf := file.Config{
+		SatisfyNum: 1,
+		WxPusher: file.WxPusher{
+			Enabled:     true,
+			AppToken:    "AT_test",
+			UIDs:        []string{"UID_test"},
+			ContentType: 3,
+		},
 	}
+	PushProWithWxPusher([]smzdm.Product{
+		{
+			ArticleTitle:   "测试商品",
+			ArticlePrice:   "99元",
+			ArticleComment: "10",
+			ArticleWorthy:  "80",
+			ArticlePic:     "https://example.com/a.jpg",
+			ArticleUrl:     "https://example.com/a",
+		},
+	}, conf)
 
-	// 需要提前申明数组的容量
-	links := make([]Link, 2)
-
-	links[0] = Link{
-		Title:      "【什么值得买】时代的火车向前开1",
-		MessageURL: "https://www.dingtalk.com/",
-		PicURL:     "https://img.alicdn.com/tfs/TB1NwmBEL9TBuNjy1zbXXXpepXa-2400-1218.png",
+	if got.AppToken != "AT_test" {
+		t.Fatalf("appToken=%s, want AT_test", got.AppToken)
 	}
-
-	links[1] = Link{
-		Title:      "【什么值得买】时代的火车向前开2",
-		MessageURL: "https://www.dingtalk.com/",
-		PicURL:     "https://img.alicdn.com/tfs/TB1NwmBEL9TBuNjy1zbXXXpepXa-2400-1218.png",
+	if len(got.UIDs) != 1 || got.UIDs[0] != "UID_test" {
+		t.Fatalf("uids=%v, want UID_test", got.UIDs)
 	}
-
-	feedCard := FeedCard{
-		Links: links,
+	if got.ContentType != 3 {
+		t.Fatalf("contentType=%d, want 3", got.ContentType)
 	}
-
-	params := DingFeedCardParam{
-		MsgType:  "feedCard",
-		FeedCard: feedCard,
+	if got.URL != "https://example.com/a" {
+		t.Fatalf("url=%s, want product url", got.URL)
 	}
-
-	dingPusher.PushDingDing(params)
-
-}
-
-// @人员推送
-func TestDingPusherWithMobiles(t *testing.T) {
-	dingPusher := DingPusher{
-		Token: "9e4044952fe5c599afed3815ccaa387c650fd07bda96512648acfceb1b202ada",
-	}
-
-	text := "【好物到了】 测试推送 https://www.dingtalk.com/"
-	content := Text{Content: text}
-	params := DingTextParam{
-		MsgType: "text",
-		Texts:   content,
-		At:      At{AtMobiles: []string{"13217913287"}, IsAtAll: false},
-	}
-
-	dingPusher.PushDingDing(params)
-
-}
-
-func TestDingPusherMdWithMobiles(t *testing.T) {
-	dingPusher := DingPusher{
-		Token: "9e4044952fe5c599afed3815ccaa387c650fd07bda96512648acfceb1b202ada",
-	}
-
-	text := " [这是一个测试](https://www.runoob.com)"
-	md := Markdown{Title: "【好物到了】", Text: text}
-	params := DingMdParam{
-		MsgType:  "markdown",
-		Markdown: md,
-		At:       At{AtMobiles: []string{"13217913287"}, IsAtAll: false},
-	}
-
-	dingPusher.PushDingDing(params)
-
 }

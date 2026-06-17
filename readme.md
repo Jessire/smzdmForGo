@@ -14,6 +14,8 @@
 - [x] 利用github Action 自动编译，部署到个人服务器
 - [x] 每天定时打卡
 - [x] 可通过手机号@指定人
+- [x] 支持 WxPusher 推送
+- [x] 支持关键词级过滤词、评论数、值率、价格规则
   
 ### 待实现
 - [ ] 配置server酱
@@ -34,6 +36,10 @@ keyWord:
 lowCommentNum: 0
 # 最低值率
 lowWorthyNum: 0
+# 最低价格, 0 表示不限制
+minPrice: 0
+# 最高价格, 0 表示不限制
+maxPrice: 0
 # 满意商品数量
 satisfyNum: 10
 # 过滤词
@@ -43,10 +49,31 @@ filterWords:
 - "牛奶"
 - "电脑"
 
+# 每组关键词的独立规则
+keywordRules:
+  - words:
+      - 显示器
+    filterWords:
+      - 二手
+    lowCommentNum: 5
+    lowWorthyNum: 20
+    minPrice: 300
+    maxPrice: 2000
+
 # 定时任务多长执行一次 单位秒 默认 12个小时
 tickTime: 43200
 # 钉钉token
 dingdingToken: "xxxxx"
+
+# WxPusher 推送
+wxPusher:
+  enabled: true
+  appToken: "AT_xxxxx"
+  uids:
+    - "UID_xxxxx"
+  topicIds: []
+  # 1 文本, 2 HTML, 3 Markdown
+  contentType: 3
 
 # 签到时间(默认早上8:30)
 cron: "0 30 8 ? * *"
@@ -54,6 +81,16 @@ cron: "0 30 8 ? * *"
 # 签到需要的cookie
 cookie: "XXXX"
 
+```
+
+Render 部署时推荐使用环境变量覆盖密钥:
+
+```text
+DINGDING_TOKEN=xxxxx
+WXPUSHER_ENABLED=true
+WXPUSHER_APP_TOKEN=AT_xxxxx
+WXPUSHER_UIDS=UID_xxxxx,UID_yyyyy
+WXPUSHER_TOPIC_IDS=123,456
 ```
 2. **docker方式**
 
