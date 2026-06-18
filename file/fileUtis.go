@@ -17,27 +17,27 @@ import (
 
 // 配置文件
 type Config struct {
-	LowCommentNum int           `yaml:"lowCommentNum" mapstructure:"lowCommentNum"`
-	MaxPrice      float64       `yaml:"maxPrice" mapstructure:"maxPrice"`
-	MinPrice      float64       `yaml:"minPrice" mapstructure:"minPrice"`
-	LowWorthyNum  int           `yaml:"lowWorthyNum" mapstructure:"lowWorthyNum"`
-	SatisfyNum    int           `yaml:"satisfyNum" mapstructure:"satisfyNum"`
-	TickTime      int           `yaml:"tickTime" mapstructure:"tickTime"`
-	FilterWords   []string      `yaml:"filterWords" mapstructure:"filterWords"`
-	KeyWords      []string      `yaml:"keyWords" mapstructure:"keyWords"`
-	KeywordRules  []KeywordRule `yaml:"keywordRules" mapstructure:"keywordRules"`
-	DingdingToken string        `yaml:"dingdingToken" mapstructure:"dingdingToken"`
-	WxPusher      WxPusher      `yaml:"wxPusher" mapstructure:"wxPusher"`
-	Cron          string        `yaml:"cron" mapstructure:"cron"`
+	LowCommentNum int           `json:"lowCommentNum" yaml:"lowCommentNum" mapstructure:"lowCommentNum"`
+	MaxPrice      float64       `json:"maxPrice" yaml:"maxPrice" mapstructure:"maxPrice"`
+	MinPrice      float64       `json:"minPrice" yaml:"minPrice" mapstructure:"minPrice"`
+	LowWorthyNum  int           `json:"lowWorthyNum" yaml:"lowWorthyNum" mapstructure:"lowWorthyNum"`
+	SatisfyNum    int           `json:"satisfyNum" yaml:"satisfyNum" mapstructure:"satisfyNum"`
+	TickTime      int           `json:"tickTime" yaml:"tickTime" mapstructure:"tickTime"`
+	FilterWords   []string      `json:"filterWords" yaml:"filterWords" mapstructure:"filterWords"`
+	KeyWords      []string      `json:"keyWords" yaml:"keyWords" mapstructure:"keyWords"`
+	KeywordRules  []KeywordRule `json:"keywordRules" yaml:"keywordRules" mapstructure:"keywordRules"`
+	DingdingToken string        `json:"-" yaml:"dingdingToken" mapstructure:"dingdingToken"`
+	WxPusher      WxPusher      `json:"-" yaml:"wxPusher" mapstructure:"wxPusher"`
+	Cron          string        `json:"cron" yaml:"cron" mapstructure:"cron"`
 }
 
 type KeywordRule struct {
-	Words         []string `yaml:"words" mapstructure:"words"`
-	FilterWords   []string `yaml:"filterWords" mapstructure:"filterWords"`
-	LowCommentNum *int     `yaml:"lowCommentNum" mapstructure:"lowCommentNum"`
-	LowWorthyNum  *int     `yaml:"lowWorthyNum" mapstructure:"lowWorthyNum"`
-	MinPrice      *float64 `yaml:"minPrice" mapstructure:"minPrice"`
-	MaxPrice      *float64 `yaml:"maxPrice" mapstructure:"maxPrice"`
+	Words         []string `json:"words" yaml:"words" mapstructure:"words"`
+	FilterWords   []string `json:"filterWords" yaml:"filterWords" mapstructure:"filterWords"`
+	LowCommentNum *int     `json:"lowCommentNum,omitempty" yaml:"lowCommentNum" mapstructure:"lowCommentNum"`
+	LowWorthyNum  *int     `json:"lowWorthyNum,omitempty" yaml:"lowWorthyNum" mapstructure:"lowWorthyNum"`
+	MinPrice      *float64 `json:"minPrice,omitempty" yaml:"minPrice" mapstructure:"minPrice"`
+	MaxPrice      *float64 `json:"maxPrice,omitempty" yaml:"maxPrice" mapstructure:"maxPrice"`
 }
 
 type WxPusher struct {
@@ -192,7 +192,7 @@ func ReadConf(pwd string) Config {
 	if err != nil {
 		log.Fatal("读取配置错误：", err)
 	}
-	applyEnvOverrides(c)
+	ApplyEnvOverrides(c)
 	fmt.Print("读取配置文件成功。。")
 	return cnf
 }
@@ -223,12 +223,12 @@ func ReadPathConf(path string) Config {
 	if err != nil {
 		log.Fatal("读取配置错误：", err)
 	}
-	applyEnvOverrides(c)
+	ApplyEnvOverrides(c)
 	fmt.Print("读取配置文件成功。。")
 	return cnf
 }
 
-func applyEnvOverrides(c *Config) {
+func ApplyEnvOverrides(c *Config) {
 	if value := os.Getenv("DINGDING_TOKEN"); value != "" {
 		c.DingdingToken = value
 	}

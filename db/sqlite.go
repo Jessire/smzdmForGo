@@ -26,8 +26,9 @@ type User struct {
 
 type DB struct {
 	*sql.DB
-	dialect   string
-	tableName string
+	dialect           string
+	tableName         string
+	settingsTableName string
 }
 
 func NewDB(dataSourceName string) (*DB, error) {
@@ -61,8 +62,12 @@ func NewDB(dataSourceName string) (*DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	settingsTableName, err := settingsTableName()
+	if err != nil {
+		return nil, err
+	}
 
-	return &DB{DB: database, dialect: dialect, tableName: tableName}, nil
+	return &DB{DB: database, dialect: dialect, tableName: tableName, settingsTableName: settingsTableName}, nil
 }
 
 func (db *DB) InitTables() error {
@@ -102,7 +107,7 @@ func (db *DB) InitTables() error {
 	if err := db.addColumnIfMissing("last_result TEXT NOT NULL DEFAULT ''"); err != nil {
 		return err
 	}
-	return nil
+	return db.InitSettingsTable()
 }
 
 func (db *DB) AddUser(user *User) error {

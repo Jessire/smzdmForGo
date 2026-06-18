@@ -2,150 +2,407 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <title>什么值得买签到</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css"  media="all">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>什么值得买管理面板</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css" media="all">
   <style>
-    body{margin: 10px;}
-    .demo-carousel{height: 1200px; line-height: 200px; text-align: center;}
+    body { margin: 0; background: #f6f7f9; color: #1f2933; }
+    .page { padding: 16px; }
+    .panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 16px; }
+    .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+    .config-grid { display: grid; grid-template-columns: repeat(4, minmax(140px, 1fr)); gap: 12px; }
+    .config-span-2 { grid-column: span 2; }
+    .config-span-4 { grid-column: span 4; }
+    .layui-form-label { width: 96px; }
+    .layui-input-block { margin-left: 126px; }
+    .rule-form { padding: 18px 18px 4px; }
+    @media (max-width: 900px) {
+      .config-grid { grid-template-columns: 1fr; }
+      .config-span-2, .config-span-4 { grid-column: span 1; }
+      .layui-form-label { width: 86px; }
+      .layui-input-block { margin-left: 116px; }
+    }
   </style>
 </head>
 <body>
- 
-<table class="layui-hide" id="demo" lay-filter="test"></table>
- 
-<script type="text/html" id="barDemo">
-  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="check">立即签到</a>
- 
+<div class="page">
+  <div class="layui-tab layui-tab-brief" lay-filter="mainTabs">
+    <ul class="layui-tab-title">
+      <li class="layui-this">签到账号</li>
+      <li>商品规则</li>
+    </ul>
+    <div class="layui-tab-content">
+      <div class="layui-tab-item layui-show">
+        <div class="panel">
+          <table class="layui-hide" id="accountTable" lay-filter="accountTable"></table>
+        </div>
+      </div>
+      <div class="layui-tab-item">
+        <div class="panel">
+          <form class="layui-form" lay-filter="productConfigForm">
+            <div class="config-grid">
+              <div class="config-span-2">
+                <label class="layui-form-label">关键词</label>
+                <div class="layui-input-block">
+                  <textarea name="keyWords" class="layui-textarea" rows="5"></textarea>
+                </div>
+              </div>
+              <div class="config-span-2">
+                <label class="layui-form-label">过滤词</label>
+                <div class="layui-input-block">
+                  <textarea name="filterWords" class="layui-textarea" rows="5"></textarea>
+                </div>
+              </div>
+              <div>
+                <label class="layui-form-label">最低评论</label>
+                <div class="layui-input-block">
+                  <input type="number" name="lowCommentNum" min="0" class="layui-input">
+                </div>
+              </div>
+              <div>
+                <label class="layui-form-label">最低值率</label>
+                <div class="layui-input-block">
+                  <input type="number" name="lowWorthyNum" min="0" class="layui-input">
+                </div>
+              </div>
+              <div>
+                <label class="layui-form-label">最低价格</label>
+                <div class="layui-input-block">
+                  <input type="number" name="minPrice" min="0" step="0.01" class="layui-input">
+                </div>
+              </div>
+              <div>
+                <label class="layui-form-label">最高价格</label>
+                <div class="layui-input-block">
+                  <input type="number" name="maxPrice" min="0" step="0.01" class="layui-input">
+                </div>
+              </div>
+              <div>
+                <label class="layui-form-label">推送数量</label>
+                <div class="layui-input-block">
+                  <input type="number" name="satisfyNum" min="1" class="layui-input">
+                </div>
+              </div>
+              <div class="config-span-4">
+                <div class="toolbar">
+                  <button type="button" class="layui-btn" id="saveProductConfig">保存规则</button>
+                  <button type="button" class="layui-btn layui-btn-primary" id="reloadProductConfig">重新加载</button>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="toolbar">
+            <button type="button" class="layui-btn layui-btn-sm" id="addRule">新增关键词规则</button>
+          </div>
+          <table class="layui-hide" id="ruleTable" lay-filter="ruleTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="accountToolbar">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="getInsert">新增账号</button>
+  </div>
 </script>
 
-<script type="text/html" id="toolbarDemo">
-  <div class="layui-btn-container">
+<script type="text/html" id="accountActions">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="check">立即签到</a>
+</script>
 
-  <button class="layui-btn layui-btn-sm" lay-event="getInsert">新增</button>
-  </div>
- </script>
- 
+<script type="text/html" id="ruleActions">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="remove">删除</a>
+</script>
 
-
-
-  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.js"></script>
 <script>
-layui.config({
-  version: '1632428048355' //为了更新 js 缓存，可忽略
-});
-
 var BASE_URL = window.location.origin;
- 
-//加载模块  
-layui.use(function(){ //亦可加载特定模块：layui.use(['layer', 'laydate', function(){
-  //得到各种内置组件
-  var layer = layui.layer //弹层
-  ,laypage = layui.laypage //分页
-  ,laydate = layui.laydate //日期
-  ,table = layui.table //表格
-  ,carousel = layui.carousel //轮播
-  ,upload = layui.upload //上传
-  ,element = layui.element //元素操作
-  ,slider = layui.slider //滑块
-  ,dropdown = layui.dropdown //下拉菜单
-  ,$ = layui.jquery
-  ,form = layui.form
+var productConfig = {
+  keyWords: [],
+  filterWords: [],
+  lowCommentNum: 0,
+  lowWorthyNum: 0,
+  minPrice: 0,
+  maxPrice: 0,
+  satisfyNum: 5,
+  keywordRules: []
+};
 
-  
-  
-  //监听Tab切换
-  element.on('tab(demo)', function(data){
-    layer.tips('切换了 '+ data.index +'：'+ this.innerHTML, this, {
-      tips: 1
-    });
-  });
-  
-  //执行一个 table 实例
+layui.use(function(){
+  var layer = layui.layer;
+  var table = layui.table;
+  var $ = layui.jquery;
+  var form = layui.form;
+
   table.render({
-    elem: '#demo'
-    ,height: 420
-    ,url: BASE_URL+'/conf' //数据接口
-    // ,url: '../demo/table/user/-page=1&limit=20.js' //数据接口
-    ,title: 'smzdm签到表'
-    ,page: false //开启分页
-    ,toolbar: '#toolbarDemo' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-    ,defaultToolbar:[]
-    ,totalRow: false //开启合计行
-    ,cols: [[ //表头
-      {type: 'checkbox', fixed: 'left'}
-      ,{field: 'Id', title: 'ID', width:80, sort: true, fixed: 'left'}
-      ,{field: 'LastTIme', title: '最近执行时间',align:'center', width:250}
-      ,{field: 'Remark', title: '备注', width: 250, align:'center'}
-      ,{field: 'LastMsg', title: '最近执行返回消息',align:'center', width:400}
-      ,{field: 'LastResult', title: '最近执行结果',align:'center', width:200} 
-      ,{field: 'Cookie', title: 'cookie',align:'center', width:200} 
-      ,{fixed: 'right', width: 180, align:'center', toolbar: '#barDemo'}
+    elem: '#accountTable',
+    height: 420,
+    url: BASE_URL + '/conf',
+    title: 'smzdm签到表',
+    page: false,
+    toolbar: '#accountToolbar',
+    defaultToolbar: [],
+    totalRow: false,
+    cols: [[
+      {type: 'checkbox', fixed: 'left'},
+      {field: 'Id', title: 'ID', width: 80, sort: true, fixed: 'left'},
+      {field: 'LastTIme', title: '最近执行时间', align: 'center', width: 180},
+      {field: 'Remark', title: '备注', width: 180, align: 'center'},
+      {field: 'LastMsg', title: '最近执行返回消息', align: 'center', minWidth: 260},
+      {field: 'LastResult', title: '最近执行结果', align: 'center', width: 140},
+      {field: 'Cookie', title: 'cookie', align: 'center', minWidth: 240},
+      {fixed: 'right', width: 120, align: 'center', toolbar: '#accountActions'}
     ]]
   });
-  
-  //监听头工具栏事件
-  table.on('toolbar(test)', function(obj){
-    var checkStatus = table.checkStatus(obj.config.id)
-    ,data = checkStatus.data; //获取选中的数据
-    switch(obj.event){
-      case 'getInsert':
-        layer.msg('添加');
-        layer.open({
-                type: 2,
-                //title: '收藏管理 (考生姓名：张无忌)',
-                title: 'smzdm签到信息',
-                shadeClose: true,           //弹出框之外的地方是否可以点击
-                offset: '10%',
-                area: ['60%', '80%'],
-                content: 'html/form',
-                success: function(layero, index){
-                  
-                },
-                yes:function(){
-                    console.log(111)
-                }
-            });
-      break;
-    };
-  });
-  
-  //监听行工具事件
-  table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
-    var lineData = obj.data //获得当前行数据
-    ,layEvent = obj.event; //获得 lay-event 对应的值
-    console.log(lineData)
 
-    var postData = [
-      {
-        "cookie":lineData.Cookie,
-        "id":lineData.Id
+  table.render({
+    elem: '#ruleTable',
+    data: [],
+    page: false,
+    defaultToolbar: [],
+    cols: [[
+      {field: 'wordsText', title: '关键词', minWidth: 160},
+      {field: 'filterWordsText', title: '过滤词', minWidth: 180},
+      {field: 'lowCommentNum', title: '评论', width: 90},
+      {field: 'lowWorthyNum', title: '值率', width: 90},
+      {field: 'minPrice', title: '最低价', width: 100},
+      {field: 'maxPrice', title: '最高价', width: 100},
+      {fixed: 'right', width: 120, align: 'center', toolbar: '#ruleActions'}
+    ]]
+  });
+
+  loadProductConfig();
+
+  table.on('toolbar(accountTable)', function(obj){
+    if (obj.event === 'getInsert') {
+      layer.open({
+        type: 2,
+        title: 'smzdm签到信息',
+        shadeClose: true,
+        offset: '10%',
+        area: ['60%', '80%'],
+        content: 'html/form'
+      });
+    }
+  });
+
+  table.on('tool(accountTable)', function(obj){
+    if (obj.event !== 'check') {
+      return;
+    }
+    var lineData = obj.data;
+    $.ajax({
+      url: BASE_URL + '/check',
+      contentType: 'application/json;charset=utf-8',
+      data: JSON.stringify([{ cookie: lineData.Cookie, id: lineData.Id, remark: lineData.Remark }]),
+      async: false,
+      dataType: 'json',
+      type: 'POST',
+      success: function(res) {
+        layer.msg(res.data || res.msg);
+        table.reload('accountTable');
+      },
+      error: function(xhr) {
+        layer.msg(readError(xhr));
       }
-    ]
-
-    switch(obj.event){
-      case 'check':
-        $.ajax({
-          url:BASE_URL+"/check",
-          contentType: "application/json;charset=utf-8",
-          data:JSON.stringify(postData),
-          async: false,
-          dataType: "json",
-          type:'POST',
-          success:function(res) {
-            console.log(res)
-            layer.msg(res.data);
-            location.reload();
-          }
-      })
-      break;
-    };
+    });
   });
-  
+
+  table.on('tool(ruleTable)', function(obj){
+    if (obj.event === 'edit') {
+      openRuleDialog(obj.data._index);
+    }
+    if (obj.event === 'remove') {
+      productConfig.keywordRules.splice(obj.data._index, 1);
+      renderRules();
+    }
+  });
+
+  $('#addRule').on('click', function(){
+    openRuleDialog(-1);
+  });
+
+  $('#saveProductConfig').on('click', function(){
+    productConfig.keyWords = textToList($('[name="keyWords"]').val());
+    productConfig.filterWords = textToList($('[name="filterWords"]').val());
+    productConfig.lowCommentNum = toInt($('[name="lowCommentNum"]').val());
+    productConfig.lowWorthyNum = toInt($('[name="lowWorthyNum"]').val());
+    productConfig.minPrice = toFloat($('[name="minPrice"]').val());
+    productConfig.maxPrice = toFloat($('[name="maxPrice"]').val());
+    productConfig.satisfyNum = toInt($('[name="satisfyNum"]').val()) || 5;
+
+    $.ajax({
+      url: BASE_URL + '/productConfig',
+      contentType: 'application/json;charset=utf-8',
+      data: JSON.stringify(productConfig),
+      dataType: 'json',
+      type: 'POST',
+      success: function(res) {
+        productConfig = normalizeConfig(res.data);
+        fillProductForm();
+        renderRules();
+        layer.msg(res.msg || '保存成功');
+      },
+      error: function(xhr) {
+        layer.msg(readError(xhr));
+      }
+    });
+  });
+
+  $('#reloadProductConfig').on('click', loadProductConfig);
+
+  function loadProductConfig() {
+    $.ajax({
+      url: BASE_URL + '/productConfig',
+      dataType: 'json',
+      type: 'GET',
+      success: function(res) {
+        productConfig = normalizeConfig(res.data);
+        fillProductForm();
+        renderRules();
+      },
+      error: function(xhr) {
+        layer.msg(readError(xhr));
+      }
+    });
+  }
+
+  function fillProductForm() {
+    form.val('productConfigForm', {
+      keyWords: listToText(productConfig.keyWords),
+      filterWords: listToText(productConfig.filterWords),
+      lowCommentNum: productConfig.lowCommentNum,
+      lowWorthyNum: productConfig.lowWorthyNum,
+      minPrice: productConfig.minPrice,
+      maxPrice: productConfig.maxPrice,
+      satisfyNum: productConfig.satisfyNum
+    });
+  }
+
+  function renderRules() {
+    var data = productConfig.keywordRules.map(function(rule, index){
+      return {
+        _index: index,
+        wordsText: listToText(rule.words).replace(/\n/g, ', '),
+        filterWordsText: listToText(rule.filterWords).replace(/\n/g, ', '),
+        lowCommentNum: rule.lowCommentNum || '',
+        lowWorthyNum: rule.lowWorthyNum || '',
+        minPrice: rule.minPrice || '',
+        maxPrice: rule.maxPrice || ''
+      };
+    });
+    table.reload('ruleTable', { data: data });
+  }
+
+  function openRuleDialog(index) {
+    var rule = index >= 0 ? productConfig.keywordRules[index] : {};
+    var html = [
+      '<form class="layui-form rule-form" lay-filter="ruleForm">',
+      '<div class="layui-form-item"><label class="layui-form-label">关键词</label><div class="layui-input-block"><textarea name="words" class="layui-textarea" rows="3"></textarea></div></div>',
+      '<div class="layui-form-item"><label class="layui-form-label">过滤词</label><div class="layui-input-block"><textarea name="filterWords" class="layui-textarea" rows="3"></textarea></div></div>',
+      '<div class="layui-form-item"><label class="layui-form-label">最低评论</label><div class="layui-input-block"><input type="number" name="lowCommentNum" min="0" class="layui-input"></div></div>',
+      '<div class="layui-form-item"><label class="layui-form-label">最低值率</label><div class="layui-input-block"><input type="number" name="lowWorthyNum" min="0" class="layui-input"></div></div>',
+      '<div class="layui-form-item"><label class="layui-form-label">最低价格</label><div class="layui-input-block"><input type="number" name="minPrice" min="0" step="0.01" class="layui-input"></div></div>',
+      '<div class="layui-form-item"><label class="layui-form-label">最高价格</label><div class="layui-input-block"><input type="number" name="maxPrice" min="0" step="0.01" class="layui-input"></div></div>',
+      '</form>'
+    ].join('');
+
+    layer.open({
+      type: 1,
+      title: index >= 0 ? '编辑关键词规则' : '新增关键词规则',
+      area: ['560px', '620px'],
+      content: html,
+      btn: ['保存', '取消'],
+      success: function(){
+        form.val('ruleForm', {
+          words: listToText(rule.words || []),
+          filterWords: listToText(rule.filterWords || []),
+          lowCommentNum: rule.lowCommentNum || '',
+          lowWorthyNum: rule.lowWorthyNum || '',
+          minPrice: rule.minPrice || '',
+          maxPrice: rule.maxPrice || ''
+        });
+      },
+      yes: function(layerIndex, layero){
+        var values = form.val('ruleForm');
+        var nextRule = {
+          words: textToList(values.words),
+          filterWords: textToList(values.filterWords),
+          lowCommentNum: toInt(values.lowCommentNum),
+          lowWorthyNum: toInt(values.lowWorthyNum),
+          minPrice: toFloat(values.minPrice),
+          maxPrice: toFloat(values.maxPrice)
+        };
+        if (!nextRule.words.length) {
+          layer.msg('关键词不能为空');
+          return;
+        }
+        if (index >= 0) {
+          productConfig.keywordRules[index] = nextRule;
+        } else {
+          productConfig.keywordRules.push(nextRule);
+        }
+        renderRules();
+        layer.close(layerIndex);
+      }
+    });
+  }
+
+  function normalizeConfig(value) {
+    value = value || {};
+    return {
+      keyWords: value.keyWords || [],
+      filterWords: value.filterWords || [],
+      lowCommentNum: value.lowCommentNum || 0,
+      lowWorthyNum: value.lowWorthyNum || 0,
+      minPrice: value.minPrice || 0,
+      maxPrice: value.maxPrice || 0,
+      satisfyNum: value.satisfyNum || 5,
+      keywordRules: (value.keywordRules || []).map(function(rule){
+        return {
+          words: rule.words || [],
+          filterWords: rule.filterWords || [],
+          lowCommentNum: rule.lowCommentNum || 0,
+          lowWorthyNum: rule.lowWorthyNum || 0,
+          minPrice: rule.minPrice || 0,
+          maxPrice: rule.maxPrice || 0
+        };
+      })
+    };
+  }
+
+  function listToText(list) {
+    return (list || []).join('\n');
+  }
+
+  function textToList(text) {
+    return (text || '').split(/[\n,，\t\r]+/).map(function(item){
+      return item.trim();
+    }).filter(function(item, index, list){
+      return item && list.indexOf(item) === index;
+    });
+  }
+
+  function toInt(value) {
+    var parsed = parseInt(value, 10);
+    return isNaN(parsed) || parsed < 0 ? 0 : parsed;
+  }
+
+  function toFloat(value) {
+    var parsed = parseFloat(value);
+    return isNaN(parsed) || parsed < 0 ? 0 : parsed;
+  }
+
+  function readError(xhr) {
+    try {
+      return JSON.parse(xhr.responseText).msg || '请求失败';
+    } catch (e) {
+      return '请求失败';
+    }
+  }
 });
 </script>
-
 </body>
-</html>        
-        
+</html>

@@ -5,9 +5,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
 	"ggball.com/smzdm/check_in"
+	"ggball.com/smzdm/db"
 	"ggball.com/smzdm/file"
 	"ggball.com/smzdm/push"
 	"ggball.com/smzdm/smzdm"
@@ -16,6 +18,7 @@ import (
 )
 
 var conf = file.Config{}
+var confMu sync.RWMutex
 var checks = []file.CheckInfo{}
 var userDbPath = "data/users.db"
 
@@ -41,7 +44,7 @@ func cronForProduct() {
 
 	// 定时搜索商品任务开启
 	// requestSmzdm()
-	tick := trick.NewMyTick(conf.TickTime, requestSmzdm)
+	tick := trick.NewMyTick(currentConfig().TickTime, requestSmzdm)
 	tick.Start()
 }
 
@@ -54,7 +57,7 @@ func cronForCheckIn() {
 		if err != nil {
 			log.Fatal("Failed to initialize check-in service:", err)
 		}
-		chekIn.SetConfig(conf, checks)
+		chekIn.SetConfig(currentConfig(), checks)
 		chekIn.CheckInAllUsers()
 	})
 	c.Start()
@@ -63,7 +66,7 @@ func cronForCheckIn() {
 // 推送商品任务
 func requestSmzdm() {
 	// 搜索商品
-	satisfyGoodsList, satisfyGoodsMyselfList := smzdm.GetSatisfiedGoods(conf)
+	satisfyGoodsList, satisfyGoodsMyselfList := smzdm.GetSatisfiedGoods(currentConfig())
 	if len(satisfyGoodsList) == 0 {
 		return
 	}
@@ -79,6 +82,7 @@ func init() {
 
 	// 读取项目根目录的配置文件
 	conf = file.ReadConf("")
+	loadSavedProductConfig()
 	checks = file.ReadCheckInfoJsonToCheck()
 
 	// 配置路由
@@ -86,6 +90,38 @@ func init() {
 	http.HandleFunc("/conf", ReadCheckInfoHandler)
 	http.HandleFunc("/addConf", AddCheckInfoHandler)
 	http.HandleFunc("/check", CheckInHandler)
+	http.HandleFunc("/productConfig", ProductConfigHandler)
 	http.HandleFunc("/health", HealthHandler)
 	http.HandleFunc("/html/", HtmlHandler)
+}
+
+func currentConfig() file.Config {
+	confMu.RLock()
+	defer confMu.RUnlock()
+	return conf
+}
+
+func setCurrentConfig(next file.Config) {
+	confMu.Lock()
+	defer confMu.Unlock()
+	conf = next
+}
+
+func loadSavedProductConfig() {
+	database, err := db.NewDB(userDbPath)
+	if err != nil {
+		log.Printf("读取数据库配置失败: %v", err)
+		return
+	}
+	defer database.Close()
+	if err := database.InitTables(); err != nil {
+		log.Printf("初始化数据库配置表失败: %v", err)
+		return
+	}
+	next, err := database.GetProductConfig(conf)
+	if err != nil {
+		log.Printf("读取商品规则配置失败: %v", err)
+		return
+	}
+	setCurrentConfig(next)
 }

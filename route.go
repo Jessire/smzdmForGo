@@ -115,7 +115,7 @@ func CheckInHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer checker.Close()
-	checker.SetConfig(conf, checks)
+	checker.SetConfig(currentConfig(), checks)
 	msg, err := checker.CheckInUser(db.User{
 		ID:       int64(checkInfo.ID),
 		Name:     checkInfo.Remark,
@@ -129,6 +129,45 @@ func CheckInHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(wrapDataWithResult("\"" + msg + "\"")))
 
+}
+
+func ProductConfigHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"code": "0",
+			"msg":  "",
+			"data": productConfigFromConfig(currentConfig()),
+		})
+	case http.MethodPost:
+		body, _ := ioutil.ReadAll(r.Body)
+		var req productConfigRequest
+		if err := json.Unmarshal(body, &req); err != nil {
+			writeError(w, fmt.Errorf("解析商品规则失败: %v", err))
+			return
+		}
+		next := req.applyTo(currentConfig())
+		file.ApplyEnvOverrides(&next)
+
+		database, err := openUserDB()
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		defer database.Close()
+		if err := database.SaveProductConfig(next); err != nil {
+			writeError(w, err)
+			return
+		}
+		setCurrentConfig(next)
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"code": "0",
+			"msg":  "保存成功",
+			"data": productConfigFromConfig(next),
+		})
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
 }
 
 func HealthHandler(w http.ResponseWriter, r *http.Request) {
@@ -229,13 +268,16 @@ func wrapDataWithResult(data string) string {
 
 func writeError(w http.ResponseWriter, err error) {
 	log.Println(err)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusInternalServerError)
-	response := map[string]interface{}{
+	writeJSON(w, http.StatusInternalServerError, map[string]interface{}{
 		"code":  "1",
 		"msg":   err.Error(),
 		"count": "0",
 		"data":  []interface{}{},
-	}
-	_ = json.NewEncoder(w).Encode(response)
+	})
+}
+
+func writeJSON(w http.ResponseWriter, status int, value interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(value)
 }
