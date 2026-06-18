@@ -206,6 +206,9 @@ func removeByFilterRules(good Product, pushedMap map[string]interface{}) bool {
 
 // 根据规则判断符合规则的商品
 func satisfy(good Product, satisfyGoodsList []Product) bool {
+	if len(globalConf.KeywordRules) > 0 {
+		return matchesPersonalRules(good)
+	}
 	if !priceInRange(good, globalConf.MinPrice, globalConf.MaxPrice) {
 		return false
 	}
@@ -220,6 +223,33 @@ func satisfy(good Product, satisfyGoodsList []Product) bool {
 	}
 
 	return false
+}
+
+func SearchGoods(keyword string, rule file.KeywordRule, limit int) []Product {
+	keyword = strings.TrimSpace(keyword)
+	if limit <= 0 {
+		limit = 20
+	}
+	if keyword == "" {
+		return []Product{}
+	}
+
+	results := make([]Product, 0, limit)
+	for page := 0; page < 2 && len(results) < limit; page++ {
+		rows := GetGoods(page, keyword).Data.Rows
+		if len(rows) == 0 {
+			break
+		}
+		for _, item := range rows {
+			if searchProductMatches(item, rule) {
+				results = append(results, item)
+				if len(results) >= limit {
+					break
+				}
+			}
+		}
+	}
+	return results
 }
 
 // 保存推送商品，去重使用
@@ -253,6 +283,9 @@ func matchesPersonalRules(good Product) bool {
 	}
 
 	for _, rule := range globalConf.KeywordRules {
+		if !keywordRuleEnabled(rule) {
+			continue
+		}
 		if len(rule.Words) == 0 || !containsAnyWord(good, rule.Words) {
 			continue
 		}
@@ -289,6 +322,36 @@ func matchesPersonalRules(good Product) bool {
 		return true
 	}
 	return false
+}
+
+func searchProductMatches(good Product, rule file.KeywordRule) bool {
+	if containsAnyWord(good, rule.FilterWords) {
+		return false
+	}
+
+	minPrice := 0.0
+	if rule.MinPrice != nil {
+		minPrice = *rule.MinPrice
+	}
+	maxPrice := 0.0
+	if rule.MaxPrice != nil {
+		maxPrice = *rule.MaxPrice
+	}
+	if !priceInRange(good, minPrice, maxPrice) {
+		return false
+	}
+
+	if rule.LowCommentNum != nil && parseMetric(good.ArticleComment) < *rule.LowCommentNum {
+		return false
+	}
+	if rule.LowWorthyNum != nil && parseMetric(good.ArticleWorthy) < *rule.LowWorthyNum {
+		return false
+	}
+	return true
+}
+
+func keywordRuleEnabled(rule file.KeywordRule) bool {
+	return rule.Enabled == nil || *rule.Enabled
 }
 
 func priceInRange(good Product, minPrice float64, maxPrice float64) bool {

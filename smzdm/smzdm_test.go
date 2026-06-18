@@ -33,6 +33,7 @@ func TestPriceInRange(t *testing.T) {
 }
 
 func TestKeywordRules(t *testing.T) {
+	enabled := true
 	lowComment := 5
 	lowWorthy := 20
 	minPrice := 300.0
@@ -43,6 +44,7 @@ func TestKeywordRules(t *testing.T) {
 		LowWorthyNum:  6,
 		KeywordRules: []file.KeywordRule{
 			{
+				Enabled:       &enabled,
 				Words:         []string{"显示器"},
 				FilterWords:   []string{"二手"},
 				LowCommentNum: &lowComment,
@@ -66,5 +68,11 @@ func TestKeywordRules(t *testing.T) {
 	good.ArticleTitle = "二手 27寸 4K 显示器"
 	if matchesPersonalRules(good) {
 		t.Fatal("expected product with rule filter word to be rejected")
+	}
+
+	enabled = false
+	good.ArticleTitle = "27寸 4K 显示器"
+	if matchesPersonalRules(good) {
+		t.Fatal("expected disabled keyword rule to be rejected")
 	}
 }

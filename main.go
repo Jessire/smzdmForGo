@@ -5,29 +5,23 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"sync"
 	"time"
 
-	"ggball.com/smzdm/check_in"
 	"ggball.com/smzdm/db"
 	"ggball.com/smzdm/file"
 	"ggball.com/smzdm/push"
 	"ggball.com/smzdm/smzdm"
-	"github.com/robfig/cron"
 )
 
 var conf = file.Config{}
 var confMu sync.RWMutex
 var checks = []file.CheckInfo{}
 var userDbPath = "data/users.db"
-var checkInCron *cron.Cron
-var checkInCronMu sync.Mutex
 
 func main() {
 
 	go cronForProduct()
-	go cronForCheckIn()
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -51,43 +45,6 @@ func cronForProduct() {
 		time.Sleep(time.Duration(tickTime) * time.Second)
 		requestSmzdm()
 	}
-}
-
-// 每天定时打卡任务开启
-func cronForCheckIn() {
-	resetCheckInCron(currentConfig().Cron)
-}
-
-func resetCheckInCron(schedule string) {
-	checkInCronMu.Lock()
-	defer checkInCronMu.Unlock()
-
-	if checkInCron != nil {
-		checkInCron.Stop()
-	}
-
-	c := cron.New()
-	if err := c.AddFunc(schedule, func() {
-		chekIn, err := check_in.NewCheckIn(userDbPath)
-		if err != nil {
-			log.Fatal("Failed to initialize check-in service:", err)
-		}
-		chekIn.SetConfig(currentConfig(), checks)
-		chekIn.CheckInAllUsers()
-	}); err != nil {
-		log.Printf("签到 Cron 配置无效: %v", err)
-		return
-	}
-	c.Start()
-	checkInCron = c
-}
-
-func validateCronSchedule(schedule string) error {
-	if len(strings.Fields(schedule)) != 6 {
-		return fmt.Errorf("必须是 6 段 cron 表达式")
-	}
-	c := cron.New()
-	return c.AddFunc(schedule, func() {})
 }
 
 // 推送商品任务
@@ -118,6 +75,7 @@ func init() {
 	http.HandleFunc("/addConf", AddCheckInfoHandler)
 	http.HandleFunc("/check", CheckInHandler)
 	http.HandleFunc("/productConfig", ProductConfigHandler)
+	http.HandleFunc("/productSearch", ProductSearchHandler)
 	http.HandleFunc("/health", HealthHandler)
 	http.HandleFunc("/html/", HtmlHandler)
 }

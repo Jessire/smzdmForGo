@@ -29,6 +29,7 @@ type telegramConfigRequest struct {
 }
 
 type keywordRuleConfigRequest struct {
+	Enabled       *bool    `json:"enabled,omitempty"`
 	Words         []string `json:"words"`
 	FilterWords   []string `json:"filterWords"`
 	LowCommentNum int      `json:"lowCommentNum"`
@@ -38,11 +39,17 @@ type keywordRuleConfigRequest struct {
 }
 
 func productConfigFromConfig(conf file.Config) productConfigRequest {
-	rules := make([]keywordRuleConfigRequest, 0, len(conf.KeywordRules))
+	rules := make([]keywordRuleConfigRequest, 0, len(conf.KeywordRules)+len(conf.KeyWords))
+	seenWords := map[string]bool{}
 	for _, rule := range conf.KeywordRules {
+		enabled := keywordRuleEnabled(rule)
 		item := keywordRuleConfigRequest{
+			Enabled:     &enabled,
 			Words:       cleanWords(rule.Words),
 			FilterWords: cleanWords(rule.FilterWords),
+		}
+		for _, word := range item.Words {
+			seenWords[word] = true
 		}
 		if rule.LowCommentNum != nil {
 			item.LowCommentNum = *rule.LowCommentNum
@@ -57,6 +64,21 @@ func productConfigFromConfig(conf file.Config) productConfigRequest {
 			item.MaxPrice = *rule.MaxPrice
 		}
 		rules = append(rules, item)
+	}
+	for _, word := range cleanWords(conf.KeyWords) {
+		if seenWords[word] {
+			continue
+		}
+		enabled := true
+		rules = append(rules, keywordRuleConfigRequest{
+			Enabled:       &enabled,
+			Words:         []string{word},
+			FilterWords:   cleanWords(conf.FilterWords),
+			LowCommentNum: conf.LowCommentNum,
+			LowWorthyNum:  conf.LowWorthyNum,
+			MinPrice:      conf.MinPrice,
+			MaxPrice:      conf.MaxPrice,
+		})
 	}
 	return productConfigRequest{
 		KeyWords:      cleanWords(conf.KeyWords),
@@ -80,8 +102,7 @@ func productConfigFromConfig(conf file.Config) productConfigRequest {
 }
 
 func (req productConfigRequest) applyTo(conf file.Config) file.Config {
-	conf.KeyWords = cleanWords(req.KeyWords)
-	conf.FilterWords = cleanWords(req.FilterWords)
+	conf.FilterWords = []string{}
 	conf.LowCommentNum = nonNegativeInt(req.LowCommentNum)
 	conf.LowWorthyNum = nonNegativeInt(req.LowWorthyNum)
 	conf.MinPrice = nonNegativeFloat(req.MinPrice)
@@ -106,13 +127,34 @@ func (req productConfigRequest) applyTo(conf file.Config) file.Config {
 		DisableWebPagePreview: req.Telegram.DisableWebPagePreview,
 	}
 
-	rules := make([]file.KeywordRule, 0, len(req.KeywordRules))
-	for _, ruleReq := range req.KeywordRules {
+	ruleRequests := req.KeywordRules
+	if len(ruleRequests) == 0 {
+		for _, word := range cleanWords(req.KeyWords) {
+			enabled := true
+			ruleRequests = append(ruleRequests, keywordRuleConfigRequest{
+				Enabled:       &enabled,
+				Words:         []string{word},
+				FilterWords:   cleanWords(req.FilterWords),
+				LowCommentNum: req.LowCommentNum,
+				LowWorthyNum:  req.LowWorthyNum,
+				MinPrice:      req.MinPrice,
+				MaxPrice:      req.MaxPrice,
+			})
+		}
+	}
+
+	rules := make([]file.KeywordRule, 0, len(ruleRequests))
+	for _, ruleReq := range ruleRequests {
 		words := cleanWords(ruleReq.Words)
 		if len(words) == 0 {
 			continue
 		}
+		enabled := true
+		if ruleReq.Enabled != nil {
+			enabled = *ruleReq.Enabled
+		}
 		rule := file.KeywordRule{
+			Enabled:     &enabled,
 			Words:       words,
 			FilterWords: cleanWords(ruleReq.FilterWords),
 		}
@@ -135,6 +177,23 @@ func (req productConfigRequest) applyTo(conf file.Config) file.Config {
 		rules = append(rules, rule)
 	}
 	conf.KeywordRules = rules
+	conf.KeyWords = flattenRuleWords(rules)
+	if len(conf.KeywordRules) > 0 {
+		first := conf.KeywordRules[0]
+		conf.FilterWords = cleanWords(first.FilterWords)
+		if first.LowCommentNum != nil {
+			conf.LowCommentNum = *first.LowCommentNum
+		}
+		if first.LowWorthyNum != nil {
+			conf.LowWorthyNum = *first.LowWorthyNum
+		}
+		if first.MinPrice != nil {
+			conf.MinPrice = *first.MinPrice
+		}
+		if first.MaxPrice != nil {
+			conf.MaxPrice = *first.MaxPrice
+		}
+	}
 	return conf
 }
 
@@ -178,4 +237,16 @@ func normalizedParseMode(value string) string {
 		return "HTML"
 	}
 	return value
+}
+
+func keywordRuleEnabled(rule file.KeywordRule) bool {
+	return rule.Enabled == nil || *rule.Enabled
+}
+
+func flattenRuleWords(rules []file.KeywordRule) []string {
+	words := []string{}
+	for _, rule := range rules {
+		words = append(words, rule.Words...)
+	}
+	return cleanWords(words)
 }

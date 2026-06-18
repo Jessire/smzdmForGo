@@ -148,10 +148,6 @@ func ProductConfigHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		next := req.applyTo(currentConfig())
 		file.ApplyEnvOverrides(&next)
-		if err := validateCronSchedule(next.Cron); err != nil {
-			writeError(w, fmt.Errorf("签到 Cron 无效: %v", err))
-			return
-		}
 
 		database, err := openUserDB()
 		if err != nil {
@@ -164,7 +160,6 @@ func ProductConfigHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		setCurrentConfig(next)
-		resetCheckInCron(next.Cron)
 		writeJSON(w, http.StatusOK, map[string]interface{}{
 			"code": "0",
 			"msg":  "保存成功",

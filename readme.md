@@ -12,18 +12,16 @@
 - [x]  定时推送
 - [x] 设定关键字，爬取含关键词的商品
 - [x] 利用github Action 自动编译，部署到个人服务器
-- [x] 每天定时打卡
 - [x] 支持 Telegram Bot 推送
-- [x] 支持关键词级过滤词、评论数、值率、价格规则
+- [x] 支持每个关键词独立设置过滤词、评论数、值率、价格规则
 - [x] 支持 Web 面板保存商品规则、定时参数和通知配置
   
 ### 待实现
 - [ ] 配置server酱
-- [X] 配置签到
 
 ### 使用步骤
 下载整个代码 window平台直接运行`smzdm.exe`，切勿挪动exe文件，会导致读不到配置
-推荐直接打开 Web 面板维护关键词、过滤词、阈值、Telegram Bot 和签到账号配置。保存后的生产配置会写入数据库。
+推荐直接打开 Web 面板维护关键词、过滤词、阈值和 Telegram Bot 配置。保存后的生产配置会写入数据库。
 1. **配置式：**
 修改以下配置，保存配置，再运行`smzdm.exe`即可
 ```yml
@@ -51,7 +49,8 @@ filterWords:
 
 # 每组关键词的独立规则
 keywordRules:
-  - words:
+  - enabled: true
+    words:
       - 显示器
     filterWords:
       - 二手
@@ -70,12 +69,6 @@ telegram:
   parseMode: "HTML"
   disableWebPagePreview: false
 
-# 签到时间(默认早上8:30)
-cron: "0 30 8 ? * *"
-
-# 签到需要的cookie
-cookie: "XXXX"
-
 ```
 
 Render 部署只需要配置数据库连接和 `REQUIRE_DATABASE_URL=true`。Telegram Bot Token、Chat ID、关键词规则、过滤词和定时参数都在 Web 面板里保存。
@@ -92,15 +85,6 @@ Render 部署只需要配置数据库连接和 `REQUIRE_DATABASE_URL=true`。Tel
 ```go 
 go run .\main.go .\route.go
 ```
-
-**配置签到**
-可手动和定时签到
-[配置地址](http://1.15.141.114:9090/)
-![20220810003120](https://img.ggball.top/picGo/20220810003120.png)
-
-
-
-
 
 ### 效果
 ![20231024210905](https://img.ggball.top/picGo/20231024210905.png)

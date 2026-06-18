@@ -29,6 +29,7 @@ type Config struct {
 }
 
 type KeywordRule struct {
+	Enabled       *bool    `json:"enabled,omitempty" yaml:"enabled" mapstructure:"enabled"`
 	Words         []string `json:"words" yaml:"words" mapstructure:"words"`
 	FilterWords   []string `json:"filterWords" yaml:"filterWords" mapstructure:"filterWords"`
 	LowCommentNum *int     `json:"lowCommentNum,omitempty" yaml:"lowCommentNum" mapstructure:"lowCommentNum"`

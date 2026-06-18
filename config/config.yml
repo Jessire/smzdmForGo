@@ -23,7 +23,8 @@ filterWords:
 
 # 每组关键词的独立规则. 配置后会覆盖仅按 keyWords 命中的关注商品推送逻辑.
 keywordRules:
-  - words:
+  - enabled: true
+    words:
       - 显示器
     filterWords:
       - 二手
@@ -32,7 +33,8 @@ keywordRules:
     lowWorthyNum: 20
     minPrice: 300
     maxPrice: 2000
-  - words:
+  - enabled: true
+    words:
       - 面包
       - 零食
     filterWords:
@@ -51,6 +53,3 @@ telegram:
   chatId: ""
   parseMode: "HTML"
   disableWebPagePreview: false
-
-# 签到时间(默认早上8:30)
-cron: "0 10 10 ? * *"
