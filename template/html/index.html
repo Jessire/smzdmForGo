@@ -37,8 +37,20 @@
     }
     h1 { margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: 0; }
     .subtitle { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
-    .workspace { display: grid; grid-template-columns: minmax(560px, 1fr) minmax(560px, 1fr); gap: 20px; align-items: start; }
-    .column-stack { display: grid; gap: 16px; min-width: 0; }
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(560px, 1fr) minmax(560px, 1fr);
+      grid-template-areas:
+        "rules preview"
+        "editor notify";
+      gap: 20px;
+      align-items: stretch;
+    }
+    .column-stack { display: contents; }
+    .rules-panel { grid-area: rules; }
+    .editor-panel { grid-area: editor; }
+    .preview-panel { grid-area: preview; }
+    .notification-shell { grid-area: notify; }
     .panel {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -47,6 +59,7 @@
       backdrop-filter: blur(24px);
       padding: 18px;
       min-width: 0;
+      height: 100%;
     }
     .panel + .panel { margin-top: 0; }
     .section-head {
@@ -146,9 +159,17 @@
     .field select:focus { border-color: rgba(0, 113, 227, 0.62); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.13); }
     .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .editor-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 14px; align-items: start; }
-    .editor-grid .wide { grid-column: 1 / -1; }
-    .filter-field textarea { height: 42px; min-height: 42px; max-height: 110px; }
+    .editor-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 12px; align-items: end; }
+    .editor-grid .half { grid-column: span 2; }
+    .editor-grid .wide { grid-column: span 2; }
+    .filter-field textarea { height: 42px; min-height: 42px; max-height: 92px; }
+    .editor-panel { padding: 16px 18px; }
+    .editor-panel .section-head { margin-bottom: 10px; }
+    .editor-panel .field label { margin-bottom: 5px; font-size: 12px; }
+    .editor-panel .field input,
+    .editor-panel .field select { height: 38px; }
+    .editor-panel .field textarea { height: 38px; min-height: 38px; }
+    .editor-panel .btn { min-height: 34px; }
     .span-2 { grid-column: span 2; }
     .span-4 { grid-column: span 4; }
     .switch-row { display: flex; align-items: center; gap: 10px; min-height: 42px; }
@@ -193,6 +214,7 @@
     .notify-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .rules-table {
       width: 100%;
+      table-layout: fixed;
       border-collapse: separate;
       border-spacing: 0;
       overflow: hidden;
@@ -209,6 +231,14 @@
       font-size: 13px;
     }
     .rules-table th { color: var(--muted); font-weight: 700; background: rgba(245, 245, 247, 0.86); }
+    .rules-table th:nth-child(3),
+    .rules-table th:nth-child(4),
+    .rules-table th:nth-child(5),
+    .rules-table th:nth-child(6),
+    .rules-table td:nth-child(3),
+    .rules-table td:nth-child(4),
+    .rules-table td:nth-child(5),
+    .rules-table td:nth-child(6) { text-align: center; }
     .rules-table tr:last-child td { border-bottom: 0; }
     .rules-table tbody tr { cursor: pointer; }
     .rules-table tbody tr.active { background: rgba(0, 113, 227, 0.07); }
@@ -223,6 +253,7 @@
     }
     .keyword-cell { display: flex; align-items: center; gap: 10px; min-width: 190px; }
     .keyword-name { font-weight: 700; color: var(--text); }
+    .row-actions { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
     .disabled { color: var(--muted); }
     .tag {
       display: inline-flex;
@@ -264,7 +295,7 @@
     .product-list {
       display: grid;
       gap: 10px;
-      max-height: 560px;
+      max-height: 260px;
       overflow: auto;
       padding-right: 2px;
     }
@@ -319,14 +350,23 @@
     .empty-state svg { width: 74px; height: 74px; opacity: .7; }
     .empty-state strong { color: var(--text); font-size: 15px; }
     .empty-state p { margin: 0; max-width: 310px; line-height: 1.5; }
+    .editor-panel .bottom-bar { margin-top: 10px; }
     .notification-shell { min-height: 0; }
     @media (max-width: 1080px) {
-      .workspace { grid-template-columns: 1fr; }
+      .workspace {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "rules"
+          "editor"
+          "preview"
+          "notify";
+      }
     }
     @media (max-width: 720px) {
       .topbar { align-items: stretch; flex-direction: column; }
       .grid, .grid.two, .editor-grid, .notify-grid { grid-template-columns: 1fr; }
       .span-2, .span-4 { grid-column: span 1; }
+      .editor-grid .half,
       .editor-grid .wide { grid-column: span 1; }
       .section-head { align-items: stretch; flex-direction: column; }
       .header-controls { justify-content: flex-start; }
@@ -339,7 +379,8 @@
       .rules-table td:nth-child(3),
       .rules-table td:nth-child(4),
       .rules-table td:nth-child(5) { display: inline-flex; width: auto; margin-right: 12px; }
-      .rules-table td:nth-child(6) { display: flex; gap: 8px; }
+      .rules-table td:nth-child(6) { text-align: left; }
+      .row-actions { justify-content: flex-start; }
       .preview-hero { grid-template-columns: 1fr; }
       .preview-hero img { width: 100%; height: 180px; }
       .product-list { max-height: none; }
@@ -363,7 +404,7 @@
 
   <div class="workspace">
     <div class="column-stack">
-      <div class="panel">
+      <div class="panel rules-panel">
         <div class="section-head">
           <div>
             <h2>关键词规则</h2>
@@ -376,6 +417,14 @@
           </div>
         </div>
         <table class="rules-table">
+          <colgroup>
+            <col style="width: 34%">
+            <col style="width: 21%">
+            <col style="width: 8%">
+            <col style="width: 9%">
+            <col style="width: 14%">
+            <col style="width: 14%">
+          </colgroup>
           <thead>
             <tr>
               <th>关键词</th>
@@ -390,7 +439,7 @@
         </table>
       </div>
 
-      <div class="panel">
+      <div class="panel editor-panel">
         <div class="section-head">
           <div>
             <h2>规则详情</h2>
@@ -410,11 +459,11 @@
           </div>
         </div>
         <div class="editor-grid">
-          <div class="field">
+          <div class="field half">
             <label for="keywordInput">关键词</label>
             <input id="keywordInput" type="text" autocomplete="off">
           </div>
-          <div class="field filter-field">
+          <div class="field filter-field half">
             <label for="filterInput">过滤词</label>
             <textarea id="filterInput"></textarea>
           </div>
@@ -434,7 +483,7 @@
               <input id="maxPriceInput" type="number" min="0" step="0.01" aria-label="最高价格">
             </div>
           </div>
-          <div class="field">
+          <div class="field half">
             <label for="tickValueInput">扫描间隔</label>
             <div class="unit-control">
               <input id="tickValueInput" type="number" min="1">
@@ -445,7 +494,7 @@
               </select>
             </div>
           </div>
-          <div class="field">
+          <div class="field half">
             <label for="satisfyNumInput">每次推送数量</label>
             <input id="satisfyNumInput" type="number" min="1">
           </div>
@@ -457,7 +506,7 @@
     </div>
 
     <div class="column-stack">
-      <div class="panel">
+      <div class="panel preview-panel">
         <div class="section-head">
           <div>
             <h2>搜索结果</h2>
@@ -661,9 +710,11 @@ layui.use(function(){
       row.append('<td>' + formatNumber(rule.lowCommentNum) + '</td>');
       row.append('<td>' + formatNumber(rule.lowWorthyNum) + '%</td>');
       row.append('<td>' + priceRange(rule) + '</td>');
-      var actions = $('<td class="actions"></td>');
-      actions.append(iconButton('search', '预览', 'secondary icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
-      actions.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; confirmRemoveSelectedRule(); }));
+      var actions = $('<td></td>');
+      var actionWrap = $('<div class="row-actions"></div>');
+      actionWrap.append(iconButton('search', '预览', 'secondary icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
+      actionWrap.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; confirmRemoveSelectedRule(); }));
+      actions.append(actionWrap);
       row.append(actions);
       row.on('click', function(){ selectRule(index); });
       body.append(row);
