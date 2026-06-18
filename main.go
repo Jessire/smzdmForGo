@@ -18,6 +18,7 @@ var conf = file.Config{}
 var confMu sync.RWMutex
 var checks = []file.CheckInfo{}
 var userDbPath = "data/users.db"
+var productScheduleChanged = make(chan struct{}, 1)
 
 func main() {
 
@@ -42,8 +43,18 @@ func cronForProduct() {
 		if tickTime <= 0 {
 			tickTime = 10800
 		}
-		time.Sleep(time.Duration(tickTime) * time.Second)
-		requestSmzdm()
+		timer := time.NewTimer(time.Duration(tickTime) * time.Second)
+		select {
+		case <-timer.C:
+			requestSmzdm()
+		case <-productScheduleChanged:
+			if !timer.Stop() {
+				select {
+				case <-timer.C:
+				default:
+				}
+			}
+		}
 	}
 }
 
@@ -91,6 +102,13 @@ func setCurrentConfig(next file.Config) {
 	confMu.Lock()
 	defer confMu.Unlock()
 	conf = next
+}
+
+func notifyProductScheduleChanged() {
+	select {
+	case productScheduleChanged <- struct{}{}:
+	default:
+	}
 }
 
 func loadSavedProductConfig() {

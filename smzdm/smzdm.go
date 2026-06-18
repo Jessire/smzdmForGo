@@ -61,6 +61,30 @@ func GetSatisfiedGoods(conf file.Config) ([]Product, []Product) {
 	// 符合自己条件的商品集合
 	var satisfyGoodsListBySelf []Product
 
+	if len(conf.KeywordRules) > 0 {
+		satisfyGoodsList = getSatisfiedGoodsByKeywordRules(conf, pushedMap)
+	} else {
+		satisfyGoodsList = getSatisfiedGoodsFromFeed(pushedMap)
+	}
+
+	// 根据评论数排序
+	sort.SliceStable(satisfyGoodsList, func(a, b int) bool {
+		return parseMetric(satisfyGoodsList[a].ArticleComment) > parseMetric(satisfyGoodsList[b].ArticleComment)
+	})
+
+	fmt.Println("结束爬取符合条件商品。。")
+
+	//过滤出自己的商品
+	satisfyGoodsListBySelf = filterMyselfProduct(satisfyGoodsList)
+
+	// 保存推送商品，去重使用
+	savePushed(pushedMap, pushedPath, satisfyGoodsList)
+
+	return satisfyGoodsList, satisfyGoodsListBySelf
+}
+
+func getSatisfiedGoodsFromFeed(pushedMap map[string]interface{}) []Product {
+	var satisfyGoodsList []Product
 	page := 0
 	for {
 
@@ -103,20 +127,31 @@ func GetSatisfiedGoods(conf file.Config) ([]Product, []Product) {
 
 	}
 
-	// 根据评论数排序
-	sort.SliceStable(satisfyGoodsList, func(a, b int) bool {
-		return parseMetric(satisfyGoodsList[a].ArticleComment) > parseMetric(satisfyGoodsList[b].ArticleComment)
-	})
+	return satisfyGoodsList
+}
 
-	fmt.Println("结束爬取符合条件商品。。")
-
-	//过滤出自己的商品
-	satisfyGoodsListBySelf = filterMyselfProduct(satisfyGoodsList)
-
-	// 保存推送商品，去重使用
-	savePushed(pushedMap, pushedPath, satisfyGoodsList)
-
-	return satisfyGoodsList, satisfyGoodsListBySelf
+func getSatisfiedGoodsByKeywordRules(conf file.Config, pushedMap map[string]interface{}) []Product {
+	seen := map[string]bool{}
+	limit := conf.SatisfyNum * 3
+	if limit < 24 {
+		limit = 24
+	}
+	var satisfyGoodsList []Product
+	for _, rule := range conf.KeywordRules {
+		if !keywordRuleEnabled(rule) {
+			continue
+		}
+		for _, keyword := range rule.Words {
+			for _, good := range SearchGoods(keyword, rule, limit) {
+				if removePushedOrOld(good, pushedMap) || seen[good.ArticleId] {
+					continue
+				}
+				seen[good.ArticleId] = true
+				satisfyGoodsList = append(satisfyGoodsList, good)
+			}
+		}
+	}
+	return satisfyGoodsList
 }
 
 // GetGoods 获取商品集合
@@ -175,20 +210,24 @@ func removeByFilterRules(good Product, pushedMap map[string]interface{}) bool {
 		}
 	}
 
-	// 2. 根据已推送文章id map 判断是否需要去除，如果已经推送过的，则去除
+	return noNeed || removePushedOrOld(good, pushedMap)
+}
+
+func removePushedOrOld(good Product, pushedMap map[string]interface{}) bool {
+	// 根据已推送文章id map 判断是否需要去除，如果已经推送过的，则去除
 	_, b := pushedMap[good.ArticleId]
 	if b {
 		// fmt.Println(good.ArticleTitle + "文章已存在,不予添加")
-		noNeed = true
+		return true
 	}
 
-	// 3. 文章时间小于昨天 去除
+	// 文章时间小于昨天 去除
 	// var timeLayoutStr = "2006-01-02 15:04:05" //go中的时间格式化必须是这个时间
 	nTime := time.Now()
 	// 前天
 	beforeYesDate := nTime.AddDate(0, 0, -2)
 	if good.ArticleDate == "" {
-		return noNeed
+		return false
 	}
 	dateInt64, err1 := strconv.ParseInt(good.ArticleDate, 10, 64)
 
@@ -198,10 +237,10 @@ func removeByFilterRules(good Product, pushedMap map[string]interface{}) bool {
 	arDate := time.Unix(dateInt64, 0)
 	// fmt.Println("文章时间：" + arDate.Format(timeLayoutStr) + "昨天时间：" + beforeYesDate.Format(timeLayoutStr))
 	if arDate.Before(beforeYesDate) {
-		noNeed = true
+		return true
 	}
 
-	return noNeed
+	return false
 }
 
 // 根据规则判断符合规则的商品

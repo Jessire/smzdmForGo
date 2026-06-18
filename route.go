@@ -160,6 +160,7 @@ func ProductConfigHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		setCurrentConfig(next)
+		notifyProductScheduleChanged()
 		writeJSON(w, http.StatusOK, map[string]interface{}{
 			"code": "0",
 			"msg":  "保存成功",
