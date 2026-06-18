@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -13,7 +14,6 @@ import (
 	"ggball.com/smzdm/file"
 	"ggball.com/smzdm/push"
 	"ggball.com/smzdm/smzdm"
-	"ggball.com/smzdm/trick"
 	"github.com/robfig/cron"
 )
 
@@ -21,6 +21,8 @@ var conf = file.Config{}
 var confMu sync.RWMutex
 var checks = []file.CheckInfo{}
 var userDbPath = "data/users.db"
+var checkInCron *cron.Cron
+var checkInCronMu sync.Mutex
 
 func main() {
 
@@ -41,26 +43,51 @@ func main() {
 }
 
 func cronForProduct() {
-
-	// 定时搜索商品任务开启
-	// requestSmzdm()
-	tick := trick.NewMyTick(currentConfig().TickTime, requestSmzdm)
-	tick.Start()
+	for {
+		tickTime := currentConfig().TickTime
+		if tickTime <= 0 {
+			tickTime = 10800
+		}
+		time.Sleep(time.Duration(tickTime) * time.Second)
+		requestSmzdm()
+	}
 }
 
 // 每天定时打卡任务开启
 func cronForCheckIn() {
+	resetCheckInCron(currentConfig().Cron)
+}
+
+func resetCheckInCron(schedule string) {
+	checkInCronMu.Lock()
+	defer checkInCronMu.Unlock()
+
+	if checkInCron != nil {
+		checkInCron.Stop()
+	}
 
 	c := cron.New()
-	c.AddFunc(conf.Cron, func() {
+	if err := c.AddFunc(schedule, func() {
 		chekIn, err := check_in.NewCheckIn(userDbPath)
 		if err != nil {
 			log.Fatal("Failed to initialize check-in service:", err)
 		}
 		chekIn.SetConfig(currentConfig(), checks)
 		chekIn.CheckInAllUsers()
-	})
+	}); err != nil {
+		log.Printf("签到 Cron 配置无效: %v", err)
+		return
+	}
 	c.Start()
+	checkInCron = c
+}
+
+func validateCronSchedule(schedule string) error {
+	if len(strings.Fields(schedule)) != 6 {
+		return fmt.Errorf("必须是 6 段 cron 表达式")
+	}
+	c := cron.New()
+	return c.AddFunc(schedule, func() {})
 }
 
 // 推送商品任务
@@ -71,10 +98,10 @@ func requestSmzdm() {
 		return
 	}
 	// 推送商品
-	push.PushProducts(satisfyGoodsList, conf)
+	push.PushProducts(satisfyGoodsList, currentConfig())
 	// 推送自己关注的商品
 	atMobiles := []string{"13217913287"}
-	push.PushTargetProducts(satisfyGoodsMyselfList, conf, atMobiles)
+	push.PushTargetProducts(satisfyGoodsMyselfList, currentConfig(), atMobiles)
 	time.Sleep(1 * time.Second)
 }
 

@@ -16,13 +16,3 @@ services:
         sync: false
       - key: REQUIRE_DATABASE_URL
         value: "true"
-      - key: DINGDING_TOKEN
-        sync: false
-      - key: WXPUSHER_ENABLED
-        value: "true"
-      - key: WXPUSHER_APP_TOKEN
-        sync: false
-      - key: WXPUSHER_UIDS
-        sync: false
-      - key: WXPUSHER_TOPIC_IDS
-        sync: false

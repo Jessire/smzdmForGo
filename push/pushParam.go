@@ -1,59 +1,13 @@
 package push
 
-// 钉钉feedCard类型推送参数
-type DingFeedCardParam struct {
-	MsgType  string   `json:"msgtype"`
-	FeedCard FeedCard `json:"feedCard"`
-	At       At       `json:"at"`
+type TelegramMessageParam struct {
+	ChatID                string `json:"chat_id"`
+	Text                  string `json:"text"`
+	ParseMode             string `json:"parse_mode,omitempty"`
+	DisableWebPagePreview bool   `json:"disable_web_page_preview,omitempty"`
 }
 
-type At struct {
-	AtMobiles []string `json:"atMobiles"`
-	IsAtAll   bool     `json:"isAtAll"`
-}
-
-type FeedCard struct {
-	Links []Link `json:"links"`
-}
-
-type Link struct {
-	Title      string `json:"title"`
-	MessageURL string `json:"messageURL"`
-	PicURL     string `json:"picURL"`
-}
-
-// 钉钉text类型参数
-type DingTextParam struct {
-	MsgType string `json:"msgtype"`
-	Texts   Text   `json:"text"`
-	At      At     `json:"at"`
-}
-type Text struct {
-	Content string `json:"content"`
-}
-
-// 钉钉md类型
-type DingMdParam struct {
-	MsgType  string   `json:"msgtype"`
-	Markdown Markdown `json:"markdown"`
-	At       At       `json:"at"`
-}
-type Markdown struct {
-	Title string `json:"title"`
-	Text  string `json:"text"`
-}
-
-type WxPusherMessageParam struct {
-	AppToken    string   `json:"appToken"`
-	Content     string   `json:"content"`
-	Summary     string   `json:"summary,omitempty"`
-	ContentType int      `json:"contentType"`
-	UIDs        []string `json:"uids,omitempty"`
-	TopicIDs    []int    `json:"topicIds,omitempty"`
-	URL         string   `json:"url,omitempty"`
-}
-
-type WxPusherResponse struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
+type TelegramResponse struct {
+	OK          bool   `json:"ok"`
+	Description string `json:"description,omitempty"`
 }

@@ -14,7 +14,18 @@ type productConfigRequest struct {
 	MinPrice      float64                    `json:"minPrice"`
 	MaxPrice      float64                    `json:"maxPrice"`
 	SatisfyNum    int                        `json:"satisfyNum"`
+	TickTime      int                        `json:"tickTime"`
+	Cron          string                     `json:"cron"`
+	Telegram      telegramConfigRequest      `json:"telegram"`
 	KeywordRules  []keywordRuleConfigRequest `json:"keywordRules"`
+}
+
+type telegramConfigRequest struct {
+	Enabled               bool   `json:"enabled"`
+	BotToken              string `json:"botToken"`
+	ChatID                string `json:"chatId"`
+	ParseMode             string `json:"parseMode"`
+	DisableWebPagePreview bool   `json:"disableWebPagePreview"`
 }
 
 type keywordRuleConfigRequest struct {
@@ -55,7 +66,16 @@ func productConfigFromConfig(conf file.Config) productConfigRequest {
 		MinPrice:      conf.MinPrice,
 		MaxPrice:      conf.MaxPrice,
 		SatisfyNum:    conf.SatisfyNum,
-		KeywordRules:  rules,
+		TickTime:      conf.TickTime,
+		Cron:          conf.Cron,
+		Telegram: telegramConfigRequest{
+			Enabled:               conf.Telegram.Enabled,
+			BotToken:              conf.Telegram.BotToken,
+			ChatID:                conf.Telegram.ChatID,
+			ParseMode:             normalizedParseMode(conf.Telegram.ParseMode),
+			DisableWebPagePreview: conf.Telegram.DisableWebPagePreview,
+		},
+		KeywordRules: rules,
 	}
 }
 
@@ -69,6 +89,21 @@ func (req productConfigRequest) applyTo(conf file.Config) file.Config {
 	conf.SatisfyNum = req.SatisfyNum
 	if conf.SatisfyNum <= 0 {
 		conf.SatisfyNum = 5
+	}
+	conf.TickTime = req.TickTime
+	if conf.TickTime <= 0 {
+		conf.TickTime = 10800
+	}
+	conf.Cron = strings.TrimSpace(req.Cron)
+	if conf.Cron == "" {
+		conf.Cron = "0 10 10 ? * *"
+	}
+	conf.Telegram = file.Telegram{
+		Enabled:               req.Telegram.Enabled,
+		BotToken:              strings.TrimSpace(req.Telegram.BotToken),
+		ChatID:                strings.TrimSpace(req.Telegram.ChatID),
+		ParseMode:             normalizedParseMode(req.Telegram.ParseMode),
+		DisableWebPagePreview: req.Telegram.DisableWebPagePreview,
 	}
 
 	rules := make([]file.KeywordRule, 0, len(req.KeywordRules))
@@ -133,6 +168,14 @@ func nonNegativeInt(value int) int {
 func nonNegativeFloat(value float64) float64 {
 	if value < 0 {
 		return 0
+	}
+	return value
+}
+
+func normalizedParseMode(value string) string {
+	value = strings.TrimSpace(value)
+	if value == "" {
+		return "HTML"
 	}
 	return value
 }

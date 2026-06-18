@@ -13,9 +13,9 @@
 - [x] 设定关键字，爬取含关键词的商品
 - [x] 利用github Action 自动编译，部署到个人服务器
 - [x] 每天定时打卡
-- [x] 可通过手机号@指定人
-- [x] 支持 WxPusher 推送
+- [x] 支持 Telegram Bot 推送
 - [x] 支持关键词级过滤词、评论数、值率、价格规则
+- [x] 支持 Web 面板保存商品规则、定时参数和通知配置
   
 ### 待实现
 - [ ] 配置server酱
@@ -23,7 +23,7 @@
 
 ### 使用步骤
 下载整个代码 window平台直接运行`smzdm.exe`，切勿挪动exe文件，会导致读不到配置
-如果想用关键字或者推送自己的钉钉，可以修改配置信息
+推荐直接打开 Web 面板维护关键词、过滤词、阈值、Telegram Bot 和签到账号配置。保存后的生产配置会写入数据库。
 1. **配置式：**
 修改以下配置，保存配置，再运行`smzdm.exe`即可
 ```yml
@@ -62,18 +62,13 @@ keywordRules:
 
 # 定时任务多长执行一次 单位秒 默认 12个小时
 tickTime: 43200
-# 钉钉token
-dingdingToken: "xxxxx"
-
-# WxPusher 推送
-wxPusher:
+# Telegram Bot 推送
+telegram:
   enabled: true
-  appToken: "AT_xxxxx"
-  uids:
-    - "UID_xxxxx"
-  topicIds: []
-  # 1 文本, 2 HTML, 3 Markdown
-  contentType: 3
+  botToken: "123456:ABC_xxxxx"
+  chatId: "123456789"
+  parseMode: "HTML"
+  disableWebPagePreview: false
 
 # 签到时间(默认早上8:30)
 cron: "0 30 8 ? * *"
@@ -83,15 +78,7 @@ cookie: "XXXX"
 
 ```
 
-Render 部署时推荐使用环境变量覆盖密钥:
-
-```text
-DINGDING_TOKEN=xxxxx
-WXPUSHER_ENABLED=true
-WXPUSHER_APP_TOKEN=AT_xxxxx
-WXPUSHER_UIDS=UID_xxxxx,UID_yyyyy
-WXPUSHER_TOPIC_IDS=123,456
-```
+Render 部署只需要配置数据库连接和 `REQUIRE_DATABASE_URL=true`。Telegram Bot Token、Chat ID、关键词规则、过滤词和定时参数都在 Web 面板里保存。
 2. **docker方式**
 
 - 执行 `docker pull registry.cn-hangzhou.aliyuncs.com/ggball/smzdm_for_go:latest`
@@ -115,9 +102,6 @@ go run .\main.go .\route.go
 
 
 
-如果觉得麻烦可以进群，每天都会推送消息哦（钉钉二维码在最下方！！）
-
-
 ### 效果
 ![20231024210905](https://img.ggball.top/picGo/20231024210905.png)
 ![image-20220419205742369](https://img.ggball.top/picGo/image-20220419205742369.png)
@@ -125,11 +109,3 @@ go run .\main.go .\route.go
 ![image-20220419205914792](https://img.ggball.top/picGo/image-20220419205914792.png)
 
 ![20220428194347](https://img.ggball.top/picGo/20220428194347.png)
-
-
-
-
-### 钉钉二维码
-
-![image-20220420200534357](https://img.ggball.top/picGo/image-20220420200534357.png)
-

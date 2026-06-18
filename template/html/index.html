@@ -6,114 +6,335 @@
   <title>什么值得买管理面板</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css" media="all">
   <style>
-    body { margin: 0; background: #f6f7f9; color: #1f2933; }
-    .page { padding: 16px; }
-    .panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 16px; }
-    .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
-    .config-grid { display: grid; grid-template-columns: repeat(4, minmax(140px, 1fr)); gap: 12px; }
-    .config-span-2 { grid-column: span 2; }
-    .config-span-4 { grid-column: span 4; }
-    .layui-form-label { width: 96px; }
-    .layui-input-block { margin-left: 126px; }
-    .rule-form { padding: 18px 18px 4px; }
-    @media (max-width: 900px) {
-      .config-grid { grid-template-columns: 1fr; }
-      .config-span-2, .config-span-4 { grid-column: span 1; }
-      .layui-form-label { width: 86px; }
-      .layui-input-block { margin-left: 116px; }
+    :root {
+      --bg: #f5f5f7;
+      --panel: rgba(255, 255, 255, 0.82);
+      --line: rgba(0, 0, 0, 0.08);
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --blue: #0071e3;
+      --blue-hover: #0077ed;
+      --green: #2d7d46;
+      --orange: #b35a00;
+      --shadow: 0 18px 55px rgba(0, 0, 0, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+    }
+    .shell { max-width: 1240px; margin: 0 auto; padding: 34px 22px 44px; }
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    .title-wrap h1 { margin: 0; font-size: 36px; line-height: 1.14; font-weight: 700; letter-spacing: 0; }
+    .title-wrap p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+    .tabs {
+      display: inline-flex;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.66);
+      backdrop-filter: blur(20px);
+    }
+    .tab-btn {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 16px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .tab-btn.active { background: #fff; color: var(--text); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(24px);
+      padding: 22px;
+    }
+    .panel + .panel { margin-top: 16px; }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .section-head h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0; }
+    .section-head .meta { color: var(--muted); font-size: 13px; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .span-2 { grid-column: span 2; }
+    .span-4 { grid-column: span 4; }
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.45;
+      outline: none;
+      transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+    .field input,
+    .field select { height: 42px; padding: 0 12px; }
+    .field textarea { min-height: 116px; resize: vertical; padding: 12px; }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: rgba(0, 113, 227, 0.68);
+      box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.14);
+      background: #fff;
+    }
+    .switch-row { display: flex; align-items: center; gap: 10px; height: 42px; }
+    .switch-row input { width: 18px; height: 18px; accent-color: var(--blue); }
+    .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 38px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-size: 14px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: transform .14s ease, box-shadow .14s ease, background .14s ease, border-color .14s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.primary { background: var(--blue); color: #fff; box-shadow: 0 10px 24px rgba(0, 113, 227, 0.24); }
+    .btn.primary:hover { background: var(--blue-hover); }
+    .btn.secondary { background: rgba(255, 255, 255, 0.88); border-color: var(--line); color: var(--text); }
+    .btn.danger { background: rgba(179, 90, 0, 0.08); color: var(--orange); border-color: rgba(179, 90, 0, 0.18); }
+    .btn.small { min-height: 30px; padding: 0 10px; font-size: 12px; }
+    .keyword-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 38px;
+      padding-top: 2px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+      padding: 6px 8px 6px 11px;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .chip button {
+      border: 0;
+      border-radius: 6px;
+      background: rgba(0, 113, 227, 0.10);
+      color: var(--blue);
+      cursor: pointer;
+      padding: 4px 7px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .table-wrap {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+    .layui-table-view { margin: 0; border: 0; }
+    .layui-table-header, .layui-table-tool { background: rgba(245, 245, 247, 0.85); }
+    .layui-table th { color: var(--muted); font-weight: 700; }
+    .layui-table-cell { color: var(--text); }
+    .empty-note { color: var(--muted); font-size: 13px; }
+    .rule-form { padding: 20px; }
+    .rule-form .field { margin-bottom: 14px; }
+    @media (max-width: 920px) {
+      .topbar { align-items: stretch; flex-direction: column; }
+      .tabs { width: 100%; }
+      .tab-btn { flex: 1; }
+      .grid, .grid.two { grid-template-columns: 1fr; }
+      .span-2, .span-4 { grid-column: span 1; }
+      .title-wrap h1 { font-size: 30px; }
     }
   </style>
 </head>
 <body>
-<div class="page">
-  <div class="layui-tab layui-tab-brief" lay-filter="mainTabs">
-    <ul class="layui-tab-title">
-      <li class="layui-this">签到账号</li>
-      <li>商品规则</li>
-    </ul>
-    <div class="layui-tab-content">
-      <div class="layui-tab-item layui-show">
-        <div class="panel">
-          <table class="layui-hide" id="accountTable" lay-filter="accountTable"></table>
+<div class="shell">
+  <div class="topbar">
+    <div class="title-wrap">
+      <h1>什么值得买管理面板</h1>
+      <p>账号, 关键词, 过滤词, 阈值和通知都在这里维护。</p>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="accounts" type="button">签到账号</button>
+      <button class="tab-btn" data-tab="rules" type="button">商品配置</button>
+    </div>
+  </div>
+
+  <section id="accountsPanel" class="tab-panel active">
+    <div class="panel">
+      <div class="section-head">
+        <div>
+          <h2>签到账号</h2>
+          <div class="meta">Cookie 保存到数据库, 手动签到会立即写回状态。</div>
+        </div>
+        <button class="btn primary" id="addAccount" type="button">新增账号</button>
+      </div>
+      <div class="table-wrap">
+        <table class="layui-hide" id="accountTable" lay-filter="accountTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <section id="rulesPanel" class="tab-panel">
+    <div class="panel">
+      <div class="section-head">
+        <div>
+          <h2>关键词与阈值</h2>
+          <div class="meta">全局规则会用于商品筛选, 独立规则会覆盖对应关键词的过滤条件。</div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn secondary" id="reloadProductConfig">重新加载</button>
+          <button type="button" class="btn primary" id="saveProductConfig">保存配置</button>
         </div>
       </div>
-      <div class="layui-tab-item">
-        <div class="panel">
-          <form class="layui-form" lay-filter="productConfigForm">
-            <div class="config-grid">
-              <div class="config-span-2">
-                <label class="layui-form-label">关键词</label>
-                <div class="layui-input-block">
-                  <textarea name="keyWords" class="layui-textarea" rows="5"></textarea>
-                </div>
-              </div>
-              <div class="config-span-2">
-                <label class="layui-form-label">过滤词</label>
-                <div class="layui-input-block">
-                  <textarea name="filterWords" class="layui-textarea" rows="5"></textarea>
-                </div>
-              </div>
-              <div>
-                <label class="layui-form-label">最低评论</label>
-                <div class="layui-input-block">
-                  <input type="number" name="lowCommentNum" min="0" class="layui-input">
-                </div>
-              </div>
-              <div>
-                <label class="layui-form-label">最低值率</label>
-                <div class="layui-input-block">
-                  <input type="number" name="lowWorthyNum" min="0" class="layui-input">
-                </div>
-              </div>
-              <div>
-                <label class="layui-form-label">最低价格</label>
-                <div class="layui-input-block">
-                  <input type="number" name="minPrice" min="0" step="0.01" class="layui-input">
-                </div>
-              </div>
-              <div>
-                <label class="layui-form-label">最高价格</label>
-                <div class="layui-input-block">
-                  <input type="number" name="maxPrice" min="0" step="0.01" class="layui-input">
-                </div>
-              </div>
-              <div>
-                <label class="layui-form-label">推送数量</label>
-                <div class="layui-input-block">
-                  <input type="number" name="satisfyNum" min="1" class="layui-input">
-                </div>
-              </div>
-              <div class="config-span-4">
-                <div class="toolbar">
-                  <button type="button" class="layui-btn" id="saveProductConfig">保存规则</button>
-                  <button type="button" class="layui-btn layui-btn-primary" id="reloadProductConfig">重新加载</button>
-                </div>
-              </div>
-            </div>
-          </form>
-          <div class="toolbar">
-            <button type="button" class="layui-btn layui-btn-sm" id="addRule">新增关键词规则</button>
+      <form id="productConfigForm">
+        <div class="grid">
+          <div class="field span-2">
+            <label for="keyWords">关键词</label>
+            <textarea id="keyWords" name="keyWords"></textarea>
           </div>
-          <table class="layui-hide" id="ruleTable" lay-filter="ruleTable"></table>
+          <div class="field span-2">
+            <label for="filterWords">过滤词</label>
+            <textarea id="filterWords" name="filterWords"></textarea>
+          </div>
+          <div class="field">
+            <label for="lowCommentNum">最低评论</label>
+            <input id="lowCommentNum" type="number" name="lowCommentNum" min="0">
+          </div>
+          <div class="field">
+            <label for="lowWorthyNum">最低值率(%)</label>
+            <input id="lowWorthyNum" type="number" name="lowWorthyNum" min="0">
+          </div>
+          <div class="field">
+            <label for="minPrice">最低价格</label>
+            <input id="minPrice" type="number" name="minPrice" min="0" step="0.01">
+          </div>
+          <div class="field">
+            <label for="maxPrice">最高价格</label>
+            <input id="maxPrice" type="number" name="maxPrice" min="0" step="0.01">
+          </div>
+          <div class="field">
+            <label for="satisfyNum">推送数量</label>
+            <input id="satisfyNum" type="number" name="satisfyNum" min="1">
+          </div>
+          <div class="field">
+            <label for="tickTime">扫描间隔(秒)</label>
+            <input id="tickTime" type="number" name="tickTime" min="60">
+          </div>
+          <div class="field span-2">
+            <label for="cron">签到 Cron</label>
+            <input id="cron" type="text" name="cron">
+          </div>
+          <div class="field span-4">
+            <label>关键词搜索</label>
+            <div id="keywordCloud" class="keyword-cloud">
+              <span class="empty-note">暂无关键词</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="section-head">
+        <div>
+          <h2>Telegram 通知</h2>
+          <div class="meta">保存后商品推送和签到文本都会发到 Telegram Bot。</div>
+        </div>
+      </div>
+      <div class="grid two">
+        <div class="field">
+          <label>启用通知</label>
+          <div class="switch-row">
+            <input id="telegramEnabled" type="checkbox">
+            <span>Telegram Bot</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="telegramParseMode">Parse Mode</label>
+          <select id="telegramParseMode">
+            <option value="HTML">HTML</option>
+            <option value="">纯文本</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="telegramBotToken">Bot Token</label>
+          <input id="telegramBotToken" type="password" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="telegramChatId">Chat ID</label>
+          <input id="telegramChatId" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>链接预览</label>
+          <div class="switch-row">
+            <input id="telegramDisablePreview" type="checkbox">
+            <span>禁用网页预览</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+
+    <div class="panel">
+      <div class="section-head">
+        <div>
+          <h2>独立关键词规则</h2>
+          <div class="meta">每条规则可以单独设置关键词, 过滤词, 评论, 值率和价格范围。</div>
+        </div>
+        <button type="button" class="btn secondary" id="addRule">新增规则</button>
+      </div>
+      <div class="table-wrap">
+        <table class="layui-hide" id="ruleTable" lay-filter="ruleTable"></table>
+      </div>
+    </div>
+  </section>
 </div>
 
-<script type="text/html" id="accountToolbar">
-  <div class="layui-btn-container">
-    <button class="layui-btn layui-btn-sm" lay-event="getInsert">新增账号</button>
-  </div>
-</script>
-
 <script type="text/html" id="accountActions">
-  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="check">立即签到</a>
+  <button class="btn small secondary" lay-event="check">签到</button>
 </script>
 
 <script type="text/html" id="ruleActions">
-  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="remove">删除</a>
+  <button class="btn small secondary" lay-event="search">搜索</button>
+  <button class="btn small secondary" lay-event="edit">编辑</button>
+  <button class="btn small danger" lay-event="remove">删除</button>
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.js"></script>
@@ -127,6 +348,15 @@ var productConfig = {
   minPrice: 0,
   maxPrice: 0,
   satisfyNum: 5,
+  tickTime: 10800,
+  cron: '0 10 10 ? * *',
+  telegram: {
+    enabled: false,
+    botToken: '',
+    chatId: '',
+    parseMode: 'HTML',
+    disableWebPagePreview: false
+  },
   keywordRules: []
 };
 
@@ -134,58 +364,67 @@ layui.use(function(){
   var layer = layui.layer;
   var table = layui.table;
   var $ = layui.jquery;
-  var form = layui.form;
+
+  $('.tab-btn').on('click', function(){
+    var tab = $(this).data('tab');
+    $('.tab-btn').removeClass('active');
+    $(this).addClass('active');
+    $('.tab-panel').removeClass('active');
+    $('#' + tab + 'Panel').addClass('active');
+    if (tab === 'rules') {
+      table.resize('ruleTable');
+    } else {
+      table.resize('accountTable');
+    }
+  });
 
   table.render({
     elem: '#accountTable',
-    height: 420,
+    height: 440,
     url: BASE_URL + '/conf',
     title: 'smzdm签到表',
     page: false,
-    toolbar: '#accountToolbar',
+    toolbar: false,
     defaultToolbar: [],
     totalRow: false,
     cols: [[
-      {type: 'checkbox', fixed: 'left'},
       {field: 'Id', title: 'ID', width: 80, sort: true, fixed: 'left'},
-      {field: 'LastTIme', title: '最近执行时间', align: 'center', width: 180},
-      {field: 'Remark', title: '备注', width: 180, align: 'center'},
-      {field: 'LastMsg', title: '最近执行返回消息', align: 'center', minWidth: 260},
-      {field: 'LastResult', title: '最近执行结果', align: 'center', width: 140},
-      {field: 'Cookie', title: 'cookie', align: 'center', minWidth: 240},
-      {fixed: 'right', width: 120, align: 'center', toolbar: '#accountActions'}
+      {field: 'Remark', title: '备注', width: 160, align: 'center'},
+      {field: 'LastResult', title: '结果', width: 120, align: 'center'},
+      {field: 'LastTIme', title: '最近时间', align: 'center', width: 176},
+      {field: 'LastMsg', title: '返回消息', align: 'center', minWidth: 250},
+      {field: 'Cookie', title: 'Cookie', align: 'center', minWidth: 280},
+      {fixed: 'right', width: 96, align: 'center', toolbar: '#accountActions'}
     ]]
   });
 
   table.render({
     elem: '#ruleTable',
     data: [],
+    height: 360,
     page: false,
     defaultToolbar: [],
     cols: [[
-      {field: 'wordsText', title: '关键词', minWidth: 160},
-      {field: 'filterWordsText', title: '过滤词', minWidth: 180},
-      {field: 'lowCommentNum', title: '评论', width: 90},
-      {field: 'lowWorthyNum', title: '值率', width: 90},
+      {field: 'wordsText', title: '关键词', minWidth: 170},
+      {field: 'filterWordsText', title: '过滤词', minWidth: 190},
+      {field: 'lowCommentNum', title: '评论', width: 86},
+      {field: 'lowWorthyNum', title: '值率', width: 86},
       {field: 'minPrice', title: '最低价', width: 100},
       {field: 'maxPrice', title: '最高价', width: 100},
-      {fixed: 'right', width: 120, align: 'center', toolbar: '#ruleActions'}
+      {fixed: 'right', width: 190, align: 'center', toolbar: '#ruleActions'}
     ]]
   });
 
   loadProductConfig();
 
-  table.on('toolbar(accountTable)', function(obj){
-    if (obj.event === 'getInsert') {
-      layer.open({
-        type: 2,
-        title: 'smzdm签到信息',
-        shadeClose: true,
-        offset: '10%',
-        area: ['60%', '80%'],
-        content: 'html/form'
-      });
-    }
+  $('#addAccount').on('click', function(){
+    layer.open({
+      type: 2,
+      title: '新增签到账号',
+      shadeClose: true,
+      area: ['680px', '560px'],
+      content: 'html/form'
+    });
   });
 
   table.on('tool(accountTable)', function(obj){
@@ -197,7 +436,6 @@ layui.use(function(){
       url: BASE_URL + '/check',
       contentType: 'application/json;charset=utf-8',
       data: JSON.stringify([{ cookie: lineData.Cookie, id: lineData.Id, remark: lineData.Remark }]),
-      async: false,
       dataType: 'json',
       type: 'POST',
       success: function(res) {
@@ -211,8 +449,16 @@ layui.use(function(){
   });
 
   table.on('tool(ruleTable)', function(obj){
+    if (obj.event === 'search') {
+      var words = productConfig.keywordRules[obj.data._index].words || [];
+      if (words.length) {
+        openKeywordSearch(words[0]);
+      }
+      return;
+    }
     if (obj.event === 'edit') {
       openRuleDialog(obj.data._index);
+      return;
     }
     if (obj.event === 'remove') {
       productConfig.keywordRules.splice(obj.data._index, 1);
@@ -225,14 +471,7 @@ layui.use(function(){
   });
 
   $('#saveProductConfig').on('click', function(){
-    productConfig.keyWords = textToList($('[name="keyWords"]').val());
-    productConfig.filterWords = textToList($('[name="filterWords"]').val());
-    productConfig.lowCommentNum = toInt($('[name="lowCommentNum"]').val());
-    productConfig.lowWorthyNum = toInt($('[name="lowWorthyNum"]').val());
-    productConfig.minPrice = toFloat($('[name="minPrice"]').val());
-    productConfig.maxPrice = toFloat($('[name="maxPrice"]').val());
-    productConfig.satisfyNum = toInt($('[name="satisfyNum"]').val()) || 5;
-
+    readProductForm();
     $.ajax({
       url: BASE_URL + '/productConfig',
       contentType: 'application/json;charset=utf-8',
@@ -252,6 +491,9 @@ layui.use(function(){
   });
 
   $('#reloadProductConfig').on('click', loadProductConfig);
+  $('#keyWords').on('input', function(){
+    renderKeywordCloud(textToList($(this).val()));
+  });
 
   function loadProductConfig() {
     $.ajax({
@@ -269,15 +511,59 @@ layui.use(function(){
     });
   }
 
+  function readProductForm() {
+    productConfig.keyWords = textToList($('#keyWords').val());
+    productConfig.filterWords = textToList($('#filterWords').val());
+    productConfig.lowCommentNum = toInt($('#lowCommentNum').val());
+    productConfig.lowWorthyNum = toInt($('#lowWorthyNum').val());
+    productConfig.minPrice = toFloat($('#minPrice').val());
+    productConfig.maxPrice = toFloat($('#maxPrice').val());
+    productConfig.satisfyNum = toInt($('#satisfyNum').val()) || 5;
+    productConfig.tickTime = toInt($('#tickTime').val()) || 10800;
+    productConfig.cron = ($('#cron').val() || '').trim() || '0 10 10 ? * *';
+    productConfig.telegram = {
+      enabled: $('#telegramEnabled').is(':checked'),
+      botToken: ($('#telegramBotToken').val() || '').trim(),
+      chatId: ($('#telegramChatId').val() || '').trim(),
+      parseMode: $('#telegramParseMode').val() || 'HTML',
+      disableWebPagePreview: $('#telegramDisablePreview').is(':checked')
+    };
+  }
+
   function fillProductForm() {
-    form.val('productConfigForm', {
-      keyWords: listToText(productConfig.keyWords),
-      filterWords: listToText(productConfig.filterWords),
-      lowCommentNum: productConfig.lowCommentNum,
-      lowWorthyNum: productConfig.lowWorthyNum,
-      minPrice: productConfig.minPrice,
-      maxPrice: productConfig.maxPrice,
-      satisfyNum: productConfig.satisfyNum
+    $('#keyWords').val(listToText(productConfig.keyWords));
+    $('#filterWords').val(listToText(productConfig.filterWords));
+    $('#lowCommentNum').val(productConfig.lowCommentNum);
+    $('#lowWorthyNum').val(productConfig.lowWorthyNum);
+    $('#minPrice').val(productConfig.minPrice);
+    $('#maxPrice').val(productConfig.maxPrice);
+    $('#satisfyNum').val(productConfig.satisfyNum);
+    $('#tickTime').val(productConfig.tickTime);
+    $('#cron').val(productConfig.cron);
+    $('#telegramEnabled').prop('checked', !!productConfig.telegram.enabled);
+    $('#telegramBotToken').val(productConfig.telegram.botToken || '');
+    $('#telegramChatId').val(productConfig.telegram.chatId || '');
+    $('#telegramParseMode').val(productConfig.telegram.parseMode || 'HTML');
+    $('#telegramDisablePreview').prop('checked', !!productConfig.telegram.disableWebPagePreview);
+    renderKeywordCloud(productConfig.keyWords);
+  }
+
+  function renderKeywordCloud(words) {
+    var cloud = $('#keywordCloud');
+    cloud.empty();
+    if (!words.length) {
+      cloud.append('<span class="empty-note">暂无关键词</span>');
+      return;
+    }
+    words.forEach(function(word){
+      var chip = $('<span class="chip"></span>');
+      chip.append(document.createTextNode(word));
+      var btn = $('<button type="button">搜索</button>');
+      btn.on('click', function(){
+        openKeywordSearch(word);
+      });
+      chip.append(btn);
+      cloud.append(chip);
     });
   }
 
@@ -299,41 +585,40 @@ layui.use(function(){
   function openRuleDialog(index) {
     var rule = index >= 0 ? productConfig.keywordRules[index] : {};
     var html = [
-      '<form class="layui-form rule-form" lay-filter="ruleForm">',
-      '<div class="layui-form-item"><label class="layui-form-label">关键词</label><div class="layui-input-block"><textarea name="words" class="layui-textarea" rows="3"></textarea></div></div>',
-      '<div class="layui-form-item"><label class="layui-form-label">过滤词</label><div class="layui-input-block"><textarea name="filterWords" class="layui-textarea" rows="3"></textarea></div></div>',
-      '<div class="layui-form-item"><label class="layui-form-label">最低评论</label><div class="layui-input-block"><input type="number" name="lowCommentNum" min="0" class="layui-input"></div></div>',
-      '<div class="layui-form-item"><label class="layui-form-label">最低值率</label><div class="layui-input-block"><input type="number" name="lowWorthyNum" min="0" class="layui-input"></div></div>',
-      '<div class="layui-form-item"><label class="layui-form-label">最低价格</label><div class="layui-input-block"><input type="number" name="minPrice" min="0" step="0.01" class="layui-input"></div></div>',
-      '<div class="layui-form-item"><label class="layui-form-label">最高价格</label><div class="layui-input-block"><input type="number" name="maxPrice" min="0" step="0.01" class="layui-input"></div></div>',
+      '<form class="rule-form" id="ruleForm">',
+      '<div class="field"><label>关键词</label><textarea name="words" rows="3"></textarea></div>',
+      '<div class="field"><label>过滤词</label><textarea name="filterWords" rows="3"></textarea></div>',
+      '<div class="grid two">',
+      '<div class="field"><label>最低评论</label><input type="number" name="lowCommentNum" min="0"></div>',
+      '<div class="field"><label>最低值率(%)</label><input type="number" name="lowWorthyNum" min="0"></div>',
+      '<div class="field"><label>最低价格</label><input type="number" name="minPrice" min="0" step="0.01"></div>',
+      '<div class="field"><label>最高价格</label><input type="number" name="maxPrice" min="0" step="0.01"></div>',
+      '</div>',
       '</form>'
     ].join('');
 
     layer.open({
       type: 1,
       title: index >= 0 ? '编辑关键词规则' : '新增关键词规则',
-      area: ['560px', '620px'],
+      area: ['620px', '620px'],
       content: html,
       btn: ['保存', '取消'],
-      success: function(){
-        form.val('ruleForm', {
-          words: listToText(rule.words || []),
-          filterWords: listToText(rule.filterWords || []),
-          lowCommentNum: rule.lowCommentNum || '',
-          lowWorthyNum: rule.lowWorthyNum || '',
-          minPrice: rule.minPrice || '',
-          maxPrice: rule.maxPrice || ''
-        });
+      success: function(layero){
+        layero.find('[name="words"]').val(listToText(rule.words || []));
+        layero.find('[name="filterWords"]').val(listToText(rule.filterWords || []));
+        layero.find('[name="lowCommentNum"]').val(rule.lowCommentNum || '');
+        layero.find('[name="lowWorthyNum"]').val(rule.lowWorthyNum || '');
+        layero.find('[name="minPrice"]').val(rule.minPrice || '');
+        layero.find('[name="maxPrice"]').val(rule.maxPrice || '');
       },
       yes: function(layerIndex, layero){
-        var values = form.val('ruleForm');
         var nextRule = {
-          words: textToList(values.words),
-          filterWords: textToList(values.filterWords),
-          lowCommentNum: toInt(values.lowCommentNum),
-          lowWorthyNum: toInt(values.lowWorthyNum),
-          minPrice: toFloat(values.minPrice),
-          maxPrice: toFloat(values.maxPrice)
+          words: textToList(layero.find('[name="words"]').val()),
+          filterWords: textToList(layero.find('[name="filterWords"]').val()),
+          lowCommentNum: toInt(layero.find('[name="lowCommentNum"]').val()),
+          lowWorthyNum: toInt(layero.find('[name="lowWorthyNum"]').val()),
+          minPrice: toFloat(layero.find('[name="minPrice"]').val()),
+          maxPrice: toFloat(layero.find('[name="maxPrice"]').val())
         };
         if (!nextRule.words.length) {
           layer.msg('关键词不能为空');
@@ -350,8 +635,17 @@ layui.use(function(){
     });
   }
 
+  function openKeywordSearch(word) {
+    word = (word || '').trim();
+    if (!word) {
+      return;
+    }
+    window.open('https://search.smzdm.com/?c=faxian&s=' + encodeURIComponent(word), '_blank', 'noopener');
+  }
+
   function normalizeConfig(value) {
     value = value || {};
+    value.telegram = value.telegram || {};
     return {
       keyWords: value.keyWords || [],
       filterWords: value.filterWords || [],
@@ -360,6 +654,15 @@ layui.use(function(){
       minPrice: value.minPrice || 0,
       maxPrice: value.maxPrice || 0,
       satisfyNum: value.satisfyNum || 5,
+      tickTime: value.tickTime || 10800,
+      cron: value.cron || '0 10 10 ? * *',
+      telegram: {
+        enabled: !!value.telegram.enabled,
+        botToken: value.telegram.botToken || '',
+        chatId: value.telegram.chatId || '',
+        parseMode: value.telegram.parseMode || 'HTML',
+        disableWebPagePreview: !!value.telegram.disableWebPagePreview
+      },
       keywordRules: (value.keywordRules || []).map(function(rule){
         return {
           words: rule.words || [],

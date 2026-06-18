@@ -7,8 +7,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -26,8 +24,7 @@ type Config struct {
 	FilterWords   []string      `json:"filterWords" yaml:"filterWords" mapstructure:"filterWords"`
 	KeyWords      []string      `json:"keyWords" yaml:"keyWords" mapstructure:"keyWords"`
 	KeywordRules  []KeywordRule `json:"keywordRules" yaml:"keywordRules" mapstructure:"keywordRules"`
-	DingdingToken string        `json:"-" yaml:"dingdingToken" mapstructure:"dingdingToken"`
-	WxPusher      WxPusher      `json:"-" yaml:"wxPusher" mapstructure:"wxPusher"`
+	Telegram      Telegram      `json:"telegram" yaml:"telegram" mapstructure:"telegram"`
 	Cron          string        `json:"cron" yaml:"cron" mapstructure:"cron"`
 }
 
@@ -40,12 +37,12 @@ type KeywordRule struct {
 	MaxPrice      *float64 `json:"maxPrice,omitempty" yaml:"maxPrice" mapstructure:"maxPrice"`
 }
 
-type WxPusher struct {
-	Enabled     bool     `yaml:"enabled" mapstructure:"enabled"`
-	AppToken    string   `yaml:"appToken" mapstructure:"appToken"`
-	UIDs        []string `yaml:"uids" mapstructure:"uids"`
-	TopicIDs    []int    `yaml:"topicIds" mapstructure:"topicIds"`
-	ContentType int      `yaml:"contentType" mapstructure:"contentType"`
+type Telegram struct {
+	Enabled               bool   `json:"enabled" yaml:"enabled" mapstructure:"enabled"`
+	BotToken              string `json:"botToken" yaml:"botToken" mapstructure:"botToken"`
+	ChatID                string `json:"chatId" yaml:"chatId" mapstructure:"chatId"`
+	ParseMode             string `json:"parseMode" yaml:"parseMode" mapstructure:"parseMode"`
+	DisableWebPagePreview bool   `json:"disableWebPagePreview" yaml:"disableWebPagePreview" mapstructure:"disableWebPagePreview"`
 }
 
 // 签到信息
@@ -229,45 +226,9 @@ func ReadPathConf(path string) Config {
 }
 
 func ApplyEnvOverrides(c *Config) {
-	if value := os.Getenv("DINGDING_TOKEN"); value != "" {
-		c.DingdingToken = value
+	if c.Telegram.ParseMode == "" {
+		c.Telegram.ParseMode = "HTML"
 	}
-	if value := os.Getenv("WXPUSHER_ENABLED"); value != "" {
-		c.WxPusher.Enabled = strings.EqualFold(value, "true") || value == "1"
-	}
-	if value := os.Getenv("WXPUSHER_APP_TOKEN"); value != "" {
-		c.WxPusher.AppToken = value
-	}
-	if value := os.Getenv("WXPUSHER_UIDS"); value != "" {
-		c.WxPusher.UIDs = splitCSV(value)
-	}
-	if value := os.Getenv("WXPUSHER_TOPIC_IDS"); value != "" {
-		c.WxPusher.TopicIDs = parseIntCSV(value)
-	}
-}
-
-func splitCSV(value string) []string {
-	items := strings.Split(value, ",")
-	result := make([]string, 0, len(items))
-	for _, item := range items {
-		item = strings.TrimSpace(item)
-		if item != "" {
-			result = append(result, item)
-		}
-	}
-	return result
-}
-
-func parseIntCSV(value string) []int {
-	items := splitCSV(value)
-	result := make([]int, 0, len(items))
-	for _, item := range items {
-		number, err := strconv.Atoi(item)
-		if err == nil {
-			result = append(result, number)
-		}
-	}
-	return result
 }
 
 func UpdateCheckInfoById(id int, resultCode string, resultMsg string) {

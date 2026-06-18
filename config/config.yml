@@ -43,17 +43,14 @@ keywordRules:
 
 # 定时任务多长执行一次 单位秒 默认 3个小时
 tickTime: 10800
-# 钉钉token
-dingdingToken: ""
 
-# WxPusher 推送. Render 上推荐使用 WXPUSHER_* 环境变量覆盖.
-wxPusher:
+# Telegram Bot 推送. 生产环境在面板里保存到数据库.
+telegram:
   enabled: false
-  appToken: ""
-  uids: []
-  topicIds: []
-  # 1 文本, 2 HTML, 3 Markdown
-  contentType: 3
+  botToken: ""
+  chatId: ""
+  parseMode: "HTML"
+  disableWebPagePreview: false
 
 # 签到时间(默认早上8:30)
 cron: "0 10 10 ? * *"
