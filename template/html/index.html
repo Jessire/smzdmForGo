@@ -37,7 +37,7 @@
     }
     h1 { margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: 0; }
     .subtitle { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
-    .workspace { display: grid; grid-template-columns: minmax(520px, 1fr) minmax(520px, 1fr); gap: 20px; align-items: start; }
+    .workspace { display: grid; grid-template-columns: minmax(560px, 1fr) minmax(560px, 1fr); gap: 20px; align-items: start; }
     .column-stack { display: grid; gap: 16px; min-width: 0; }
     .panel {
       border: 1px solid var(--line);
@@ -48,7 +48,7 @@
       padding: 18px;
       min-width: 0;
     }
-    .panel + .panel { margin-top: 16px; }
+    .panel + .panel { margin-top: 0; }
     .section-head {
       display: flex;
       align-items: center;
@@ -59,6 +59,8 @@
     h2 { margin: 0; font-size: 20px; line-height: 1.25; letter-spacing: 0; }
     .meta { color: var(--muted); font-size: 13px; margin-top: 3px; }
     .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .header-controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+    .header-switch { display: inline-flex; align-items: center; gap: 10px; min-height: 36px; color: var(--text); font-size: 14px; font-weight: 650; }
     .btn {
       display: inline-flex;
       align-items: center;
@@ -90,6 +92,33 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .btn.small { min-height: 30px; padding: 0 9px; font-size: 12px; }
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      min-height: 34px;
+      padding: 0;
+      border-radius: 8px;
+    }
+    .icon-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
     .field label {
       display: block;
       margin-bottom: 7px;
@@ -117,6 +146,9 @@
     .field select:focus { border-color: rgba(0, 113, 227, 0.62); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.13); }
     .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .editor-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 14px; align-items: start; }
+    .editor-grid .wide { grid-column: 1 / -1; }
+    .filter-field textarea { height: 42px; min-height: 42px; max-height: 110px; }
     .span-2 { grid-column: span 2; }
     .span-4 { grid-column: span 4; }
     .switch-row { display: flex; align-items: center; gap: 10px; min-height: 42px; }
@@ -158,6 +190,7 @@
     }
     .unit-control { grid-template-columns: 1fr 96px; }
     .range-control .sep { color: var(--muted); font-weight: 700; }
+    .notify-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .rules-table {
       width: 100%;
       border-collapse: separate;
@@ -292,8 +325,11 @@
     }
     @media (max-width: 720px) {
       .topbar { align-items: stretch; flex-direction: column; }
-      .grid, .grid.two { grid-template-columns: 1fr; }
+      .grid, .grid.two, .editor-grid, .notify-grid { grid-template-columns: 1fr; }
       .span-2, .span-4 { grid-column: span 1; }
+      .editor-grid .wide { grid-column: span 1; }
+      .section-head { align-items: stretch; flex-direction: column; }
+      .header-controls { justify-content: flex-start; }
       h1 { font-size: 28px; }
       .rules-table, .rules-table thead, .rules-table tbody, .rules-table tr, .rules-table td { display: block; width: 100%; }
       .rules-table thead { display: none; }
@@ -354,25 +390,112 @@
         </table>
       </div>
 
+      <div class="panel">
+        <div class="section-head">
+          <div>
+            <h2>规则详情</h2>
+            <div class="meta" id="editorMeta">未选择关键词</div>
+          </div>
+          <div class="header-controls">
+            <label class="header-switch">
+              <span>启用</span>
+              <span class="switch">
+                <input id="enabledInput" type="checkbox">
+                <span></span>
+              </span>
+              <span>推送匹配结果</span>
+            </label>
+            <button class="btn ghost" id="removeRule" type="button">删除</button>
+            <button class="btn secondary" id="duplicateRule" type="button">复制</button>
+          </div>
+        </div>
+        <div class="editor-grid">
+          <div class="field">
+            <label for="keywordInput">关键词</label>
+            <input id="keywordInput" type="text" autocomplete="off">
+          </div>
+          <div class="field filter-field">
+            <label for="filterInput">过滤词</label>
+            <textarea id="filterInput"></textarea>
+          </div>
+          <div class="field">
+            <label for="lowCommentInput">最低评论</label>
+            <input id="lowCommentInput" type="number" min="0">
+          </div>
+          <div class="field">
+            <label for="lowWorthyInput">最低值率(%)</label>
+            <input id="lowWorthyInput" type="number" min="0">
+          </div>
+          <div class="field wide">
+            <label>价格区间</label>
+            <div class="range-control">
+              <input id="minPriceInput" type="number" min="0" step="0.01" aria-label="最低价格">
+              <span class="sep">至</span>
+              <input id="maxPriceInput" type="number" min="0" step="0.01" aria-label="最高价格">
+            </div>
+          </div>
+          <div class="field">
+            <label for="tickValueInput">扫描间隔</label>
+            <div class="unit-control">
+              <input id="tickValueInput" type="number" min="1">
+              <select id="tickUnitInput">
+                <option value="60">分钟</option>
+                <option value="3600">小时</option>
+                <option value="1">秒</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="satisfyNumInput">每次推送数量</label>
+            <input id="satisfyNumInput" type="number" min="1">
+          </div>
+        </div>
+        <div class="bottom-bar">
+          <button class="btn primary" id="searchRule" type="button">搜索预览</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="column-stack">
+      <div class="panel">
+        <div class="section-head">
+          <div>
+            <h2>搜索结果</h2>
+            <div class="meta" id="previewMeta">等待搜索</div>
+          </div>
+        </div>
+        <div id="previewHero" class="preview-hero">
+          <img id="previewImage" alt="" src="">
+          <div>
+            <div class="preview-title" id="previewTitle">暂无结果</div>
+            <div class="preview-metrics" id="previewMetrics"></div>
+          </div>
+        </div>
+        <div id="previewCards" class="product-list"></div>
+        <div class="bottom-bar">
+          <button class="btn secondary" id="openSearchPage" type="button">打开网页</button>
+        </div>
+      </div>
+
       <div class="panel notification-shell">
         <div class="section-head">
           <div>
             <h2>Telegram 通知</h2>
             <div class="meta">商品命中后发送到指定 Chat。</div>
           </div>
-          <button type="button" class="btn primary" id="saveNotifyConfig">保存配置</button>
-        </div>
-        <div class="grid two">
-          <div class="field">
-            <label>启用通知</label>
-            <div class="switch-row">
-              <label class="switch">
+          <div class="header-controls">
+            <label class="header-switch">
+              <span>启用</span>
+              <span class="switch">
                 <input id="telegramEnabled" type="checkbox">
                 <span></span>
-              </label>
+              </span>
               <span>Telegram Bot</span>
-            </div>
+            </label>
+            <button type="button" class="btn primary" id="saveNotifyConfig">保存配置</button>
           </div>
+        </div>
+        <div class="notify-grid">
           <div class="field">
             <label for="telegramParseMode">Parse Mode</label>
             <select id="telegramParseMode">
@@ -400,95 +523,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="column-stack">
-        <div class="panel">
-          <div class="section-head">
-            <div>
-              <h2>规则详情</h2>
-              <div class="meta" id="editorMeta">未选择关键词</div>
-            </div>
-            <div class="actions">
-              <button class="btn ghost" id="removeRule" type="button">删除</button>
-              <button class="btn secondary" id="duplicateRule" type="button">复制</button>
-            </div>
-          </div>
-          <div class="grid">
-            <div class="field span-2">
-              <label for="keywordInput">关键词</label>
-              <input id="keywordInput" type="text" autocomplete="off">
-            </div>
-            <div class="field span-2">
-              <label>启用</label>
-              <div class="switch-row">
-                <label class="switch">
-                  <input id="enabledInput" type="checkbox">
-                  <span></span>
-                </label>
-                <span>推送匹配结果</span>
-              </div>
-            </div>
-            <div class="field span-4">
-              <label for="filterInput">过滤词</label>
-              <textarea id="filterInput"></textarea>
-            </div>
-            <div class="field span-2">
-              <label for="lowCommentInput">最低评论</label>
-              <input id="lowCommentInput" type="number" min="0">
-            </div>
-            <div class="field span-2">
-              <label for="lowWorthyInput">最低值率(%)</label>
-              <input id="lowWorthyInput" type="number" min="0">
-            </div>
-            <div class="field span-4">
-              <label>价格区间</label>
-              <div class="range-control">
-                <input id="minPriceInput" type="number" min="0" step="0.01" aria-label="最低价格">
-                <span class="sep">至</span>
-                <input id="maxPriceInput" type="number" min="0" step="0.01" aria-label="最高价格">
-              </div>
-            </div>
-            <div class="field span-2">
-              <label for="tickValueInput">扫描间隔</label>
-              <div class="unit-control">
-                <input id="tickValueInput" type="number" min="1">
-                <select id="tickUnitInput">
-                  <option value="60">分钟</option>
-                  <option value="3600">小时</option>
-                  <option value="1">秒</option>
-                </select>
-              </div>
-            </div>
-            <div class="field span-2">
-              <label for="satisfyNumInput">每次推送数量</label>
-              <input id="satisfyNumInput" type="number" min="1">
-            </div>
-          </div>
-          <div class="bottom-bar">
-            <button class="btn primary" id="searchRule" type="button">搜索预览</button>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="section-head">
-            <div>
-              <h2>搜索结果</h2>
-              <div class="meta" id="previewMeta">等待搜索</div>
-            </div>
-          </div>
-          <div id="previewHero" class="preview-hero">
-            <img id="previewImage" alt="" src="">
-            <div>
-              <div class="preview-title" id="previewTitle">暂无结果</div>
-              <div class="preview-metrics" id="previewMetrics"></div>
-            </div>
-          </div>
-          <div id="previewCards" class="product-list"></div>
-          <div class="bottom-bar">
-            <button class="btn secondary" id="openSearchPage" type="button">打开网页</button>
-          </div>
-        </div>
     </div>
   </div>
 </div>
@@ -627,10 +661,9 @@ layui.use(function(){
       row.append('<td>' + formatNumber(rule.lowCommentNum) + '</td>');
       row.append('<td>' + formatNumber(rule.lowWorthyNum) + '%</td>');
       row.append('<td>' + priceRange(rule) + '</td>');
-      var actions = $('<td></td>');
-      actions.append(button('预览', 'secondary small', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
-      actions.append(' ');
-      actions.append(button('删除', 'danger small', function(e){ e.stopPropagation(); selectedRuleIndex = index; confirmRemoveSelectedRule(); }));
+      var actions = $('<td class="actions"></td>');
+      actions.append(iconButton('search', '预览', 'secondary icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
+      actions.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; confirmRemoveSelectedRule(); }));
       row.append(actions);
       row.on('click', function(){ selectRule(index); });
       body.append(row);
@@ -1019,6 +1052,20 @@ layui.use(function(){
     var btn = $('<button type="button" class="btn ' + cls + '"></button>').text(text);
     btn.on('click', handler);
     return btn;
+  }
+
+  function iconButton(icon, label, cls, handler) {
+    var btn = $('<button type="button" class="btn ' + cls + '" aria-label="' + escapeAttr(label) + '" title="' + escapeAttr(label) + '"></button>');
+    btn.html(iconSvg(icon) + '<span class="sr-only">' + escapeHtml(label) + '</span>');
+    btn.on('click', handler);
+    return btn;
+  }
+
+  function iconSvg(name) {
+    if (name === 'trash') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 15h10l1-15"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+    }
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>';
   }
 
   function escapeHtml(value) {
