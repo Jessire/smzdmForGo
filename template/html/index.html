@@ -16,7 +16,7 @@
       --blue-weak: rgba(0, 113, 227, 0.1);
       --green: #2d7d46;
       --orange: #b35a00;
-      --shadow: 0 18px 56px rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
     }
     * { box-sizing: border-box; }
     body {
@@ -59,7 +59,7 @@
     .tab-btn.active { background: #fff; color: var(--text); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    .workspace { display: grid; grid-template-columns: minmax(560px, 1.14fr) minmax(420px, 0.86fr); gap: 16px; align-items: start; }
+    .workspace { display: grid; grid-template-columns: minmax(560px, 1.08fr) minmax(440px, 0.92fr); gap: 20px; align-items: start; }
     .panel {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -97,6 +97,19 @@
     .btn.primary { background: var(--blue); color: #fff; box-shadow: 0 10px 24px rgba(0, 113, 227, 0.22); }
     .btn.secondary { background: rgba(255, 255, 255, 0.9); color: var(--text); border-color: var(--line); }
     .btn.danger { background: rgba(179, 90, 0, 0.08); color: var(--orange); border-color: rgba(179, 90, 0, 0.18); }
+    .btn.ghost { background: transparent; color: var(--orange); border-color: transparent; box-shadow: none; }
+    .btn.loading { pointer-events: none; opacity: .78; }
+    .btn.loading::before {
+      content: "";
+      width: 13px;
+      height: 13px;
+      border: 2px solid rgba(255, 255, 255, .45);
+      border-top-color: #fff;
+      border-radius: 50%;
+      margin-right: 7px;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .btn.small { min-height: 30px; padding: 0 9px; font-size: 12px; }
     .field label {
       display: block;
@@ -119,7 +132,7 @@
     }
     .field input,
     .field select { height: 42px; padding: 0 12px; }
-    .field textarea { min-height: 88px; padding: 11px 12px; resize: vertical; line-height: 1.45; }
+    .field textarea { height: 84px; min-height: 84px; max-height: 128px; padding: 11px 12px; resize: vertical; line-height: 1.45; overflow-y: auto; }
     .field input:focus,
     .field textarea:focus,
     .field select:focus { border-color: rgba(0, 113, 227, 0.62); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.13); }
@@ -128,7 +141,44 @@
     .span-2 { grid-column: span 2; }
     .span-4 { grid-column: span 4; }
     .switch-row { display: flex; align-items: center; gap: 10px; min-height: 42px; }
-    .switch-row input { width: 18px; height: 18px; accent-color: var(--blue); }
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 26px;
+      flex: 0 0 auto;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch span {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: #d2d2d7;
+      cursor: pointer;
+      transition: background .18s ease;
+    }
+    .switch span::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 2px;
+      top: 2px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 7px rgba(0, 0, 0, .18);
+      transition: transform .18s ease;
+    }
+    .switch input:checked + span { background: var(--blue); }
+    .switch input:checked + span::before { transform: translateX(18px); }
+    .range-control,
+    .unit-control {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+    .unit-control { grid-template-columns: 1fr 96px; }
+    .range-control .sep { color: var(--muted); font-weight: 700; }
     .rules-table {
       width: 100%;
       border-collapse: separate;
@@ -173,6 +223,10 @@
       font-size: 12px;
       margin: 2px 4px 2px 0;
     }
+    .tag.on { background: #eaf7ee; color: var(--green); }
+    .tag.off { background: #f5f5f5; color: #8c8c8c; }
+    .tag.warn { background: #fff7e6; color: #b35a00; }
+    .tag.info { background: #eaf4ff; color: var(--blue); }
     .preview-hero {
       display: grid;
       grid-template-columns: 118px minmax(0, 1fr);
@@ -204,6 +258,11 @@
       overflow: hidden;
       background: rgba(255, 255, 255, 0.74);
     }
+    .preview-table-wrap {
+      max-height: 560px;
+      overflow: auto;
+      border-radius: 8px;
+    }
     .preview-table th,
     .preview-table td {
       border-bottom: 1px solid var(--line);
@@ -218,6 +277,18 @@
     .title-link:hover { color: var(--blue); }
     .bottom-bar { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
     .empty { color: var(--muted); font-size: 13px; padding: 18px; text-align: center; }
+    .empty-state {
+      display: grid;
+      place-items: center;
+      gap: 8px;
+      min-height: 180px;
+      color: var(--muted);
+      text-align: center;
+      padding: 22px 12px;
+    }
+    .empty-state svg { width: 74px; height: 74px; opacity: .7; }
+    .empty-state strong { color: var(--text); font-size: 15px; }
+    .empty-state p { margin: 0; max-width: 310px; line-height: 1.5; }
     .notification-shell { max-width: 760px; }
     @media (max-width: 1080px) {
       .workspace { grid-template-columns: 1fr; }
@@ -294,7 +365,10 @@
               <h2>规则详情</h2>
               <div class="meta" id="editorMeta">未选择关键词</div>
             </div>
-            <button class="btn secondary" id="duplicateRule" type="button">复制</button>
+            <div class="actions">
+              <button class="btn ghost" id="removeRule" type="button">删除</button>
+              <button class="btn secondary" id="duplicateRule" type="button">复制</button>
+            </div>
           </div>
           <div class="grid">
             <div class="field span-2">
@@ -304,7 +378,10 @@
             <div class="field span-2">
               <label>启用</label>
               <div class="switch-row">
-                <input id="enabledInput" type="checkbox">
+                <label class="switch">
+                  <input id="enabledInput" type="checkbox">
+                  <span></span>
+                </label>
                 <span>推送匹配结果</span>
               </div>
             </div>
@@ -312,33 +389,39 @@
               <label for="filterInput">过滤词</label>
               <textarea id="filterInput"></textarea>
             </div>
-            <div class="field">
+            <div class="field span-2">
               <label for="lowCommentInput">最低评论</label>
               <input id="lowCommentInput" type="number" min="0">
             </div>
-            <div class="field">
+            <div class="field span-2">
               <label for="lowWorthyInput">最低值率(%)</label>
               <input id="lowWorthyInput" type="number" min="0">
             </div>
-            <div class="field">
-              <label for="minPriceInput">最低价格</label>
-              <input id="minPriceInput" type="number" min="0" step="0.01">
+            <div class="field span-4">
+              <label>价格区间</label>
+              <div class="range-control">
+                <input id="minPriceInput" type="number" min="0" step="0.01" aria-label="最低价格">
+                <span class="sep">至</span>
+                <input id="maxPriceInput" type="number" min="0" step="0.01" aria-label="最高价格">
+              </div>
             </div>
-            <div class="field">
-              <label for="maxPriceInput">最高价格</label>
-              <input id="maxPriceInput" type="number" min="0" step="0.01">
+            <div class="field span-2">
+              <label for="tickValueInput">扫描间隔</label>
+              <div class="unit-control">
+                <input id="tickValueInput" type="number" min="1">
+                <select id="tickUnitInput">
+                  <option value="60">分钟</option>
+                  <option value="3600">小时</option>
+                  <option value="1">秒</option>
+                </select>
+              </div>
             </div>
-            <div class="field">
-              <label for="tickTimeInput">扫描间隔(秒)</label>
-              <input id="tickTimeInput" type="number" min="60">
-            </div>
-            <div class="field">
+            <div class="field span-2">
               <label for="satisfyNumInput">每次推送数量</label>
               <input id="satisfyNumInput" type="number" min="1">
             </div>
           </div>
           <div class="bottom-bar">
-            <button class="btn secondary" id="removeRule" type="button">删除</button>
             <button class="btn primary" id="searchRule" type="button">搜索预览</button>
           </div>
         </div>
@@ -357,20 +440,20 @@
               <div class="preview-metrics" id="previewMetrics"></div>
             </div>
           </div>
-          <table class="preview-table">
-            <thead>
-              <tr>
-                <th>标题</th>
-                <th>价格</th>
-                <th>值率</th>
-                <th>评论</th>
-                <th>平台/来源</th>
-              </tr>
-            </thead>
-            <tbody id="previewBody">
-              <tr><td colspan="5" class="empty">暂无搜索结果</td></tr>
-            </tbody>
-          </table>
+          <div class="preview-table-wrap">
+            <table class="preview-table">
+              <thead>
+                <tr>
+                  <th>标题</th>
+                  <th>价格</th>
+                  <th>值率</th>
+                  <th>评论</th>
+                  <th>平台/来源</th>
+                </tr>
+              </thead>
+              <tbody id="previewBody"></tbody>
+            </table>
+          </div>
           <div class="bottom-bar">
             <button class="btn secondary" id="openSearchPage" type="button">打开网页</button>
           </div>
@@ -392,7 +475,10 @@
         <div class="field">
           <label>启用通知</label>
           <div class="switch-row">
-            <input id="telegramEnabled" type="checkbox">
+            <label class="switch">
+              <input id="telegramEnabled" type="checkbox">
+              <span></span>
+            </label>
             <span>Telegram Bot</span>
           </div>
         </div>
@@ -414,7 +500,10 @@
         <div class="field">
           <label>链接预览</label>
           <div class="switch-row">
-            <input id="telegramDisablePreview" type="checkbox">
+            <label class="switch">
+              <input id="telegramDisablePreview" type="checkbox">
+              <span></span>
+            </label>
             <span>禁用网页预览</span>
           </div>
         </div>
@@ -441,7 +530,7 @@ var productConfig = {
 };
 var selectedRuleIndex = -1;
 var previewOpenUrl = '';
-var previewPlaceholder = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><rect width="100%" height="100%" fill="#f0f0f2"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#8e8e93" font-family="Arial" font-size="18">No Image</text></svg>');
+var previewPlaceholder = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><rect width="100%" height="100%" rx="18" fill="#f0f0f2"/><circle cx="116" cy="108" r="34" fill="none" stroke="#b7b7bd" stroke-width="8"/><path d="M142 134l34 34" stroke="#b7b7bd" stroke-width="9" stroke-linecap="round"/><text x="50%" y="196" dominant-baseline="middle" text-anchor="middle" fill="#8e8e93" font-family="Arial" font-size="16">No Image</text></svg>');
 
 layui.use(function(){
   var layer = layui.layer;
@@ -472,7 +561,7 @@ layui.use(function(){
     selectRule(selectedRuleIndex + 1);
     renderRules();
   });
-  $('#removeRule').on('click', removeSelectedRule);
+  $('#removeRule').on('click', confirmRemoveSelectedRule);
   $('#saveProductConfig, #saveNotifyConfig').on('click', saveProductConfig);
   $('#searchRule').on('click', searchSelectedRule);
   $('#openSearchPage').on('click', function(){
@@ -483,9 +572,13 @@ layui.use(function(){
       window.open(url, '_blank', 'noopener');
     }
   });
-  $('#keywordInput, #filterInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickTimeInput, #satisfyNumInput').on('input change', function(){
+  $('#keywordInput, #filterInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput').on('input change', function(){
     syncEditorToRule();
     renderRules();
+  });
+  $('#previewImage').on('error', function(){
+    this.onerror = null;
+    this.src = previewPlaceholder;
   });
 
   loadProductConfig();
@@ -546,10 +639,14 @@ layui.use(function(){
       var keyword = escapeHtml(firstWord(rule) || '未命名');
       var row = $('<tr></tr>').toggleClass('active', index === selectedRuleIndex);
       var image = $('<img class="thumb" alt="">').attr('src', rule.previewPic || previewPlaceholder);
+      image.on('error', function(){
+        this.onerror = null;
+        this.src = previewPlaceholder;
+      });
       var keywordCell = $('<td></td>');
       var wrap = $('<div class="keyword-cell"></div>');
       wrap.append(image);
-      wrap.append('<div><div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div><div class="meta">' + (rule.enabled ? '已启用' : '已停用') + '</div></div>');
+      wrap.append('<div><div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div><div>' + statusTag(rule.enabled) + '</div></div>');
       keywordCell.append(wrap);
       row.append(keywordCell);
       row.append('<td>' + renderTags(rule.filterWords) + '</td>');
@@ -559,7 +656,7 @@ layui.use(function(){
       var actions = $('<td></td>');
       actions.append(button('预览', 'secondary small', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
       actions.append(' ');
-      actions.append(button('删除', 'danger small', function(e){ e.stopPropagation(); selectedRuleIndex = index; removeSelectedRule(); }));
+      actions.append(button('删除', 'danger small', function(e){ e.stopPropagation(); selectedRuleIndex = index; confirmRemoveSelectedRule(); }));
       row.append(actions);
       row.on('click', function(){ selectRule(index); });
       body.append(row);
@@ -580,7 +677,7 @@ layui.use(function(){
       $('#editorMeta').text('未选择关键词');
       $('#keywordInput, #filterInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput').val('');
       $('#enabledInput').prop('checked', false);
-      $('#tickTimeInput').val(productConfig.tickTime || 10800);
+      fillTickEditor(productConfig.tickTime || 10800);
       $('#satisfyNumInput').val(productConfig.satisfyNum || 5);
       return;
     }
@@ -592,18 +689,18 @@ layui.use(function(){
     $('#minPriceInput').val(rule.minPrice || '');
     $('#maxPriceInput').val(rule.maxPrice || '');
     $('#enabledInput').prop('checked', !!rule.enabled);
-    $('#tickTimeInput').val(productConfig.tickTime || 10800);
+    fillTickEditor(productConfig.tickTime || 10800);
     $('#satisfyNumInput').val(productConfig.satisfyNum || 5);
   }
 
   function syncEditorToRule() {
     if (selectedRuleIndex < 0 || selectedRuleIndex >= productConfig.keywordRules.length) {
-      productConfig.tickTime = toInt($('#tickTimeInput').val()) || productConfig.tickTime || 10800;
+      productConfig.tickTime = readTickSeconds() || productConfig.tickTime || 10800;
       productConfig.satisfyNum = toInt($('#satisfyNumInput').val()) || productConfig.satisfyNum || 5;
       return;
     }
     productConfig.keywordRules[selectedRuleIndex] = currentRuleFromEditor();
-    productConfig.tickTime = toInt($('#tickTimeInput').val()) || 10800;
+    productConfig.tickTime = readTickSeconds() || 10800;
     productConfig.satisfyNum = toInt($('#satisfyNumInput').val()) || 5;
   }
 
@@ -631,6 +728,7 @@ layui.use(function(){
       layer.msg('关键词不能为空');
       return;
     }
+    setSearchLoading(true);
     $('#previewMeta').text('搜索中');
     $.ajax({
       url: BASE_URL + '/productSearch',
@@ -644,6 +742,9 @@ layui.use(function(){
       error: function(xhr) {
         layer.msg(readError(xhr));
         $('#previewMeta').text('搜索失败');
+      },
+      complete: function() {
+        setSearchLoading(false);
       }
     });
   }
@@ -653,14 +754,14 @@ layui.use(function(){
     previewOpenUrl = data.openUrl || keywordSearchUrl(data.keyword || firstWord(currentRule()));
     $('#previewMeta').text((data.keyword || '') + ' · ' + items.length + ' 条结果');
     if (!items.length) {
-      $('#previewImage').attr('src', previewPlaceholder);
+      setImage($('#previewImage'), previewPlaceholder);
       $('#previewTitle').text('暂无结果');
       $('#previewMetrics').empty();
-      $('#previewBody').html('<tr><td colspan="5" class="empty">暂无搜索结果</td></tr>');
+      renderEmptyPreview('暂无匹配结果', '调整过滤词, 评论, 值率或价格范围后再搜索。');
       return;
     }
     var first = items[0];
-    $('#previewImage').attr('src', first.pic || previewPlaceholder);
+    setImage($('#previewImage'), first.pic || previewPlaceholder);
     $('#previewTitle').text(first.title || '未命名商品');
     $('#previewMetrics').html('<span>价格 ' + escapeHtml(first.price || '-') + '</span><span>值率 ' + escapeHtml(first.worthy || '0') + '%</span><span>评论 ' + escapeHtml(first.comment || '0') + '</span>');
     if (currentRule()) {
@@ -702,6 +803,17 @@ layui.use(function(){
     });
   }
 
+  function confirmRemoveSelectedRule() {
+    if (selectedRuleIndex < 0) { return; }
+    layer.confirm('确定要删除该关键词规则吗？此操作不可撤销。', {
+      title: '删除关键词规则',
+      btn: ['删除', '取消']
+    }, function(index){
+      layer.close(index);
+      removeSelectedRule();
+    });
+  }
+
   function removeSelectedRule() {
     if (selectedRuleIndex < 0) { return; }
     productConfig.keywordRules.splice(selectedRuleIndex, 1);
@@ -732,10 +844,10 @@ layui.use(function(){
   function clearPreview() {
     previewOpenUrl = '';
     $('#previewMeta').text('等待搜索');
-    $('#previewImage').attr('src', currentRule() && currentRule().previewPic ? currentRule().previewPic : previewPlaceholder);
+    setImage($('#previewImage'), currentRule() && currentRule().previewPic ? currentRule().previewPic : previewPlaceholder);
     $('#previewTitle').text(currentRule() ? (firstWord(currentRule()) || '暂无结果') : '暂无结果');
     $('#previewMetrics').empty();
-    $('#previewBody').html('<tr><td colspan="5" class="empty">暂无搜索结果</td></tr>');
+    renderEmptyPreview('暂无搜索结果', '输入关键词并点击“搜索预览”, 下方会展示匹配商品。');
   }
 
   function normalizeConfig(value) {
@@ -843,8 +955,52 @@ layui.use(function(){
   }
 
   function renderTags(list) {
-    if (!list || !list.length) { return '<span class="tag">无</span>'; }
-    return list.map(function(item){ return '<span class="tag">' + escapeHtml(item) + '</span>'; }).join('');
+    if (!list || !list.length) { return '<span class="tag off">无</span>'; }
+    return list.map(function(item){ return '<span class="tag warn">' + escapeHtml(item) + '</span>'; }).join('');
+  }
+
+  function statusTag(enabled) {
+    return enabled ? '<span class="tag on">已启用</span>' : '<span class="tag off">已停用</span>';
+  }
+
+  function fillTickEditor(seconds) {
+    seconds = toInt(seconds) || 10800;
+    var unit = 1;
+    if (seconds % 3600 === 0) {
+      unit = 3600;
+    } else if (seconds % 60 === 0) {
+      unit = 60;
+    }
+    $('#tickUnitInput').val(String(unit));
+    $('#tickValueInput').val(seconds / unit);
+  }
+
+  function readTickSeconds() {
+    var value = toFloat($('#tickValueInput').val());
+    if (value <= 0) {
+      return 0;
+    }
+    var unit = toInt($('#tickUnitInput').val()) || 1;
+    return Math.max(60, Math.round(value * unit));
+  }
+
+  function setSearchLoading(loading) {
+    var btn = $('#searchRule');
+    btn.toggleClass('loading', !!loading);
+    btn.prop('disabled', !!loading);
+    btn.text(loading ? '搜索中' : '搜索预览');
+  }
+
+  function setImage(target, src) {
+    target.attr('src', src || previewPlaceholder);
+  }
+
+  function renderEmptyPreview(title, message) {
+    $('#previewBody').html('<tr><td colspan="5"><div class="empty-state">' + emptyStateSvg() + '<strong>' + escapeHtml(title) + '</strong><p>' + escapeHtml(message) + '</p></div></td></tr>');
+  }
+
+  function emptyStateSvg() {
+    return '<svg viewBox="0 0 96 96" fill="none" aria-hidden="true"><rect x="18" y="22" width="46" height="38" rx="10" fill="#f0f0f2" stroke="#d2d2d7"/><path d="M30 39h22M30 49h14" stroke="#a1a1a6" stroke-width="4" stroke-linecap="round"/><circle cx="61" cy="60" r="13" fill="#fff" stroke="#b7b7bd" stroke-width="5"/><path d="M72 71l9 9" stroke="#b7b7bd" stroke-width="6" stroke-linecap="round"/></svg>';
   }
 
   function keywordSearchUrl(keyword) {
