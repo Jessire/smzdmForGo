@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"reflect"
 	"strconv"
+	"strings"
+	"time"
 
 	"ggball.com/smzdm/db"
 	"ggball.com/smzdm/file"
@@ -45,11 +47,23 @@ func (c *CheckIn) CheckInAllUsers() error {
 	for _, user := range users {
 		// 使用用户信息执行签到
 		// 根据具体平台执行不同的签到逻辑
-		if msg, err := c.doCheckIn(user); err != nil {
+		if msg, err := c.CheckInUser(user); err != nil {
 			log.Printf("Failed to check in for user %s: %v,msg:%s", user.Name, err, msg)
 		}
 	}
 	return nil
+}
+
+func (c *CheckIn) CheckInUser(user db.User) (string, error) {
+	msg, err := c.doCheckIn(user)
+	resultCode := "success"
+	if err != nil || stringsHasFailure(msg) {
+		resultCode = "faild"
+	}
+	if updateErr := c.db.UpdateUserCheckResult(user.ID, resultCode, msg, time.Now().Format("2006-01-02 15:04:05")); updateErr != nil {
+		log.Printf("Failed to update check-in result for user %s: %v", user.Name, updateErr)
+	}
+	return msg, err
 }
 
 func (c *CheckIn) doCheckIn(user db.User) (string, error) {
@@ -81,10 +95,21 @@ func (c *CheckIn) doCheckIn(user db.User) (string, error) {
 	return returnText, nil
 }
 
+func stringsHasFailure(msg string) bool {
+	return strings.Contains(msg, "失败") || strings.Contains(strings.ToLower(msg), "error")
+}
+
 func (c *CheckIn) SetConfig(conf file.Config, checks []file.CheckInfo) error {
 	c.conf = conf
 	c.checks = checks
 	return nil
+}
+
+func (c *CheckIn) Close() error {
+	if c.db == nil {
+		return nil
+	}
+	return c.db.Close()
 }
 
 func (c *CheckIn) Run() {

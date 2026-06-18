@@ -12,6 +12,10 @@ services:
     envVars:
       - key: TZ
         value: Asia/Shanghai
+      - key: DATABASE_URL
+        sync: false
+      - key: REQUIRE_DATABASE_URL
+        value: "true"
       - key: DINGDING_TOKEN
         sync: false
       - key: WXPUSHER_ENABLED
