@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -25,7 +26,8 @@ type User struct {
 
 type DB struct {
 	*sql.DB
-	dialect string
+	dialect   string
+	tableName string
 }
 
 func NewDB(dataSourceName string) (*DB, error) {
@@ -55,7 +57,12 @@ func NewDB(dataSourceName string) (*DB, error) {
 		return nil, fmt.Errorf("连接数据库失败: %v", err)
 	}
 
-	return &DB{DB: database, dialect: dialect}, nil
+	tableName, err := tableNameForDialect(dialect)
+	if err != nil {
+		return nil, err
+	}
+
+	return &DB{DB: database, dialect: dialect, tableName: tableName}, nil
 }
 
 func (db *DB) InitTables() error {
@@ -65,7 +72,7 @@ func (db *DB) InitTables() error {
 	}
 
 	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS users (
+	CREATE TABLE IF NOT EXISTS %s (
 		%s,
 		name TEXT NOT NULL,
 		phone TEXT NOT NULL DEFAULT '',
@@ -74,7 +81,7 @@ func (db *DB) InitTables() error {
 		last_time TEXT NOT NULL DEFAULT '',
 		last_msg TEXT NOT NULL DEFAULT '',
 		last_result TEXT NOT NULL DEFAULT ''
-	);`, idColumn)
+	);`, db.tableName, idColumn)
 
 	if _, err := db.Exec(query); err != nil {
 		return err
@@ -105,14 +112,14 @@ func (db *DB) AddUser(user *User) error {
 
 	if db.dialect == "postgres" {
 		query := `
-		INSERT INTO users (name, phone, token, platform, last_time, last_msg, last_result)
+		INSERT INTO ` + db.tableName + ` (name, phone, token, platform, last_time, last_msg, last_result)
 		VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING id`
 		return db.QueryRow(query, user.Name, user.Phone, user.Token, user.Platform, user.LastTime, user.LastMsg, user.LastResult).Scan(&user.ID)
 	}
 
 	query := `
-	INSERT INTO users (name, phone, token, platform, last_time, last_msg, last_result)
+	INSERT INTO ` + db.tableName + ` (name, phone, token, platform, last_time, last_msg, last_result)
 	VALUES (?, ?, ?, ?, ?, ?, ?)`
 
 	result, err := db.Exec(query, user.Name, user.Phone, user.Token, user.Platform, user.LastTime, user.LastMsg, user.LastResult)
@@ -131,7 +138,7 @@ func (db *DB) AddUser(user *User) error {
 func (db *DB) GetAllUsers() ([]User, error) {
 	query := `
 	SELECT id, name, phone, token, platform, last_time, last_msg, last_result
-	FROM users
+	FROM ` + db.tableName + `
 	ORDER BY id`
 	rows, err := db.Query(query)
 	if err != nil {
@@ -155,17 +162,17 @@ func (db *DB) UpdateUserCheckResult(id int64, resultCode string, resultMsg strin
 	if id == 0 {
 		return nil
 	}
-	query := "UPDATE users SET last_time = ?, last_msg = ?, last_result = ? WHERE id = ?"
+	query := "UPDATE " + db.tableName + " SET last_time = ?, last_msg = ?, last_result = ? WHERE id = ?"
 	args := []interface{}{lastTime, resultMsg, resultCode, id}
 	if db.dialect == "postgres" {
-		query = "UPDATE users SET last_time = $1, last_msg = $2, last_result = $3 WHERE id = $4"
+		query = "UPDATE " + db.tableName + " SET last_time = $1, last_msg = $2, last_result = $3 WHERE id = $4"
 	}
 	_, err := db.Exec(query, args...)
 	return err
 }
 
 func (db *DB) addColumnIfMissing(columnSQL string) error {
-	_, err := db.Exec("ALTER TABLE users ADD COLUMN " + columnSQL)
+	_, err := db.Exec("ALTER TABLE " + db.tableName + " ADD COLUMN " + columnSQL)
 	if err == nil {
 		return nil
 	}
@@ -197,4 +204,18 @@ func requireDatabaseURL() bool {
 	}
 	enabled, err := strconv.ParseBool(value)
 	return err == nil && enabled
+}
+
+func tableNameForDialect(dialect string) (string, error) {
+	tableName := strings.TrimSpace(os.Getenv("SMZDM_USERS_TABLE"))
+	if tableName == "" {
+		tableName = "users"
+		if dialect == "postgres" {
+			tableName = "smzdm_users"
+		}
+	}
+	if !regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`).MatchString(tableName) {
+		return "", fmt.Errorf("非法用户表名: %s", tableName)
+	}
+	return tableName, nil
 }
