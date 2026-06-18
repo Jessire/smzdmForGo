@@ -61,15 +61,12 @@ func cronForProduct() {
 // 推送商品任务
 func requestSmzdm() {
 	// 搜索商品
-	satisfyGoodsList, satisfyGoodsMyselfList := smzdm.GetSatisfiedGoods(currentConfig())
+	satisfyGoodsList, _ := smzdm.GetSatisfiedGoods(currentConfig())
 	if len(satisfyGoodsList) == 0 {
 		return
 	}
 	// 推送商品
 	push.PushProducts(satisfyGoodsList, currentConfig())
-	// 推送自己关注的商品
-	atMobiles := []string{"13217913287"}
-	push.PushTargetProducts(satisfyGoodsMyselfList, currentConfig(), atMobiles)
 	time.Sleep(1 * time.Second)
 }
 
