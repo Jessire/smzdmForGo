@@ -159,7 +159,7 @@
     .field select:focus { border-color: rgba(0, 113, 227, 0.62); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.13); }
     .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .editor-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 12px; align-items: end; }
+    .editor-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 12px; align-items: start; }
     .editor-grid .half { grid-column: span 2; }
     .editor-grid .wide { grid-column: span 2; }
     .filter-field textarea { height: 42px; min-height: 42px; max-height: 92px; }
@@ -169,6 +169,7 @@
     .editor-panel .field input,
     .editor-panel .field select { height: 38px; }
     .editor-panel .field textarea { height: 38px; min-height: 38px; }
+    .editor-panel .filter-field textarea { height: 64px; min-height: 64px; max-height: 64px; resize: none; }
     .editor-panel .btn { min-height: 34px; }
     .span-2 { grid-column: span 2; }
     .span-4 { grid-column: span 4; }
