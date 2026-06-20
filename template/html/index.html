@@ -162,14 +162,99 @@
     .editor-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 12px; align-items: start; }
     .editor-grid .half { grid-column: span 2; }
     .editor-grid .wide { grid-column: span 2; }
-    .filter-field textarea { height: 42px; min-height: 42px; max-height: 92px; }
     .editor-panel { padding: 16px 18px; }
     .editor-panel .section-head { margin-bottom: 10px; }
     .editor-panel .field label { margin-bottom: 5px; font-size: 12px; }
     .editor-panel .field input,
     .editor-panel .field select { height: 38px; }
     .editor-panel .field textarea { height: 38px; min-height: 38px; }
-    .editor-panel .filter-field textarea { height: 64px; min-height: 64px; max-height: 64px; resize: none; }
+    .editor-panel .keyword-field input {
+      height: 72px;
+      padding: 0 14px;
+      font-size: 15px;
+      font-weight: 650;
+    }
+    .filter-field { min-width: 0; }
+    .filter-token-box {
+      width: 100%;
+      height: 72px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.96);
+      display: flex;
+      align-content: flex-start;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 6px;
+      overflow-y: auto;
+      padding: 7px;
+      cursor: text;
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
+    .filter-token-box:focus-within {
+      border-color: rgba(0, 113, 227, 0.62);
+      box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.13);
+    }
+    .filter-token-box::-webkit-scrollbar { width: 8px; }
+    .filter-token-box::-webkit-scrollbar-thumb { border-radius: 999px; background: rgba(0, 0, 0, 0.16); }
+    .filter-token {
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      min-height: 26px;
+      border: 1px solid rgba(0, 113, 227, 0.15);
+      border-radius: 999px;
+      background: var(--blue-weak);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1;
+      padding: 0 3px 0 10px;
+    }
+    .filter-token span {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .filter-token button {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 50%;
+      margin-left: 2px;
+      padding: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .filter-token button:hover { background: rgba(0, 0, 0, 0.08); color: var(--text); }
+    .filter-token button svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    .filter-token-input {
+      flex: 1 1 98px;
+      min-width: 98px;
+      height: 26px !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 4px !important;
+      color: var(--text);
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      outline: none;
+    }
     .editor-panel .btn { min-height: 34px; }
     .span-2 { grid-column: span 2; }
     .span-4 { grid-column: span 4; }
@@ -460,13 +545,15 @@
           </div>
         </div>
         <div class="editor-grid">
-          <div class="field half">
+          <div class="field keyword-field half">
             <label for="keywordInput">关键词</label>
             <input id="keywordInput" type="text" autocomplete="off">
           </div>
           <div class="field filter-field half">
             <label for="filterInput">过滤词</label>
-            <textarea id="filterInput"></textarea>
+            <div id="filterTokenBox" class="filter-token-box">
+              <input id="filterInput" class="filter-token-input" type="text" autocomplete="off" placeholder="输入过滤词">
+            </div>
           </div>
           <div class="field">
             <label for="lowCommentInput">最低评论</label>
@@ -595,6 +682,7 @@ var productConfig = {
 };
 var selectedRuleIndex = -1;
 var previewOpenUrl = '';
+var filterEditorWords = [];
 var previewPlaceholder = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><rect width="100%" height="100%" rx="18" fill="#f0f0f2"/><circle cx="116" cy="108" r="34" fill="none" stroke="#b7b7bd" stroke-width="8"/><path d="M142 134l34 34" stroke="#b7b7bd" stroke-width="9" stroke-linecap="round"/><text x="50%" y="196" dominant-baseline="middle" text-anchor="middle" fill="#8e8e93" font-family="Arial" font-size="16">No Image</text></svg>');
 
 layui.use(function(){
@@ -629,7 +717,8 @@ layui.use(function(){
       window.open(url, '_blank', 'noopener');
     }
   });
-  $('#keywordInput, #filterInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput').on('input change', function(){
+  bindFilterTokenEditor();
+  $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput').on('input change', function(){
     syncEditorToRule();
     renderRules();
   });
@@ -655,6 +744,92 @@ layui.use(function(){
       error: function(xhr) {
         layer.msg(readError(xhr));
       }
+    });
+  }
+
+  function bindFilterTokenEditor() {
+    $('#filterTokenBox').on('click', function(){
+      $('#filterInput').trigger('focus');
+    });
+    $('#filterInput').on('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ',' || e.key === '，' || e.key === 'Tab') {
+        if (($(this).val() || '').trim()) {
+          e.preventDefault();
+          addFilterWords($(this).val());
+        }
+        return;
+      }
+      if (e.key === 'Backspace' && !$(this).val() && filterEditorWords.length) {
+        e.preventDefault();
+        removeFilterWord(filterEditorWords.length - 1);
+      }
+    });
+    $('#filterInput').on('paste', function(e){
+      var clipboard = e.originalEvent && e.originalEvent.clipboardData;
+      var text = clipboard ? clipboard.getData('text') : '';
+      if (/[\n,，\t\r]+/.test(text)) {
+        e.preventDefault();
+        addFilterWords(text);
+      }
+    });
+    $('#filterInput').on('blur', function(){
+      commitFilterInput();
+    });
+  }
+
+  function setFilterWordsInEditor(list) {
+    filterEditorWords = textToList(list);
+    $('#filterInput').val('');
+    renderFilterTokens();
+  }
+
+  function getFilterWordsFromEditor() {
+    return textToList(filterEditorWords.concat(textToList($('#filterInput').val())));
+  }
+
+  function addFilterWords(value) {
+    var words = textToList(value);
+    if (!words.length) { return; }
+    filterEditorWords = textToList(filterEditorWords.concat(words));
+    $('#filterInput').val('');
+    renderFilterTokens();
+    syncEditorToRule();
+    renderRules();
+  }
+
+  function removeFilterWord(index) {
+    if (index < 0 || index >= filterEditorWords.length) { return; }
+    filterEditorWords.splice(index, 1);
+    renderFilterTokens();
+    syncEditorToRule();
+    renderRules();
+  }
+
+  function commitFilterInput() {
+    if (($('#filterInput').val() || '').trim()) {
+      addFilterWords($('#filterInput').val());
+    } else {
+      renderFilterTokens();
+    }
+  }
+
+  function renderFilterTokens() {
+    var input = $('#filterInput');
+    $('#filterTokenBox .filter-token').remove();
+    filterEditorWords.forEach(function(word, index){
+      var chip = $('<span class="filter-token"></span>');
+      chip.append('<span title="' + escapeAttr(word) + '">' + escapeHtml(word) + '</span>');
+      var remove = $('<button type="button" aria-label="删除过滤词 ' + escapeAttr(word) + '" title="删除"></button>');
+      remove.html(iconSvg('x'));
+      remove.on('mousedown', function(e){ e.preventDefault(); });
+      remove.on('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        removeFilterWord(index);
+        input.trigger('focus');
+      });
+      chip.append(remove);
+      input.before(chip);
     });
   }
 
@@ -734,7 +909,8 @@ layui.use(function(){
     var rule = currentRule();
     if (!rule) {
       $('#editorMeta').text('未选择关键词');
-      $('#keywordInput, #filterInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput').val('');
+      $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput').val('');
+      setFilterWordsInEditor([]);
       $('#enabledInput').prop('checked', false);
       fillTickEditor(productConfig.tickTime || 10800);
       $('#satisfyNumInput').val(productConfig.satisfyNum || 5);
@@ -742,7 +918,7 @@ layui.use(function(){
     }
     $('#editorMeta').text('第 ' + (selectedRuleIndex + 1) + ' 条规则');
     $('#keywordInput').val(firstWord(rule));
-    $('#filterInput').val(listToText(rule.filterWords));
+    setFilterWordsInEditor(rule.filterWords);
     $('#lowCommentInput').val(rule.lowCommentNum || '');
     $('#lowWorthyInput').val(rule.lowWorthyNum || '');
     $('#minPriceInput').val(rule.minPrice || '');
@@ -768,7 +944,7 @@ layui.use(function(){
     var rule = normalizeRule({
       enabled: $('#enabledInput').is(':checked'),
       words: textToList($('#keywordInput').val()).slice(0, 1),
-      filterWords: textToList($('#filterInput').val()),
+      filterWords: getFilterWordsFromEditor(),
       lowCommentNum: toInt($('#lowCommentInput').val()),
       lowWorthyNum: toInt($('#lowWorthyInput').val()),
       minPrice: toFloat($('#minPriceInput').val()),
@@ -1116,6 +1292,9 @@ layui.use(function(){
   function iconSvg(name) {
     if (name === 'trash') {
       return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 15h10l1-15"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+    }
+    if (name === 'x') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>';
     }
     return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>';
   }
