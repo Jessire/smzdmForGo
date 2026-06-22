@@ -8,7 +8,7 @@
   <style>
     :root {
       --bg: #f5f5f7;
-      --panel: rgba(255, 255, 255, 0.86);
+      --panel: rgba(255, 255, 255, 0.94);
       --panel-solid: #ffffff;
       --line: rgba(0, 0, 0, 0.08);
       --line-strong: rgba(0, 0, 0, 0.12);
@@ -18,38 +18,74 @@
       --blue-weak: rgba(0, 113, 227, 0.08);
       --green: #2d7d46;
       --orange: #b35a00;
-      --shadow: 0 18px 46px rgba(0, 0, 0, 0.08);
-      --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.06);
+      --dark: #1d1d1f;
+      --surface-alt: #fbfbfd;
+      --shadow: none;
+      --shadow-soft: none;
     }
     * { box-sizing: border-box; }
     html { background: var(--bg); }
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        linear-gradient(180deg, #fbfbfd 0, #f5f5f7 310px, #f5f5f7 100%);
+      background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Arial, sans-serif;
       letter-spacing: 0;
       -webkit-font-smoothing: antialiased;
     }
     ::selection { background: rgba(0, 113, 227, 0.16); }
-    .shell { max-width: 1460px; margin: 0 auto; padding: 36px 28px 52px; }
+    .shell { max-width: 1440px; margin: 0 auto; padding: 32px 28px 56px; }
     .topbar {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
+      gap: 24px;
       margin-bottom: 24px;
+      padding: 32px 34px;
+      border-radius: 8px;
+      background: var(--dark);
+      color: #f5f5f7;
     }
     h1 {
       margin: 0;
-      font-size: clamp(34px, 4vw, 50px);
+      font-size: 56px;
       line-height: 1.04;
       letter-spacing: 0;
       font-weight: 760;
     }
-    .subtitle { margin: 10px 0 0; color: var(--muted); font-size: 15px; line-height: 1.45; }
+    .topbar h1 { color: #f5f5f7; }
+    .subtitle { margin: 10px 0 0; color: #c9c9ce; font-size: 17px; line-height: 1.47; }
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(88px, 1fr));
+      gap: 1px;
+      min-width: 360px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      align-self: center;
+    }
+    .hero-metric {
+      min-height: 86px;
+      padding: 17px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .hero-metric strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      color: #fff;
+      font-weight: 680;
+      margin-bottom: 9px;
+    }
+    .hero-metric span {
+      display: block;
+      color: #c9c9ce;
+      font-size: 12px;
+      font-weight: 650;
+    }
     .workspace {
       display: grid;
       grid-template-columns: minmax(560px, 1fr) minmax(560px, 1fr);
@@ -69,7 +105,6 @@
       border-radius: 8px;
       background: var(--panel);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(24px);
       padding: 22px;
       min-width: 0;
       height: 100%;
@@ -86,6 +121,17 @@
     h2 { margin: 0; font-size: 21px; line-height: 1.22; letter-spacing: 0; font-weight: 740; }
     .meta { color: var(--muted); font-size: 13px; line-height: 1.4; margin-top: 4px; }
     .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .rules-panel .section-head { align-items: flex-start; }
+    .rules-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 270px;
+    }
+    .btn.pill { min-height: 44px; border-radius: 999px; padding: 0 18px; font-weight: 650; }
+    .btn.utility { border-radius: 8px; min-height: 38px; }
     .header-controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
     .header-switch { display: inline-flex; align-items: center; gap: 10px; min-height: 36px; color: var(--text); font-size: 14px; font-weight: 650; }
     .btn {
@@ -103,7 +149,7 @@
       transition: transform .14s ease, box-shadow .14s ease, background .14s ease, border-color .14s ease;
     }
     .btn:hover { transform: translateY(-1px); }
-    .btn.primary { background: var(--blue); color: #fff; box-shadow: 0 14px 28px rgba(0, 113, 227, 0.23); }
+    .btn.primary { background: var(--blue); color: #fff; box-shadow: none; }
     .btn.secondary { background: rgba(255, 255, 255, 0.86); color: var(--text); border-color: var(--line); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset; }
     .btn.secondary:hover { border-color: var(--line-strong); background: #fff; }
     .btn.danger { background: rgba(179, 90, 0, 0.08); color: var(--orange); border-color: rgba(179, 90, 0, 0.18); }
@@ -322,7 +368,7 @@
       overflow: hidden;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.88);
+      background: var(--panel-solid);
     }
     .rules-table th,
     .rules-table td {
@@ -350,10 +396,10 @@
       height: 60px;
       border-radius: 8px;
       object-fit: cover;
-      background: linear-gradient(135deg, #fbfbfd, #e7e8ec);
+      background: #f5f5f7;
       border: 1px solid var(--line);
       display: block;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
     }
     .keyword-cell { display: flex; align-items: center; gap: 12px; min-width: 190px; }
     .keyword-name { font-weight: 760; color: var(--text); }
@@ -395,6 +441,7 @@
       border-radius: 8px;
       border: 1px solid var(--line);
       background: #f0f0f2;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
     }
     .preview-title { font-size: 18px; font-weight: 760; line-height: 1.34; margin-bottom: 10px; }
     .preview-metrics { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
@@ -412,14 +459,13 @@
       align-items: center;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.9);
+      background: var(--panel-solid);
       padding: 12px;
-      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+      transition: transform .16s ease, border-color .16s ease;
     }
     .product-card:hover {
       transform: translateY(-1px);
       border-color: var(--line-strong);
-      box-shadow: var(--shadow-soft);
     }
     .product-card img {
       width: 96px;
@@ -428,6 +474,7 @@
       border-radius: 8px;
       object-fit: cover;
       background: #f0f0f2;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
     }
     .product-info { min-width: 0; }
     .product-title {
@@ -465,6 +512,9 @@
     .editor-panel .bottom-bar { margin-top: 10px; }
     .notification-shell { min-height: 0; }
     @media (max-width: 1080px) {
+      .topbar { grid-template-columns: 1fr; }
+      .hero-metrics { min-width: 0; }
+      h1 { font-size: 44px; }
       .workspace {
         grid-template-columns: 1fr;
         grid-template-areas:
@@ -475,14 +525,17 @@
       }
     }
     @media (max-width: 720px) {
-      .topbar { align-items: stretch; flex-direction: column; }
+      .shell { padding: 18px 16px 36px; }
+      .topbar { padding: 24px 18px; }
+      .hero-metrics { grid-template-columns: 1fr; }
+      .hero-metric { min-height: 64px; padding: 14px; }
       .grid, .grid.two, .editor-grid, .notify-grid { grid-template-columns: 1fr; }
       .span-2, .span-4 { grid-column: span 1; }
       .editor-grid .half,
       .editor-grid .wide { grid-column: span 1; }
       .section-head { align-items: stretch; flex-direction: column; }
       .header-controls { justify-content: flex-start; }
-      h1 { font-size: 28px; }
+      h1 { font-size: 34px; }
       .rules-table, .rules-table thead, .rules-table tbody, .rules-table tr, .rules-table td { display: block; width: 100%; }
       .rules-table thead { display: none; }
       .rules-table tr { padding: 10px 12px; border-bottom: 1px solid var(--line); }
@@ -510,7 +563,21 @@
   <div class="topbar">
     <div>
       <h1>什么值得买提醒</h1>
-      <p class="subtitle">按关键词独立维护过滤词, 评论, 值率和价格区间。</p>
+      <p class="subtitle">关键词规则与商品搜索预览</p>
+    </div>
+    <div class="hero-metrics" aria-label="配置概览">
+      <div class="hero-metric">
+        <strong id="summaryRuleCount">0</strong>
+        <span>关键词</span>
+      </div>
+      <div class="hero-metric">
+        <strong id="summaryEnabledCount">0</strong>
+        <span>启用中</span>
+      </div>
+      <div class="hero-metric">
+        <strong id="summaryFilterCount">0</strong>
+        <span>过滤词</span>
+      </div>
     </div>
   </div>
 
@@ -522,10 +589,10 @@
             <h2>关键词规则</h2>
             <div class="meta">每个关键词独立启用, 独立设置过滤条件。</div>
           </div>
-          <div class="actions">
-            <button class="btn secondary" id="reloadProductConfig" type="button">重新加载</button>
-            <button class="btn secondary" id="addRule" type="button">新增关键词</button>
-            <button class="btn primary" id="saveProductConfig" type="button">保存配置</button>
+          <div class="rules-toolbar">
+            <button class="btn primary pill" id="searchAllRules" type="button">全局搜索</button>
+            <button class="btn secondary utility" id="addRule" type="button">新增关键词</button>
+            <button class="btn secondary utility" id="reloadProductConfig" type="button">重新加载</button>
           </div>
         </div>
         <table class="rules-table">
@@ -614,7 +681,8 @@
           </div>
         </div>
         <div class="bottom-bar">
-          <button class="btn primary" id="searchRule" type="button">搜索预览</button>
+          <button class="btn secondary" id="searchRule" type="button">搜索预览</button>
+          <button class="btn primary" id="saveProductConfig" type="button">保存配置</button>
         </div>
       </div>
     </div>
@@ -722,6 +790,7 @@ layui.use(function(){
     selectRule(productConfig.keywordRules.length - 1);
     renderRules();
   });
+  $('#searchAllRules').on('click', searchAllRules);
   $('#duplicateRule').on('click', function(){
     if (!currentRule()) { return; }
     syncEditorToRule();
@@ -732,7 +801,7 @@ layui.use(function(){
     selectRule(selectedRuleIndex + 1);
     renderRules();
   });
-  $('#removeRule').on('click', confirmRemoveSelectedRule);
+  $('#removeRule').on('click', removeSelectedRule);
   $('#saveProductConfig, #saveNotifyConfig').on('click', saveProductConfig);
   $('#searchRule').on('click', searchSelectedRule);
   $('#openSearchPage').on('click', function(){
@@ -764,6 +833,7 @@ layui.use(function(){
         productConfig = normalizeConfig(res.data);
         fillNotifyForm();
         renderRules();
+        renderSummary();
         selectRule(productConfig.keywordRules.length ? 0 : -1);
         hydrateRuleThumbnails();
       },
@@ -873,6 +943,7 @@ layui.use(function(){
         productConfig = normalizeConfig(res.data);
         fillNotifyForm();
         renderRules();
+        renderSummary();
         if (selectedRuleIndex >= productConfig.keywordRules.length) {
           selectedRuleIndex = productConfig.keywordRules.length - 1;
         }
@@ -889,6 +960,7 @@ layui.use(function(){
   function renderRules() {
     var body = $('#rulesBody');
     body.empty();
+    renderSummary();
     if (!productConfig.keywordRules.length) {
       body.append('<tr><td colspan="6" class="empty">暂无关键词</td></tr>');
       return;
@@ -915,7 +987,7 @@ layui.use(function(){
       var actions = $('<td></td>');
       var actionWrap = $('<div class="row-actions"></div>');
       actionWrap.append(iconButton('search', '预览', 'secondary icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
-      actionWrap.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; confirmRemoveSelectedRule(); }));
+      actionWrap.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; removeSelectedRule(); }));
       actions.append(actionWrap);
       row.append(actions);
       row.on('click', function(){ selectRule(index); });
@@ -989,7 +1061,7 @@ layui.use(function(){
       layer.msg('关键词不能为空');
       return;
     }
-    setSearchLoading(true);
+    setSearchLoading(true, '#searchRule', '搜索预览', '搜索中');
     $('#previewMeta').text('搜索中');
     $.ajax({
       url: BASE_URL + '/productSearch',
@@ -1005,8 +1077,46 @@ layui.use(function(){
         $('#previewMeta').text('搜索失败');
       },
       complete: function() {
-        setSearchLoading(false);
+        setSearchLoading(false, '#searchRule', '搜索预览', '搜索中');
       }
+    });
+  }
+
+  function searchAllRules() {
+    syncEditorToRule();
+    var rules = productConfig.keywordRules.map(normalizeRule).filter(function(rule){
+      return rule.enabled !== false && firstWord(rule);
+    });
+    if (!rules.length) {
+      layer.msg('没有可搜索的已启用关键词');
+      return;
+    }
+    setSearchLoading(true, '#searchAllRules', '全局搜索', '搜索中');
+    $('#previewMeta').text('全局搜索中 · ' + rules.length + ' 条规则');
+    var remaining = rules.length;
+    var results = [];
+    rules.forEach(function(rule, index){
+      $.ajax({
+        url: BASE_URL + '/productSearch',
+        contentType: 'application/json;charset=utf-8',
+        data: JSON.stringify({ rule: rule, limit: 8 }),
+        dataType: 'json',
+        type: 'POST',
+        success: function(res) {
+          results.push({ rule: rule, index: index, data: res.data || {} });
+        },
+        error: function(xhr) {
+          results.push({ rule: rule, index: index, error: readError(xhr) });
+        },
+        complete: function() {
+          remaining -= 1;
+          if (remaining === 0) {
+            results.sort(function(a, b){ return a.index - b.index; });
+            renderGlobalPreview(results);
+            setSearchLoading(false, '#searchAllRules', '全局搜索', '搜索中');
+          }
+        }
+      });
     });
   }
 
@@ -1036,6 +1146,45 @@ layui.use(function(){
     });
   }
 
+  function renderGlobalPreview(results) {
+    var items = [];
+    var seen = {};
+    var failed = 0;
+    results.forEach(function(result){
+      if (result.error) {
+        failed += 1;
+        return;
+      }
+      var keyword = firstWord(result.rule);
+      var list = result.data.items || [];
+      list.forEach(function(item){
+        var key = item.url || item.title || JSON.stringify(item);
+        if (seen[key]) { return; }
+        seen[key] = true;
+        item.keyword = keyword;
+        items.push(item);
+      });
+    });
+    var first = items[0];
+    previewOpenUrl = first && first.keyword ? keywordSearchUrl(first.keyword) : '';
+    $('#previewMeta').text('全局搜索 · ' + results.length + ' 条规则 · ' + items.length + ' 条结果' + (failed ? ' · ' + failed + ' 条失败' : ''));
+    if (!items.length) {
+      setImage($('#previewImage'), previewPlaceholder);
+      $('#previewTitle').text('暂无结果');
+      $('#previewMetrics').empty();
+      renderEmptyPreview('暂无匹配结果', '调整过滤词, 评论, 值率或价格范围后再搜索。');
+      return;
+    }
+    setImage($('#previewImage'), first.pic || previewPlaceholder);
+    $('#previewTitle').text(first.title || '未命名商品');
+    $('#previewMetrics').html('<span>来自 ' + escapeHtml(first.keyword || '-') + '</span><span>价格 ' + escapeHtml(first.price || '-') + '</span><span>值率 ' + escapeHtml(first.worthy || '0') + '%</span><span>评论 ' + escapeHtml(first.comment || '0') + '</span>');
+    var body = $('#previewCards');
+    body.empty();
+    items.forEach(function(item){
+      body.append(productCard(item));
+    });
+  }
+
   function hydrateRuleThumbnails() {
     productConfig.keywordRules.forEach(function(rule, index){
       if (!firstWord(rule) || rule.previewPic) {
@@ -1055,17 +1204,6 @@ layui.use(function(){
           }
         }
       });
-    });
-  }
-
-  function confirmRemoveSelectedRule() {
-    if (selectedRuleIndex < 0) { return; }
-    layer.confirm('确定要删除该关键词规则吗？此操作不可撤销。', {
-      title: '删除关键词规则',
-      btn: ['删除', '取消']
-    }, function(index){
-      layer.close(index);
-      removeSelectedRule();
     });
   }
 
@@ -1173,6 +1311,18 @@ layui.use(function(){
     return (rules || []).map(firstWord).filter(function(word, index, list){ return word && list.indexOf(word) === index; });
   }
 
+  function renderSummary() {
+    var rules = productConfig.keywordRules || [];
+    var enabled = rules.filter(function(rule){ return rule.enabled !== false && firstWord(rule); }).length;
+    var filters = [];
+    rules.forEach(function(rule){
+      filters = filters.concat(rule.filterWords || []);
+    });
+    $('#summaryRuleCount').text(rules.length);
+    $('#summaryEnabledCount').text(enabled);
+    $('#summaryFilterCount').text(textToList(filters).length);
+  }
+
   function listToText(list) {
     return (list || []).join('\n');
   }
@@ -1239,11 +1389,11 @@ layui.use(function(){
     return Math.max(60, Math.round(value * unit));
   }
 
-  function setSearchLoading(loading) {
-    var btn = $('#searchRule');
+  function setSearchLoading(loading, selector, idleText, loadingText) {
+    var btn = $(selector || '#searchRule');
     btn.toggleClass('loading', !!loading);
     btn.prop('disabled', !!loading);
-    btn.text(loading ? '搜索中' : '搜索预览');
+    btn.text(loading ? (loadingText || '搜索中') : (idleText || '搜索预览'));
   }
 
   function setImage(target, src) {
@@ -1265,7 +1415,8 @@ layui.use(function(){
     image.attr('src', proxiedImageUrl(item.pic));
     var info = $('<div class="product-info"></div>');
     info.append('<a class="product-title" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">' + escapeHtml(item.title || '未命名商品') + '</a>');
-    info.append('<div class="product-meta"><span class="tag info product-price">' + escapeHtml(item.price || '-') + '</span><span class="tag">值率 ' + escapeHtml(item.worthy || '0') + '%</span><span class="tag">评论 ' + escapeHtml(item.comment || '0') + '</span></div>');
+    var keywordTag = item.keyword ? '<span class="tag info">' + escapeHtml(item.keyword) + '</span>' : '';
+    info.append('<div class="product-meta">' + keywordTag + '<span class="tag info product-price">' + escapeHtml(item.price || '-') + '</span><span class="tag">值率 ' + escapeHtml(item.worthy || '0') + '%</span><span class="tag">评论 ' + escapeHtml(item.comment || '0') + '</span></div>');
     info.append('<div class="product-source">' + escapeHtml(item.referral || '什么值得买') + (item.date ? ' · ' + escapeHtml(item.date) : '') + '</div>');
     var action = $('<div class="product-action"></div>');
     action.append('<a class="btn secondary small" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">打开</a>');
