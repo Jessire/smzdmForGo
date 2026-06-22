@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
   <title>什么值得买提醒</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css" media="all">
   <style>
@@ -14,14 +15,48 @@
       --line-strong: rgba(0, 0, 0, 0.12);
       --text: #1d1d1f;
       --muted: #6e6e73;
-      --blue: #0071e3;
-      --blue-weak: rgba(0, 113, 227, 0.08);
-      --green: #2d7d46;
-      --orange: #b35a00;
+      --blue: #0066cc;
+      --blue-weak: rgba(0, 102, 204, 0.08);
+      --blue-line: rgba(0, 102, 204, 0.34);
+      --blue-canvas: #f7fbff;
+      --warm-canvas: #fffdf8;
+      --green: #247a3d;
+      --green-weak: #ecf7ef;
+      --amber: #9b6500;
+      --amber-weak: #fff4dd;
+      --red: #b64424;
+      --teal: #007c89;
+      --violet: #6e56cf;
       --dark: #1d1d1f;
       --surface-alt: #fbfbfd;
       --shadow: none;
       --shadow-soft: none;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f0f10;
+        --panel: rgba(29, 29, 31, 0.96);
+        --panel-solid: #1d1d1f;
+        --line: rgba(255, 255, 255, 0.12);
+        --line-strong: rgba(255, 255, 255, 0.2);
+        --text: #f5f5f7;
+        --muted: #a1a1a6;
+        --blue: #2997ff;
+        --blue-weak: rgba(41, 151, 255, 0.15);
+        --blue-line: rgba(41, 151, 255, 0.42);
+        --blue-canvas: #171b22;
+        --warm-canvas: #1f1d19;
+        --green: #63d471;
+        --green-weak: rgba(99, 212, 113, 0.14);
+        --amber: #f3bf5b;
+        --amber-weak: rgba(243, 191, 91, 0.14);
+        --red: #ff6a4a;
+        --teal: #4dd4dd;
+        --violet: #b8a6ff;
+        --surface-alt: #2c2c2e;
+        color-scheme: dark;
+      }
     }
     * { box-sizing: border-box; }
     html { background: var(--bg); }
@@ -35,60 +70,17 @@
       -webkit-font-smoothing: antialiased;
     }
     ::selection { background: rgba(0, 113, 227, 0.16); }
-    .shell { max-width: 1440px; margin: 0 auto; padding: 32px 28px 56px; }
-    .topbar {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: stretch;
-      gap: 24px;
-      margin-bottom: 24px;
-      padding: 32px 34px;
-      border-radius: 8px;
-      background: var(--dark);
-      color: #f5f5f7;
-    }
-    h1 {
-      margin: 0;
-      font-size: 56px;
-      line-height: 1.04;
-      letter-spacing: 0;
-      font-weight: 760;
-    }
-    .topbar h1 { color: #f5f5f7; }
-    .subtitle { margin: 10px 0 0; color: #c9c9ce; font-size: 17px; line-height: 1.47; }
-    .hero-metrics {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(88px, 1fr));
-      gap: 1px;
-      min-width: 360px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.12);
-      align-self: center;
-    }
-    .hero-metric {
-      min-height: 86px;
-      padding: 17px;
-      background: rgba(255, 255, 255, 0.06);
-    }
-    .hero-metric strong {
-      display: block;
-      font-size: 28px;
-      line-height: 1;
-      color: #fff;
-      font-weight: 680;
-      margin-bottom: 9px;
-    }
-    .hero-metric span {
-      display: block;
-      color: #c9c9ce;
-      font-size: 12px;
-      font-weight: 650;
+    .shell {
+      position: relative;
+      z-index: 0;
+      isolation: isolate;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 28px 56px;
     }
     .workspace {
       display: grid;
-      grid-template-columns: minmax(560px, 1fr) minmax(560px, 1fr);
+      grid-template-columns: minmax(640px, 1.14fr) minmax(520px, .86fr);
       grid-template-areas:
         "rules preview"
         "editor notify";
@@ -100,15 +92,54 @@
     .editor-panel { grid-area: editor; }
     .preview-panel { grid-area: preview; }
     .notification-shell { grid-area: notify; }
+    .preview-panel { display: flex; flex-direction: column; }
+    .panel.rules-panel { --panel-accent: var(--blue); }
+    .panel.preview-panel,
+    .panel.notification-shell {
+      background: var(--panel-solid);
+      border-color: rgba(0, 102, 204, 0.14);
+      --panel-accent: #3f6fa3;
+    }
+    .panel.editor-panel {
+      background: var(--panel-solid);
+      border-color: rgba(155, 101, 0, 0.14);
+      --panel-accent: var(--amber);
+    }
+    .panel.notification-shell {
+      --panel-accent: var(--blue);
+    }
+    @media (prefers-color-scheme: dark) {
+      .panel.preview-panel,
+      .panel.notification-shell {
+        background: var(--panel-solid);
+        border-color: rgba(41, 151, 255, 0.2);
+      }
+      .panel.editor-panel {
+        background: var(--panel-solid);
+        border-color: rgba(243, 191, 91, 0.2);
+      }
+    }
     .panel {
+      position: relative;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
+      border-radius: 18px;
+      background: var(--panel-solid);
       box-shadow: var(--shadow);
-      padding: 22px;
+      padding: 24px;
       min-width: 0;
       height: 100%;
       overflow: hidden;
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      top: 0;
+      height: 3px;
+      border-radius: 0 0 999px 999px;
+      background: var(--panel-accent, transparent);
+      opacity: .78;
     }
     .panel + .panel { margin-top: 0; }
     .section-head {
@@ -116,9 +147,10 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 18px;
+      min-height: 44px;
+      margin-bottom: 20px;
     }
-    h2 { margin: 0; font-size: 21px; line-height: 1.22; letter-spacing: 0; font-weight: 740; }
+    h2 { margin: 0; font-size: 21px; line-height: 1.2; letter-spacing: 0; font-weight: 600; }
     .meta { color: var(--muted); font-size: 13px; line-height: 1.4; margin-top: 4px; }
     .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
     .rules-panel .section-head { align-items: flex-start; }
@@ -130,8 +162,8 @@
       gap: 8px;
       min-width: 270px;
     }
-    .btn.pill { min-height: 44px; border-radius: 999px; padding: 0 18px; font-weight: 650; }
-    .btn.utility { border-radius: 8px; min-height: 38px; }
+    .btn.pill { min-height: 44px; border-radius: 999px; padding: 0 18px; font-weight: 600; }
+    .btn.utility { border-radius: 999px; min-height: 38px; }
     .header-controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
     .header-switch { display: inline-flex; align-items: center; gap: 10px; min-height: 36px; color: var(--text); font-size: 14px; font-weight: 650; }
     .btn {
@@ -140,20 +172,27 @@
       justify-content: center;
       min-height: 38px;
       border: 1px solid transparent;
-      border-radius: 8px;
+      border-radius: 999px;
       padding: 0 15px;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 400;
       cursor: pointer;
       letter-spacing: 0;
-      transition: transform .14s ease, box-shadow .14s ease, background .14s ease, border-color .14s ease;
+      transition: transform .14s ease, background .14s ease, border-color .14s ease;
     }
-    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: scale(.96); }
     .btn.primary { background: var(--blue); color: #fff; box-shadow: none; }
-    .btn.secondary { background: rgba(255, 255, 255, 0.86); color: var(--text); border-color: var(--line); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset; }
+    .btn.success { background: var(--green); color: #fff; border-color: transparent; }
+    .btn.info { background: var(--teal); color: #fff; border-color: transparent; }
+    .btn.warning { background: var(--amber); color: #fff; border-color: transparent; }
+    .btn.copy { background: var(--violet); color: #fff; border-color: transparent; }
+    .btn.web { background: #eef5ff; color: var(--blue); border-color: rgba(0, 102, 204, 0.18); }
+    .btn.refresh { background: #e7f9fb; color: var(--teal); border-color: rgba(0, 124, 137, 0.18); }
+    .btn.secondary { background: var(--surface-alt); color: var(--text); border-color: var(--line); box-shadow: none; }
     .btn.secondary:hover { border-color: var(--line-strong); background: #fff; }
-    .btn.danger { background: rgba(179, 90, 0, 0.08); color: var(--orange); border-color: rgba(179, 90, 0, 0.18); }
-    .btn.ghost { background: transparent; color: var(--orange); border-color: transparent; box-shadow: none; }
+    .btn.danger { background: #fff4f1; color: var(--red); border-color: rgba(182, 68, 36, 0.2); }
+    .btn.danger:hover { background: #ffece6; border-color: rgba(182, 68, 36, 0.34); }
+    .btn.ghost { background: transparent; color: var(--red); border-color: transparent; box-shadow: none; }
     .btn.loading { pointer-events: none; opacity: .78; }
     .btn.loading::before {
       content: "";
@@ -168,11 +207,11 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .btn.small { min-height: 30px; padding: 0 9px; font-size: 12px; }
     .icon-btn {
-      width: 34px;
-      height: 34px;
-      min-height: 34px;
+      width: 38px;
+      height: 38px;
+      min-height: 38px;
       padding: 0;
-      border-radius: 8px;
+      border-radius: 50%;
     }
     .icon-btn svg {
       width: 16px;
@@ -206,7 +245,7 @@
     .field select {
       width: 100%;
       border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
+      border-radius: 14px;
       background: rgba(255, 255, 255, 0.94);
       color: var(--text);
       font-size: 14px;
@@ -214,42 +253,66 @@
       transition: border-color .16s ease, box-shadow .16s ease;
     }
     .field input,
-    .field select { height: 44px; padding: 0 13px; }
+    .field select { height: 44px; padding: 0 14px; }
     .field textarea { height: 84px; min-height: 84px; max-height: 128px; padding: 11px 12px; resize: vertical; line-height: 1.45; overflow-y: auto; }
     .field input:focus,
     .field textarea:focus,
     .field select:focus { border-color: rgba(0, 113, 227, 0.62); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.13); }
+    @media (prefers-color-scheme: dark) {
+      .btn.primary { color: #000; }
+      .btn.success,
+      .btn.info,
+      .btn.warning,
+      .btn.copy { color: #000; }
+      .btn.web { background: rgba(41, 151, 255, 0.14); color: var(--blue); border-color: rgba(41, 151, 255, 0.26); }
+      .btn.refresh { background: rgba(77, 212, 221, 0.14); color: var(--teal); border-color: rgba(77, 212, 221, 0.26); }
+      .btn.secondary:hover { background: #343437; }
+      .btn.danger { background: rgba(255, 106, 74, 0.12); border-color: rgba(255, 106, 74, 0.24); }
+      .btn.danger:hover { background: rgba(255, 106, 74, 0.18); border-color: rgba(255, 106, 74, 0.36); }
+      .field input,
+      .field textarea,
+      .field select {
+        background: rgba(29, 29, 31, 0.82);
+        border-color: var(--line);
+        color: var(--text);
+      }
+      .field input:focus,
+      .field textarea:focus,
+      .field select:focus {
+        border-color: rgba(41, 151, 255, 0.72);
+        box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.14);
+      }
+    }
     .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .editor-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 14px; align-items: start; }
+    .editor-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; }
     .editor-grid .half { grid-column: span 2; }
     .editor-grid .wide { grid-column: span 2; }
-    .editor-panel { padding: 22px; }
-    .editor-panel .section-head { margin-bottom: 14px; }
+    .editor-panel .section-head { margin-bottom: 18px; }
     .editor-panel .field label { margin-bottom: 7px; font-size: 12px; }
     .editor-panel .field input,
-    .editor-panel .field select { height: 38px; }
-    .editor-panel .field textarea { height: 38px; min-height: 38px; }
+    .editor-panel .field select { height: 44px; }
+    .editor-panel .field textarea { height: 44px; min-height: 44px; }
     .editor-panel .keyword-field input {
-      height: 76px;
+      height: 112px;
       padding: 0 16px;
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 17px;
+      font-weight: 600;
     }
     .filter-field { min-width: 0; }
     .filter-token-box {
       width: 100%;
-      height: 76px;
+      height: 112px;
       border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
+      border-radius: 14px;
       background: rgba(255, 255, 255, 0.94);
       display: flex;
       align-content: flex-start;
       align-items: flex-start;
       flex-wrap: wrap;
-      gap: 7px;
+      gap: 8px;
       overflow-y: auto;
-      padding: 8px;
+      padding: 10px;
       cursor: text;
       transition: border-color .16s ease, box-shadow .16s ease;
     }
@@ -263,13 +326,13 @@
       display: inline-flex;
       align-items: center;
       max-width: 100%;
-      min-height: 27px;
-      border: 1px solid rgba(0, 113, 227, 0.17);
+      min-height: 28px;
+      border: 1px solid var(--line);
       border-radius: 999px;
-      background: var(--blue-weak);
+      background: var(--surface-alt);
       color: var(--text);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 400;
       line-height: 1;
       padding: 0 3px 0 10px;
     }
@@ -306,7 +369,7 @@
     .filter-token-input {
       flex: 1 1 98px;
       min-width: 98px;
-      height: 27px !important;
+      height: 28px !important;
       border: 0 !important;
       border-radius: 0 !important;
       background: transparent !important;
@@ -314,10 +377,22 @@
       padding: 0 4px !important;
       color: var(--text);
       font-size: 13px !important;
-      font-weight: 500 !important;
+      font-weight: 400 !important;
       outline: none;
     }
-    .editor-panel .btn { min-height: 36px; }
+    @media (prefers-color-scheme: dark) {
+      .filter-token-box {
+        background: rgba(29, 29, 31, 0.82);
+        border-color: var(--line);
+        color: var(--text);
+      }
+      .filter-token-box:focus-within {
+        border-color: rgba(41, 151, 255, 0.72);
+        box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.14);
+      }
+      .filter-token button:hover { background: rgba(255, 255, 255, 0.12); }
+    }
+    .editor-panel .btn { min-height: 38px; }
     .span-2 { grid-column: span 2; }
     .span-4 { grid-column: span 4; }
     .switch-row { display: flex; align-items: center; gap: 10px; min-height: 42px; }
@@ -350,6 +425,10 @@
     }
     .switch input:checked + span { background: var(--blue); }
     .switch input:checked + span::before { transform: translateX(18px); }
+    @media (prefers-color-scheme: dark) {
+      .switch span { background: #505054; }
+      .switch span::before { background: #f5f5f7; box-shadow: none; }
+    }
     .range-control,
     .unit-control {
       display: grid;
@@ -360,67 +439,134 @@
     .unit-control { grid-template-columns: 1fr 96px; }
     .range-control .sep { color: var(--muted); font-weight: 700; }
     .notify-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-    .rules-table {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: separate;
-      border-spacing: 0;
-      overflow: hidden;
+    .rules-list { display: grid; gap: 10px; }
+    .rules-body { display: grid; gap: 10px; }
+    .rules-header,
+    .rule-card {
+      display: grid;
+      grid-template-columns:
+        minmax(210px, 1.32fr)
+        minmax(120px, .9fr)
+        minmax(48px, .34fr)
+        minmax(54px, .36fr)
+        minmax(92px, .54fr)
+        72px;
+      gap: 10px;
+      align-items: center;
+    }
+    .rules-header {
+      padding: 0 14px 2px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .rules-header span:nth-child(3),
+    .rules-header span:nth-child(4),
+    .rules-header span:nth-child(5),
+    .rules-header span:nth-child(6) { justify-self: center; text-align: center; }
+    .rule-card {
+      min-height: 92px;
+      padding: 12px 14px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 18px;
       background: var(--panel-solid);
+      cursor: pointer;
+      transition: border-color .16s ease, background .16s ease;
     }
-    .rules-table th,
-    .rules-table td {
-      border-bottom: 1px solid var(--line);
-      padding: 13px 14px;
-      text-align: left;
-      vertical-align: middle;
+    .rule-card:hover { border-color: var(--line-strong); }
+    .rule-card.active { border-color: var(--blue-line); background: rgba(0, 102, 204, 0.04); }
+    @media (prefers-color-scheme: dark) {
+      .rule-card.active { background: rgba(41, 151, 255, 0.1); }
+    }
+    .rule-main { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .rule-text { display: grid; justify-items: start; gap: 7px; min-width: 0; }
+    .rule-filter {
+      display: flex;
+      align-items: flex-start;
+      align-content: flex-start;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-height: 62px;
+      min-width: 0;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .rule-filter::-webkit-scrollbar { width: 6px; height: 6px; }
+    .rule-filter::-webkit-scrollbar-thumb { border-radius: 999px; background: rgba(0, 0, 0, 0.16); }
+    .rule-stat {
+      display: grid;
+      justify-items: center;
+      gap: 3px;
+      min-width: 0;
+      color: var(--text);
+      text-align: center;
       font-size: 13px;
+      font-variant-numeric: tabular-nums;
     }
-    .rules-table th { color: var(--muted); font-weight: 760; background: rgba(251, 251, 253, 0.92); }
-    .rules-table th:nth-child(3),
-    .rules-table th:nth-child(4),
-    .rules-table th:nth-child(5),
-    .rules-table th:nth-child(6),
-    .rules-table td:nth-child(3),
-    .rules-table td:nth-child(4),
-    .rules-table td:nth-child(5),
-    .rules-table td:nth-child(6) { text-align: center; }
-    .rules-table tr:last-child td { border-bottom: 0; }
-    .rules-table tbody tr { cursor: pointer; transition: background .16s ease; }
-    .rules-table tbody tr:hover { background: rgba(0, 0, 0, 0.025); }
-    .rules-table tbody tr.active { background: rgba(0, 113, 227, 0.065); }
+    .rule-stat span { font-weight: 600; }
+    .stat-comment span { color: #3f6fa3; }
+    .stat-worthy span { color: var(--green); }
+    .stat-price span { color: var(--red); }
+    .rule-price {
+      white-space: nowrap;
+      min-width: max-content;
+      justify-self: center;
+      font-variant-numeric: tabular-nums;
+    }
     .thumb {
-      width: 60px;
-      height: 60px;
-      border-radius: 8px;
+      width: 68px;
+      height: 68px;
+      border-radius: 14px;
       object-fit: cover;
       background: #f5f5f7;
       border: 1px solid var(--line);
       display: block;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+      box-shadow: rgba(0, 0, 0, 0.22) 3px 5px 30px 0;
     }
-    .keyword-cell { display: flex; align-items: center; gap: 12px; min-width: 190px; }
-    .keyword-name { font-weight: 760; color: var(--text); }
-    .row-actions { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+    @media (prefers-color-scheme: dark) {
+      .thumb,
+      .preview-hero img,
+      .product-card img {
+        background: #2c2c2e;
+      }
+    }
+    .keyword-name {
+      max-width: 100%;
+      overflow: hidden;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .row-actions { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
     .disabled { color: var(--muted); }
     .tag {
       display: inline-flex;
       align-items: center;
-      min-height: 25px;
-      border-radius: 6px;
-      padding: 0 9px;
+      max-width: 100%;
+      min-height: 26px;
+      border-radius: 999px;
+      padding: 0 10px;
       background: rgba(0, 0, 0, 0.045);
       color: var(--muted);
       font-size: 12px;
-      font-weight: 650;
-      margin: 2px 4px 2px 0;
+      font-weight: 400;
+      line-height: 1;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .tag.on { background: #eaf7ee; color: var(--green); }
+    .tag.on { background: var(--green-weak); color: var(--green); }
     .tag.off { background: #f2f2f4; color: #8c8c8c; }
-    .tag.warn { background: #fff5e5; color: #a85300; }
+    .tag.warn { background: var(--amber-weak); color: var(--amber); border: 1px solid rgba(155, 101, 0, 0.16); }
     .tag.info { background: #eaf4ff; color: var(--blue); }
+    @media (prefers-color-scheme: dark) {
+      .tag.off { background: rgba(255, 255, 255, 0.08); color: #a1a1a6; }
+      .tag.warn { border-color: rgba(243, 191, 91, 0.2); }
+      .tag.info { background: rgba(41, 151, 255, 0.14); }
+    }
     .preview-hero {
       display: grid;
       grid-template-columns: 150px minmax(0, 1fr);
@@ -428,7 +574,7 @@
       align-items: center;
       min-height: 174px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 18px;
       background: var(--panel-solid);
       box-shadow: var(--shadow-soft);
       padding: 14px;
@@ -438,12 +584,12 @@
       width: 150px;
       height: 150px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 14px;
       border: 1px solid var(--line);
       background: #f0f0f2;
       box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
     }
-    .preview-title { font-size: 18px; font-weight: 760; line-height: 1.34; margin-bottom: 10px; }
+    .preview-title { font-size: 18px; font-weight: 600; line-height: 1.34; margin-bottom: 10px; }
     .preview-metrics { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
     .product-list {
       display: grid;
@@ -452,26 +598,31 @@
       overflow: auto;
       padding-right: 2px;
     }
+    .preview-panel .product-list {
+      flex: 1;
+      min-height: 190px;
+      max-height: none;
+    }
+    .preview-panel .bottom-bar { margin-top: auto; }
     .product-card {
       display: grid;
       grid-template-columns: 96px minmax(0, 1fr) auto;
       gap: 14px;
       align-items: center;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 18px;
       background: var(--panel-solid);
       padding: 12px;
-      transition: transform .16s ease, border-color .16s ease;
+      transition: border-color .16s ease;
     }
     .product-card:hover {
-      transform: translateY(-1px);
       border-color: var(--line-strong);
     }
     .product-card img {
       width: 96px;
       height: 96px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 14px;
       object-fit: cover;
       background: #f0f0f2;
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
@@ -485,12 +636,12 @@
       color: var(--text);
       text-decoration: none;
       font-size: 14px;
-      font-weight: 740;
+      font-weight: 600;
       line-height: 1.36;
     }
     .product-title:hover { color: var(--blue); }
     .product-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .product-price { color: #c73b2d; font-weight: 750; }
+    .product-price { color: var(--text); font-weight: 600; white-space: nowrap; }
     .product-source { margin-top: 6px; color: var(--muted); font-size: 12px; }
     .product-action { justify-self: end; white-space: nowrap; }
     .title-link { color: var(--text); text-decoration: none; font-weight: 650; }
@@ -511,10 +662,7 @@
     .empty-state p { margin: 0; max-width: 310px; line-height: 1.5; }
     .editor-panel .bottom-bar { margin-top: 10px; }
     .notification-shell { min-height: 0; }
-    @media (max-width: 1080px) {
-      .topbar { grid-template-columns: 1fr; }
-      .hero-metrics { min-width: 0; }
-      h1 { font-size: 44px; }
+    @media (max-width: 1240px) {
       .workspace {
         grid-template-columns: 1fr;
         grid-template-areas:
@@ -526,25 +674,32 @@
     }
     @media (max-width: 720px) {
       .shell { padding: 18px 16px 36px; }
-      .topbar { padding: 24px 18px; }
-      .hero-metrics { grid-template-columns: 1fr; }
-      .hero-metric { min-height: 64px; padding: 14px; }
       .grid, .grid.two, .editor-grid, .notify-grid { grid-template-columns: 1fr; }
       .span-2, .span-4 { grid-column: span 1; }
       .editor-grid .half,
       .editor-grid .wide { grid-column: span 1; }
       .section-head { align-items: stretch; flex-direction: column; }
       .header-controls { justify-content: flex-start; }
-      h1 { font-size: 34px; }
-      .rules-table, .rules-table thead, .rules-table tbody, .rules-table tr, .rules-table td { display: block; width: 100%; }
-      .rules-table thead { display: none; }
-      .rules-table tr { padding: 10px 12px; border-bottom: 1px solid var(--line); }
-      .rules-table tr:last-child { border-bottom: 0; }
-      .rules-table td { border-bottom: 0; padding: 5px 0; }
-      .rules-table td:nth-child(3),
-      .rules-table td:nth-child(4),
-      .rules-table td:nth-child(5) { display: inline-flex; width: auto; margin-right: 12px; }
-      .rules-table td:nth-child(6) { text-align: left; }
+      .rules-header { display: none; }
+      .rule-card {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        align-items: start;
+      }
+      .rule-main,
+      .rule-filter,
+      .row-actions { grid-column: 1 / -1; }
+      .rule-stat,
+      .rule-price {
+        justify-self: stretch;
+        justify-items: start;
+        text-align: left;
+      }
+      .rule-stat::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 12px;
+      }
       .row-actions { justify-content: flex-start; }
       .preview-hero { grid-template-columns: 1fr; }
       .preview-hero img { width: 100%; height: 180px; }
@@ -560,62 +715,34 @@
 </head>
 <body>
 <div class="shell">
-  <div class="topbar">
-    <div>
-      <h1>什么值得买提醒</h1>
-      <p class="subtitle">关键词规则与商品搜索预览</p>
-    </div>
-    <div class="hero-metrics" aria-label="配置概览">
-      <div class="hero-metric">
-        <strong id="summaryRuleCount">0</strong>
-        <span>关键词</span>
-      </div>
-      <div class="hero-metric">
-        <strong id="summaryEnabledCount">0</strong>
-        <span>启用中</span>
-      </div>
-      <div class="hero-metric">
-        <strong id="summaryFilterCount">0</strong>
-        <span>过滤词</span>
-      </div>
-    </div>
-  </div>
-
   <div class="workspace">
     <div class="column-stack">
       <div class="panel rules-panel">
         <div class="section-head">
           <div>
             <h2>关键词规则</h2>
-            <div class="meta">每个关键词独立启用, 独立设置过滤条件。</div>
+            <div class="meta" id="rulesMeta">0 条规则</div>
           </div>
           <div class="rules-toolbar">
             <button class="btn primary pill" id="searchAllRules" type="button">全局搜索</button>
-            <button class="btn secondary utility" id="addRule" type="button">新增关键词</button>
-            <button class="btn secondary utility" id="reloadProductConfig" type="button">重新加载</button>
+            <button class="btn success utility" id="addRule" type="button">新增关键词</button>
+            <button class="btn refresh icon-btn" id="reloadProductConfig" type="button" aria-label="重新加载" title="重新加载">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M18 3v5h-5"/><path d="M6 21v-5h5"/></svg>
+              <span class="sr-only">重新加载</span>
+            </button>
           </div>
         </div>
-        <table class="rules-table">
-          <colgroup>
-            <col style="width: 34%">
-            <col style="width: 21%">
-            <col style="width: 8%">
-            <col style="width: 9%">
-            <col style="width: 14%">
-            <col style="width: 14%">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>关键词</th>
-              <th>过滤词</th>
-              <th>评论</th>
-              <th>值率</th>
-              <th>价格</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody id="rulesBody"></tbody>
-        </table>
+        <div class="rules-list" aria-label="关键词规则">
+          <div class="rules-header">
+            <span>关键词</span>
+            <span>过滤词</span>
+            <span>评论</span>
+            <span>值率</span>
+            <span>价格</span>
+            <span>操作</span>
+          </div>
+          <div class="rules-body" id="rulesBody"></div>
+        </div>
       </div>
 
       <div class="panel editor-panel">
@@ -633,8 +760,8 @@
               </span>
               <span>推送匹配结果</span>
             </label>
-            <button class="btn ghost" id="removeRule" type="button">删除</button>
-            <button class="btn secondary" id="duplicateRule" type="button">复制</button>
+            <button class="btn danger" id="removeRule" type="button">删除</button>
+            <button class="btn copy" id="duplicateRule" type="button">复制</button>
           </div>
         </div>
         <div class="editor-grid">
@@ -681,7 +808,7 @@
           </div>
         </div>
         <div class="bottom-bar">
-          <button class="btn secondary" id="searchRule" type="button">搜索预览</button>
+          <button class="btn info" id="searchRule" type="button">搜索预览</button>
           <button class="btn primary" id="saveProductConfig" type="button">保存配置</button>
         </div>
       </div>
@@ -704,7 +831,7 @@
         </div>
         <div id="previewCards" class="product-list"></div>
         <div class="bottom-bar">
-          <button class="btn secondary" id="openSearchPage" type="button">打开网页</button>
+          <button class="btn web" id="openSearchPage" type="button">打开网页</button>
         </div>
       </div>
 
@@ -712,7 +839,7 @@
         <div class="section-head">
           <div>
             <h2>Telegram 通知</h2>
-            <div class="meta">商品命中后发送到指定 Chat。</div>
+            <div class="meta">Bot Token 与 Chat ID</div>
           </div>
           <div class="header-controls">
             <label class="header-switch">
@@ -962,35 +1089,37 @@ layui.use(function(){
     body.empty();
     renderSummary();
     if (!productConfig.keywordRules.length) {
-      body.append('<tr><td colspan="6" class="empty">暂无关键词</td></tr>');
+      body.append('<div class="empty">暂无关键词</div>');
       return;
     }
     productConfig.keywordRules.forEach(function(rule, index){
       var keyword = escapeHtml(firstWord(rule) || '未命名');
-      var row = $('<tr></tr>').toggleClass('active', index === selectedRuleIndex);
+      var row = $('<div class="rule-card" role="button" tabindex="0"></div>').toggleClass('active', index === selectedRuleIndex);
       var image = $('<img class="thumb" alt="">');
       image.on('error', function(){
         this.onerror = null;
         this.src = previewPlaceholder;
       });
       image.attr('src', proxiedImageUrl(rule.previewPic));
-      var keywordCell = $('<td></td>');
-      var wrap = $('<div class="keyword-cell"></div>');
+      var wrap = $('<div class="rule-main"></div>');
       wrap.append(image);
-      wrap.append('<div><div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div><div>' + statusTag(rule.enabled) + '</div></div>');
-      keywordCell.append(wrap);
-      row.append(keywordCell);
-      row.append('<td>' + renderTags(rule.filterWords) + '</td>');
-      row.append('<td>' + formatNumber(rule.lowCommentNum) + '</td>');
-      row.append('<td>' + formatNumber(rule.lowWorthyNum) + '%</td>');
-      row.append('<td>' + priceRange(rule) + '</td>');
-      var actions = $('<td></td>');
+      wrap.append('<div class="rule-text"><div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div>' + statusTag(rule.enabled) + '</div>');
+      row.append(wrap);
+      row.append('<div class="rule-filter">' + renderTags(rule.filterWords) + '</div>');
+      row.append('<div class="rule-stat stat-comment" data-label="评论"><span>' + formatNumber(rule.lowCommentNum) + '</span></div>');
+      row.append('<div class="rule-stat stat-worthy" data-label="值率"><span>' + formatNumber(rule.lowWorthyNum) + '%</span></div>');
+      row.append('<div class="rule-stat rule-price stat-price" data-label="价格"><span>' + priceRange(rule) + '</span></div>');
       var actionWrap = $('<div class="row-actions"></div>');
-      actionWrap.append(iconButton('search', '预览', 'secondary icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
+      actionWrap.append(iconButton('search', '预览', 'info icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
       actionWrap.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; removeSelectedRule(); }));
-      actions.append(actionWrap);
-      row.append(actions);
+      row.append(actionWrap);
       row.on('click', function(){ selectRule(index); });
+      row.on('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          selectRule(index);
+        }
+      });
       body.append(row);
     });
   }
@@ -1240,7 +1369,7 @@ layui.use(function(){
     setImage($('#previewImage'), currentRule() && currentRule().previewPic ? currentRule().previewPic : previewPlaceholder);
     $('#previewTitle').text(currentRule() ? (firstWord(currentRule()) || '暂无结果') : '暂无结果');
     $('#previewMetrics').empty();
-    renderEmptyPreview('暂无搜索结果', '输入关键词并点击“搜索预览”, 下方会展示匹配商品。');
+    renderEmptyPreview('暂无搜索结果', '等待搜索');
   }
 
   function normalizeConfig(value) {
@@ -1318,9 +1447,7 @@ layui.use(function(){
     rules.forEach(function(rule){
       filters = filters.concat(rule.filterWords || []);
     });
-    $('#summaryRuleCount').text(rules.length);
-    $('#summaryEnabledCount').text(enabled);
-    $('#summaryFilterCount').text(textToList(filters).length);
+    $('#rulesMeta').text(rules.length + ' 条规则 · ' + enabled + ' 启用 · ' + textToList(filters).length + ' 个过滤词');
   }
 
   function listToText(list) {
@@ -1353,10 +1480,20 @@ layui.use(function(){
   }
 
   function priceRange(rule) {
-    var min = rule.minPrice || 0;
-    var max = rule.maxPrice || 0;
+    var min = toFloat(rule.minPrice);
+    var max = toFloat(rule.maxPrice);
     if (!min && !max) { return '不限'; }
-    return (min || 0) + ' - ' + (max || '不限');
+    if (min && max) { return formatPrice(min) + '-' + formatPrice(max); }
+    if (min) { return '≥' + formatPrice(min); }
+    return '≤' + formatPrice(max);
+  }
+
+  function formatPrice(value) {
+    var text = String(value);
+    if (text.indexOf('.') >= 0) {
+      text = text.replace(/0+$/, '').replace(/\.$/, '');
+    }
+    return '¥' + text;
   }
 
   function renderTags(list) {
@@ -1419,7 +1556,7 @@ layui.use(function(){
     info.append('<div class="product-meta">' + keywordTag + '<span class="tag info product-price">' + escapeHtml(item.price || '-') + '</span><span class="tag">值率 ' + escapeHtml(item.worthy || '0') + '%</span><span class="tag">评论 ' + escapeHtml(item.comment || '0') + '</span></div>');
     info.append('<div class="product-source">' + escapeHtml(item.referral || '什么值得买') + (item.date ? ' · ' + escapeHtml(item.date) : '') + '</div>');
     var action = $('<div class="product-action"></div>');
-    action.append('<a class="btn secondary small" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">打开</a>');
+    action.append('<a class="btn web small" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">打开</a>');
     card.append(image);
     card.append(info);
     card.append(action);
