@@ -130,17 +130,6 @@
       height: 100%;
       overflow: hidden;
     }
-    .panel::before {
-      content: "";
-      position: absolute;
-      left: 24px;
-      right: 24px;
-      top: 0;
-      height: 3px;
-      border-radius: 0 0 999px 999px;
-      background: var(--panel-accent, transparent);
-      opacity: .78;
-    }
     .panel + .panel { margin-top: 0; }
     .section-head {
       display: flex;
@@ -160,7 +149,6 @@
       justify-content: flex-end;
       flex-wrap: wrap;
       gap: 8px;
-      min-width: 270px;
     }
     .btn.pill { min-height: 44px; border-radius: 999px; padding: 0 18px; font-weight: 600; }
     .btn.utility { border-radius: 999px; min-height: 38px; }
@@ -204,12 +192,18 @@
       margin-right: 7px;
       animation: spin .8s linear infinite;
     }
+    .btn.icon-btn.loading::before { margin: 0; }
+    .btn.icon-btn.loading svg { display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .btn.small { min-height: 30px; padding: 0 9px; font-size: 12px; }
     .icon-btn {
-      width: 38px;
-      height: 38px;
-      min-height: 38px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      max-width: 44px;
+      max-height: 44px;
+      flex: 0 0 44px;
       padding: 0;
       border-radius: 50%;
     }
@@ -647,6 +641,7 @@
     .title-link { color: var(--text); text-decoration: none; font-weight: 650; }
     .title-link:hover { color: var(--blue); }
     .bottom-bar { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+    .editor-actions { justify-content: space-between; }
     .empty { color: var(--muted); font-size: 13px; padding: 18px; text-align: center; }
     .empty-state {
       display: grid;
@@ -709,7 +704,9 @@
       .product-action { grid-column: 1 / -1; justify-self: stretch; }
       .product-action .btn { width: 100%; }
       .bottom-bar { justify-content: stretch; }
+      .bottom-bar.editor-actions { justify-content: space-between; }
       .bottom-bar .btn { flex: 1; }
+      .bottom-bar .btn.icon-btn { flex: 0 0 44px; }
     }
   </style>
 </head>
@@ -724,8 +721,14 @@
             <div class="meta" id="rulesMeta">0 条规则</div>
           </div>
           <div class="rules-toolbar">
-            <button class="btn primary pill" id="searchAllRules" type="button">全局搜索</button>
-            <button class="btn success utility" id="addRule" type="button">新增关键词</button>
+            <button class="btn primary icon-btn" id="searchAllRules" type="button" aria-label="全局搜索" title="全局搜索">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+              <span class="sr-only">全局搜索</span>
+            </button>
+            <button class="btn success icon-btn" id="addRule" type="button" aria-label="新增关键词" title="新增关键词">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              <span class="sr-only">新增关键词</span>
+            </button>
             <button class="btn refresh icon-btn" id="reloadProductConfig" type="button" aria-label="重新加载" title="重新加载">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M18 3v5h-5"/><path d="M6 21v-5h5"/></svg>
               <span class="sr-only">重新加载</span>
@@ -760,8 +763,14 @@
               </span>
               <span>推送匹配结果</span>
             </label>
-            <button class="btn danger" id="removeRule" type="button">删除</button>
-            <button class="btn copy" id="duplicateRule" type="button">复制</button>
+            <button class="btn danger icon-btn" id="removeRule" type="button" aria-label="删除" title="删除">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 15h10l1-15"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+              <span class="sr-only">删除</span>
+            </button>
+            <button class="btn copy icon-btn" id="duplicateRule" type="button" aria-label="复制" title="复制">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 16H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span class="sr-only">复制</span>
+            </button>
           </div>
         </div>
         <div class="editor-grid">
@@ -807,9 +816,15 @@
             <input id="satisfyNumInput" type="number" min="1">
           </div>
         </div>
-        <div class="bottom-bar">
-          <button class="btn info" id="searchRule" type="button">搜索预览</button>
-          <button class="btn primary" id="saveProductConfig" type="button">保存配置</button>
+        <div class="bottom-bar editor-actions">
+          <button class="btn info icon-btn" id="searchRule" type="button" aria-label="搜索预览" title="搜索预览">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+            <span class="sr-only">搜索预览</span>
+          </button>
+          <button class="btn primary icon-btn" id="saveProductConfig" type="button" aria-label="保存配置" title="保存配置">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+            <span class="sr-only">保存配置</span>
+          </button>
         </div>
       </div>
     </div>
@@ -831,7 +846,10 @@
         </div>
         <div id="previewCards" class="product-list"></div>
         <div class="bottom-bar">
-          <button class="btn web" id="openSearchPage" type="button">打开网页</button>
+          <button class="btn web icon-btn" id="openSearchPage" type="button" aria-label="打开网页" title="打开网页">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+            <span class="sr-only">打开网页</span>
+          </button>
         </div>
       </div>
 
@@ -850,7 +868,10 @@
               </span>
               <span>Telegram Bot</span>
             </label>
-            <button type="button" class="btn primary" id="saveNotifyConfig">保存配置</button>
+            <button type="button" class="btn primary icon-btn" id="saveNotifyConfig" aria-label="保存配置" title="保存配置">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+              <span class="sr-only">保存配置</span>
+            </button>
           </div>
         </div>
         <div class="notify-grid">
@@ -1528,9 +1549,15 @@ layui.use(function(){
 
   function setSearchLoading(loading, selector, idleText, loadingText) {
     var btn = $(selector || '#searchRule');
+    var label = loading ? (loadingText || '搜索中') : (idleText || '搜索预览');
     btn.toggleClass('loading', !!loading);
     btn.prop('disabled', !!loading);
-    btn.text(loading ? (loadingText || '搜索中') : (idleText || '搜索预览'));
+    if (btn.hasClass('icon-btn')) {
+      btn.attr('aria-label', label).attr('title', label);
+      btn.find('.sr-only').text(label);
+      return;
+    }
+    btn.text(label);
   }
 
   function setImage(target, src) {
@@ -1556,7 +1583,7 @@ layui.use(function(){
     info.append('<div class="product-meta">' + keywordTag + '<span class="tag info product-price">' + escapeHtml(item.price || '-') + '</span><span class="tag">值率 ' + escapeHtml(item.worthy || '0') + '%</span><span class="tag">评论 ' + escapeHtml(item.comment || '0') + '</span></div>');
     info.append('<div class="product-source">' + escapeHtml(item.referral || '什么值得买') + (item.date ? ' · ' + escapeHtml(item.date) : '') + '</div>');
     var action = $('<div class="product-action"></div>');
-    action.append('<a class="btn web small" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">打开</a>');
+    action.append('<a class="btn web icon-btn" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '" aria-label="打开网页" title="打开网页">' + iconSvg('external') + '<span class="sr-only">打开网页</span></a>');
     card.append(image);
     card.append(info);
     card.append(action);
@@ -1606,6 +1633,21 @@ layui.use(function(){
   function iconSvg(name) {
     if (name === 'trash') {
       return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 15h10l1-15"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+    }
+    if (name === 'plus') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
+    }
+    if (name === 'refresh') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M18 3v5h-5"/><path d="M6 21v-5h5"/></svg>';
+    }
+    if (name === 'save') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>';
+    }
+    if (name === 'copy') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 16H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    }
+    if (name === 'external') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>';
     }
     if (name === 'x') {
       return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>';
