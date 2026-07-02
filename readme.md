@@ -114,22 +114,19 @@ pushed.json
 
 `pushed.json` 用于记录已推送文章, 避免重复推送.
 
-设置下面任一环境变量后, 程序会使用 PostgreSQL:
+生产环境建议使用 PostgreSQL. 设置 `DATABASE_URL` 后, 程序会使用该连接串连接数据库:
 
-- `DATABASE_URL`
-- `SQL_DSN`
-- `AXONHUB_DB_DSN`
+```bash
+DATABASE_URL="postgres://user:password@host:5432/dbname?sslmode=require"
+```
 
-生产环境建议同时设置:
+如果希望生产环境必须使用 PostgreSQL, 可以同时设置:
 
 ```bash
 REQUIRE_DATABASE_URL=true
 ```
 
-可选表名环境变量:
-
-- `SMZDM_USERS_TABLE`
-- `SMZDM_SETTINGS_TABLE`
+这样在缺少 PostgreSQL 连接串时, 服务会直接启动失败, 避免部署时误用容器内的 SQLite.
 
 ## Docker
 
@@ -166,8 +163,8 @@ docker run -d \
 - Health Check Path: `/health`
 - Branch: `master`
 - Timezone: `Asia/Shanghai`
-- Required env: `DATABASE_URL`
-- Required env: `REQUIRE_DATABASE_URL=true`
+- `DATABASE_URL`: 在 Render 控制台填入 PostgreSQL 连接串
+- `REQUIRE_DATABASE_URL=true`: 已在 `render.yaml` 中配置, 用于禁止生产环境回退到 SQLite
 
 部署后在 Web 面板配置关键词规则和 Telegram Bot 信息.
 
