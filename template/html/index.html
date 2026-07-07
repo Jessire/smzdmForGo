@@ -1699,6 +1699,224 @@
         display: none;
       }
     }
+
+    /* Inner console controls: icon labels, compact switches, card-like fields. */
+    .switch-card {
+      height: 42px;
+      min-height: 42px;
+      padding: 5px 6px 5px 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface-raised);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    }
+    .switch-icon,
+    .field-icon {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 999px;
+      color: var(--section, var(--blue));
+      background: var(--section-soft, var(--blue-soft));
+      border: 1px solid color-mix(in srgb, var(--section, var(--blue)) 22%, transparent);
+    }
+    .switch-icon svg,
+    .field-icon svg,
+    .filter-token button svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .switch-copy,
+    .setting-copy {
+      display: grid;
+      gap: 1px;
+      min-width: 0;
+      color: var(--text);
+      line-height: 1.08;
+    }
+    .switch-copy strong,
+    .setting-copy strong {
+      font-size: 13px;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+    .switch-copy small,
+    .setting-copy small {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 640;
+      white-space: nowrap;
+    }
+    .header-controls .switch-card {
+      gap: 7px;
+    }
+    .header-controls .switch-card .switch {
+      order: 3;
+      margin-left: 1px;
+    }
+    .editor-grid,
+    .notify-grid {
+      gap: 10px;
+      grid-auto-rows: auto;
+    }
+    .editor-grid .field,
+    .notify-grid .field {
+      min-height: 72px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-cell);
+      background: linear-gradient(180deg, var(--surface-raised), var(--surface-soft));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36);
+      display: grid;
+      align-content: start;
+      gap: 8px;
+    }
+    .editor-grid .keyword-field,
+    .editor-grid .filter-field {
+      min-height: 124px;
+    }
+    .field label {
+      min-height: 28px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 760;
+      line-height: 1;
+    }
+    .field label > span:last-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .field input,
+    .field select,
+    .filter-token-box {
+      height: 44px;
+      min-height: 44px;
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--surface-solid) 78%, transparent);
+      border-color: var(--line);
+    }
+    .editor-panel .keyword-field input,
+    .filter-token-box {
+      height: 68px;
+      min-height: 68px;
+    }
+    .editor-panel .keyword-field input {
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .filter-token-box {
+      align-content: flex-start;
+      gap: 6px;
+    }
+    .filter-token {
+      max-width: 100%;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      border: 1px solid rgba(183, 121, 31, 0.2);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .filter-token span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .filter-token button {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(183, 121, 31, 0.12);
+      color: var(--amber);
+      cursor: pointer;
+    }
+    .range-control,
+    .unit-control {
+      height: 44px;
+    }
+    .range-control input,
+    .unit-control input,
+    .unit-control select {
+      height: 44px;
+    }
+    .setting-field {
+      grid-column: span 2;
+    }
+    .setting-row {
+      min-height: 44px;
+      padding: 0 4px 0 2px;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .setting-row .switch {
+      margin-left: auto;
+    }
+    .bottom-bar {
+      flex-basis: 42px;
+      min-height: 42px;
+      margin-top: 10px;
+    }
+    .preview-metrics span {
+      min-height: 22px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-weight: 700;
+    }
+    .product-meta .tag,
+    .rule-filter .tag {
+      border-color: color-mix(in srgb, currentColor 14%, transparent);
+    }
+    @media (max-width: 720px) {
+      .header-controls .switch-card {
+        width: auto;
+      }
+      .header-switch.switch-card > span:last-child {
+        display: grid;
+      }
+      .switch-copy small {
+        display: none;
+      }
+      .editor-grid .field,
+      .notify-grid .field {
+        min-height: 72px;
+      }
+      .editor-grid,
+      .notify-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .editor-grid .field,
+      .notify-grid .field {
+        width: 100%;
+        flex: 0 0 auto;
+      }
+      .setting-field {
+        grid-column: span 1;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1746,13 +1964,15 @@
             <div class="meta" id="editorMeta">未选择关键词</div>
           </div>
           <div class="header-controls">
-            <label class="header-switch">
-              <span>启用</span>
+            <label class="header-switch switch-card" title="规则启用">
+              <span class="switch-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/><path d="M21 12a9 9 0 1 1-3.6-7.2"/></svg>
+              </span>
               <span class="switch">
                 <input id="enabledInput" type="checkbox">
                 <span></span>
               </span>
-              <span>推送匹配结果</span>
+              <span class="switch-copy"><strong>规则启用</strong><small>匹配后推送</small></span>
             </label>
             <button class="btn danger icon-btn" id="removeRule" type="button" aria-label="删除" title="删除">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 15h10l1-15"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
@@ -1766,25 +1986,25 @@
         </div>
         <div class="editor-grid">
           <div class="field keyword-field half">
-            <label for="keywordInput">关键词</label>
+            <label for="keywordInput"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h7"/></svg></span><span>关键词</span></label>
             <input id="keywordInput" type="text" autocomplete="off">
           </div>
           <div class="field filter-field half">
-            <label for="filterInput">过滤词</label>
+            <label for="filterInput"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5h18"/><path d="M7 12h10"/><path d="M10 19h4"/></svg></span><span>过滤词</span></label>
             <div id="filterTokenBox" class="filter-token-box">
               <input id="filterInput" class="filter-token-input" type="text" autocomplete="off" placeholder="输入过滤词">
             </div>
           </div>
           <div class="field">
-            <label for="lowCommentInput">最低评论</label>
+            <label for="lowCommentInput"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg></span><span>最低评论</span></label>
             <input id="lowCommentInput" type="number" min="0">
           </div>
           <div class="field">
-            <label for="lowWorthyInput">最低值率(%)</label>
+            <label for="lowWorthyInput"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 5L5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg></span><span>最低值率(%)</span></label>
             <input id="lowWorthyInput" type="number" min="0">
           </div>
           <div class="field wide">
-            <label>价格区间</label>
+            <label><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg></span><span>价格区间</span></label>
             <div class="range-control">
               <input id="minPriceInput" type="number" min="0" step="0.01" aria-label="最低价格">
               <span class="sep">至</span>
@@ -1792,7 +2012,7 @@
             </div>
           </div>
           <div class="field half">
-            <label for="tickValueInput">扫描间隔</label>
+            <label for="tickValueInput"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span>扫描间隔</span></label>
             <div class="unit-control">
               <input id="tickValueInput" type="number" min="1">
               <select id="tickUnitInput">
@@ -1803,7 +2023,7 @@
             </div>
           </div>
           <div class="field half">
-            <label for="satisfyNumInput">每次推送数量</label>
+            <label for="satisfyNumInput"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span><span>每次推送数量</span></label>
             <input id="satisfyNumInput" type="number" min="1">
           </div>
         </div>
@@ -1851,13 +2071,15 @@
             <div class="meta">Bot Token 与 Chat ID</div>
           </div>
           <div class="header-controls">
-            <label class="header-switch">
-              <span>启用</span>
+            <label class="header-switch switch-card" title="Telegram 启用">
+              <span class="switch-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M21.5 4.5 2.5 12l7 2.5 2.5 7 9.5-17Z"/><path d="m9.5 14.5 4-4"/></svg>
+              </span>
               <span class="switch">
                 <input id="telegramEnabled" type="checkbox">
                 <span></span>
               </span>
-              <span>Telegram Bot</span>
+              <span class="switch-copy"><strong>Bot 启用</strong><small>Telegram</small></span>
             </label>
             <button type="button" class="btn primary icon-btn" id="saveNotifyConfig" aria-label="保存配置" title="保存配置">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
@@ -1867,28 +2089,28 @@
         </div>
         <div class="notify-grid">
           <div class="field">
-            <label for="telegramParseMode">Parse Mode</label>
+            <label for="telegramParseMode"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h13"/></svg></span><span>Parse Mode</span></label>
             <select id="telegramParseMode">
               <option value="HTML">HTML</option>
               <option value="">纯文本</option>
             </select>
           </div>
           <div class="field">
-            <label for="telegramBotToken">Bot Token</label>
+            <label for="telegramBotToken"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 7a4 4 0 1 0-4 4"/><path d="M11 11l9 9"/><path d="M16 16l-2 2"/><path d="M19 13l-2 2"/></svg></span><span>Bot Token</span></label>
             <input id="telegramBotToken" type="password" autocomplete="off">
           </div>
           <div class="field">
-            <label for="telegramChatId">Chat ID</label>
+            <label for="telegramChatId"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v14H8l-4 4V4Z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg></span><span>Chat ID</span></label>
             <input id="telegramChatId" type="text" autocomplete="off">
           </div>
-          <div class="field">
-            <label>链接预览</label>
-            <div class="switch-row">
-              <label class="switch">
+          <div class="field setting-field">
+            <label><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2a5 5 0 0 0 7.1 7.1l1.1-1.1"/></svg></span><span>链接预览</span></label>
+            <div class="switch-row setting-row">
+              <span class="setting-copy"><strong>隐藏网页卡片</strong><small>只发送文本与链接</small></span>
+              <label class="switch" title="禁用网页预览">
                 <input id="telegramDisablePreview" type="checkbox">
                 <span></span>
               </label>
-              <span>禁用网页预览</span>
             </div>
           </div>
         </div>
@@ -1954,8 +2176,10 @@ layui.use(function(){
   bindFilterTokenEditor();
   $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput').on('input change', function(){
     syncEditorToRule();
+    updateSwitchLabels();
     renderRules();
   });
+  $('#telegramEnabled, #telegramDisablePreview').on('change', updateSwitchLabels);
   $('#previewImage').on('error', function(){
     this.onerror = null;
     this.src = previewPlaceholder;
@@ -2152,11 +2376,12 @@ layui.use(function(){
       $('#editorMeta').text('未选择关键词');
       $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput').val('');
       setFilterWordsInEditor([]);
-      $('#enabledInput').prop('checked', false);
-      fillTickEditor(productConfig.tickTime || 10800);
-      $('#satisfyNumInput').val(productConfig.satisfyNum || 5);
-      return;
-    }
+    $('#enabledInput').prop('checked', false);
+    fillTickEditor(productConfig.tickTime || 10800);
+    $('#satisfyNumInput').val(productConfig.satisfyNum || 5);
+    updateSwitchLabels();
+    return;
+  }
     $('#editorMeta').text('第 ' + (selectedRuleIndex + 1) + ' 条规则');
     $('#keywordInput').val(firstWord(rule));
     setFilterWordsInEditor(rule.filterWords);
@@ -2167,6 +2392,7 @@ layui.use(function(){
     $('#enabledInput').prop('checked', !!rule.enabled);
     fillTickEditor(productConfig.tickTime || 10800);
     $('#satisfyNumInput').val(productConfig.satisfyNum || 5);
+    updateSwitchLabels();
   }
 
   function syncEditorToRule() {
@@ -2367,6 +2593,7 @@ layui.use(function(){
     $('#telegramChatId').val(productConfig.telegram.chatId || '');
     $('#telegramParseMode').val(productConfig.telegram.parseMode || 'HTML');
     $('#telegramDisablePreview').prop('checked', !!productConfig.telegram.disableWebPagePreview);
+    updateSwitchLabels();
   }
 
   function readNotifyForm() {
@@ -2377,6 +2604,18 @@ layui.use(function(){
       parseMode: $('#telegramParseMode').val() || 'HTML',
       disableWebPagePreview: $('#telegramDisablePreview').is(':checked')
     };
+  }
+
+  function updateSwitchLabels() {
+    var ruleOn = $('#enabledInput').is(':checked');
+    var botOn = $('#telegramEnabled').is(':checked');
+    var previewOff = $('#telegramDisablePreview').is(':checked');
+    $('.editor-panel .switch-copy strong').text(ruleOn ? '规则启用' : '规则停用');
+    $('.editor-panel .switch-copy small').text(ruleOn ? '匹配后推送' : '不会推送');
+    $('.notification-shell .switch-copy strong').text(botOn ? 'Bot 启用' : 'Bot 停用');
+    $('.notification-shell .switch-copy small').text('Telegram');
+    $('.setting-copy strong').text(previewOff ? '隐藏网页卡片' : '显示网页卡片');
+    $('.setting-copy small').text(previewOff ? '只发送文本与链接' : '保留 Telegram 预览');
   }
 
   function clearPreview() {
