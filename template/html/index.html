@@ -4672,10 +4672,1731 @@
         grid-area: notify !important;
       }
     }
+    /* Trellis UI rebuild: final presentation layer for the product monitor workspace. */
+    body.zero-redesign.trellis-ui {
+      --ui-bg: #f5f7fb;
+      --ui-surface: #ffffff;
+      --ui-surface-2: #f8fafc;
+      --ui-surface-3: #eef3f9;
+      --ui-line: #dbe3ee;
+      --ui-line-strong: #b9c6d6;
+      --ui-text: #111827;
+      --ui-muted: #64748b;
+      --ui-faint: #94a3b8;
+      --ui-blue: #2563eb;
+      --ui-blue-2: #1d4ed8;
+      --ui-blue-soft: #eaf1ff;
+      --ui-green: #059669;
+      --ui-green-soft: #e5f7ef;
+      --ui-red: #dc2626;
+      --ui-red-soft: #feecec;
+      --ui-cyan: #0e7490;
+      --ui-cyan-soft: #e6f7fb;
+      --ui-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+      --ui-shadow-soft: 0 8px 18px rgba(15, 23, 42, 0.05);
+      min-height: 100dvh;
+      color: var(--ui-text);
+      background:
+        linear-gradient(180deg, #ffffff 0%, var(--ui-bg) 48%, #eef3f8 100%),
+        linear-gradient(90deg, rgba(37, 99, 235, 0.06), transparent 38%, rgba(5, 150, 105, 0.05));
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Arial, sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+    @media (prefers-color-scheme: dark) {
+      body.zero-redesign.trellis-ui {
+        --ui-bg: #10151d;
+        --ui-surface: #171d27;
+        --ui-surface-2: #1d2632;
+        --ui-surface-3: #263241;
+        --ui-line: #2f3b4d;
+        --ui-line-strong: #526176;
+        --ui-text: #f8fafc;
+        --ui-muted: #b6c1d1;
+        --ui-faint: #8190a3;
+        --ui-blue: #7aa7ff;
+        --ui-blue-2: #a7c3ff;
+        --ui-blue-soft: rgba(122, 167, 255, 0.16);
+        --ui-green: #5ee0a0;
+        --ui-green-soft: rgba(94, 224, 160, 0.15);
+        --ui-red: #ff8a80;
+        --ui-red-soft: rgba(255, 138, 128, 0.14);
+        --ui-cyan: #67d5ea;
+        --ui-cyan-soft: rgba(103, 213, 234, 0.13);
+        --ui-shadow: 0 16px 38px rgba(0, 0, 0, 0.28);
+        --ui-shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.2);
+        background:
+          linear-gradient(180deg, #151b24 0%, var(--ui-bg) 56%, #0c1118 100%),
+          linear-gradient(90deg, rgba(122, 167, 255, 0.08), transparent 42%, rgba(94, 224, 160, 0.06));
+      }
+    }
+    body.zero-redesign.trellis-ui .app-shell {
+      width: min(1760px, calc(100vw - 24px));
+      height: calc(100dvh - 24px);
+      min-height: 0;
+      margin: 0 auto;
+      padding: 12px 0 24px;
+      display: grid;
+      grid-template-columns: minmax(420px, 500px) minmax(680px, 1fr);
+      grid-template-areas:
+        "rules preview"
+        "editor preview"
+        "notify preview";
+      grid-template-rows: minmax(300px, 1fr) auto minmax(180px, 220px);
+      gap: 12px;
+      align-items: stretch;
+    }
+    body.zero-redesign.trellis-ui .workbench,
+    body.zero-redesign.trellis-ui .inspector-column {
+      display: contents;
+    }
+    body.zero-redesign.trellis-ui .rules-panel.rail-panel {
+      grid-area: rules !important;
+    }
+    body.zero-redesign.trellis-ui .preview-panel.inspector-card {
+      grid-area: preview !important;
+      align-self: stretch;
+    }
+    body.zero-redesign.trellis-ui .editor-panel.studio-panel {
+      grid-area: editor !important;
+    }
+    body.zero-redesign.trellis-ui .notification-shell.notify-panel {
+      grid-area: notify !important;
+    }
+    body.zero-redesign.trellis-ui .rail-panel,
+    body.zero-redesign.trellis-ui .studio-panel,
+    body.zero-redesign.trellis-ui .inspector-card {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--ui-surface) 94%, transparent);
+      box-shadow: var(--ui-shadow);
+      backdrop-filter: blur(18px) saturate(1.08);
+      -webkit-backdrop-filter: blur(18px) saturate(1.08);
+    }
+    body.zero-redesign.trellis-ui .rail-panel::before,
+    body.zero-redesign.trellis-ui .studio-panel::before,
+    body.zero-redesign.trellis-ui .inspector-card::before {
+      display: none;
+    }
+    body.zero-redesign.trellis-ui .rail-panel,
+    body.zero-redesign.trellis-ui .inspector-card {
+      padding: 14px;
+    }
+    body.zero-redesign.trellis-ui .rail-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 12px;
+    }
+    body.zero-redesign.trellis-ui .studio-panel {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      grid-template-rows: auto auto auto;
+      align-content: start;
+    }
+    body.zero-redesign.trellis-ui .rail-head,
+    body.zero-redesign.trellis-ui .studio-head,
+    body.zero-redesign.trellis-ui .inspector-head {
+      min-height: 44px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--ui-line);
+    }
+    body.zero-redesign.trellis-ui h2 {
+      margin: 0;
+      color: var(--ui-text);
+      font-size: 22px;
+      line-height: 1.12;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+    body.zero-redesign.trellis-ui .meta {
+      margin: 5px 0 0;
+      color: var(--ui-muted);
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+    body.zero-redesign.trellis-ui .btn {
+      min-width: 42px;
+      width: auto;
+      height: 42px;
+      min-height: 42px;
+      padding: 0 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--ui-line);
+      border-radius: 999px;
+      background: var(--ui-surface);
+      color: var(--ui-text);
+      box-shadow: none;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 140ms ease, box-shadow 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .btn:hover {
+      border-color: var(--ui-line-strong);
+      background: var(--ui-surface-2);
+      box-shadow: var(--ui-shadow-soft);
+    }
+    body.zero-redesign.trellis-ui .btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+    body.zero-redesign.trellis-ui .icon-btn {
+      width: 42px;
+      min-width: 42px;
+      max-width: 42px;
+      height: 42px;
+      min-height: 42px;
+      max-height: 42px;
+      flex: 0 0 42px;
+      padding: 0;
+      border-radius: 50%;
+    }
+    body.zero-redesign.trellis-ui .btn.primary,
+    body.zero-redesign.trellis-ui .btn.info,
+    body.zero-redesign.trellis-ui .btn.web,
+    body.zero-redesign.trellis-ui #searchAllRules,
+    body.zero-redesign.trellis-ui #searchRule,
+    body.zero-redesign.trellis-ui #saveProductConfig,
+    body.zero-redesign.trellis-ui #saveNotifyConfig,
+    body.zero-redesign.trellis-ui #openSearchPage {
+      border-color: transparent !important;
+      background: var(--ui-blue) !important;
+      color: #ffffff !important;
+      box-shadow: 0 10px 20px color-mix(in srgb, var(--ui-blue) 24%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui .btn.primary:hover,
+    body.zero-redesign.trellis-ui .btn.info:hover,
+    body.zero-redesign.trellis-ui .btn.web:hover,
+    body.zero-redesign.trellis-ui #searchAllRules:hover,
+    body.zero-redesign.trellis-ui #searchRule:hover,
+    body.zero-redesign.trellis-ui #saveProductConfig:hover,
+    body.zero-redesign.trellis-ui #saveNotifyConfig:hover,
+    body.zero-redesign.trellis-ui #openSearchPage:hover {
+      background: var(--ui-blue-2) !important;
+    }
+    body.zero-redesign.trellis-ui #addRule,
+    body.zero-redesign.trellis-ui .btn.success {
+      border-color: color-mix(in srgb, var(--ui-green) 28%, transparent) !important;
+      background: var(--ui-green-soft) !important;
+      color: var(--ui-green) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #reloadProductConfig,
+    body.zero-redesign.trellis-ui #duplicateRule,
+    body.zero-redesign.trellis-ui .btn.refresh,
+    body.zero-redesign.trellis-ui .btn.copy,
+    body.zero-redesign.trellis-ui .btn.secondary {
+      border-color: var(--ui-line) !important;
+      background: var(--ui-surface-2) !important;
+      color: var(--ui-cyan) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #removeRule,
+    body.zero-redesign.trellis-ui .btn.danger {
+      border-color: color-mix(in srgb, var(--ui-red) 26%, transparent) !important;
+      background: var(--ui-red-soft) !important;
+      color: var(--ui-red) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .rules-list {
+      display: grid;
+      min-height: 0;
+      overflow: hidden;
+    }
+    body.zero-redesign.trellis-ui .rules-body {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      height: 100%;
+      padding: 0;
+      max-height: none;
+      min-height: 0;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui .rules-body.is-scrollable {
+      max-height: none;
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui .rule-card {
+      min-height: 116px;
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr) 34px;
+      grid-template-rows: auto auto auto;
+      gap: 8px 10px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: var(--ui-surface);
+      box-shadow: none;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .rule-card:hover {
+      border-color: var(--ui-line-strong);
+      background: var(--ui-surface-2);
+      transform: none;
+      box-shadow: var(--ui-shadow-soft);
+    }
+    body.zero-redesign.trellis-ui .rule-card.active {
+      border-color: color-mix(in srgb, var(--ui-blue) 46%, var(--ui-line));
+      background: linear-gradient(180deg, var(--ui-blue-soft), var(--ui-surface));
+      box-shadow: inset 3px 0 0 var(--ui-blue);
+    }
+    body.zero-redesign.trellis-ui .rule-main {
+      grid-column: 1 / 3;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    body.zero-redesign.trellis-ui .thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--ui-line);
+      background: var(--ui-surface-3);
+      filter: none !important;
+    }
+    body.zero-redesign.trellis-ui .keyword-name {
+      color: var(--ui-text);
+      font-size: 15px;
+      font-weight: 760;
+      line-height: 1.24;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.zero-redesign.trellis-ui .tag,
+    body.zero-redesign.trellis-ui .filter-token {
+      min-height: 24px;
+      border-radius: 999px;
+      border: 1px solid var(--ui-line);
+      background: var(--ui-surface-2);
+      color: var(--ui-muted);
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    body.zero-redesign.trellis-ui .tag.on {
+      color: var(--ui-green);
+      background: var(--ui-green-soft);
+      border-color: color-mix(in srgb, var(--ui-green) 24%, transparent);
+    }
+    body.zero-redesign.trellis-ui .rule-filter {
+      grid-column: 1 / 3;
+      grid-row: 2;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 6px;
+      max-height: 28px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    body.zero-redesign.trellis-ui .row-actions {
+      grid-column: 3;
+      grid-row: 1 / 4;
+      display: grid;
+      gap: 7px;
+      justify-content: end;
+      align-content: start;
+    }
+    body.zero-redesign.trellis-ui .row-actions .icon-btn,
+    body.zero-redesign.trellis-ui .product-action .icon-btn {
+      --ui-action: 34px;
+      width: var(--ui-action);
+      min-width: var(--ui-action);
+      max-width: var(--ui-action);
+      height: var(--ui-action);
+      min-height: var(--ui-action);
+      max-height: var(--ui-action);
+      flex-basis: var(--ui-action);
+    }
+    body.zero-redesign.trellis-ui .rule-metrics {
+      grid-column: 1 / 3;
+      grid-row: 3;
+      display: grid;
+      grid-template-columns: 0.75fr 0.75fr 1fr;
+      gap: 6px;
+      margin: 0;
+    }
+    body.zero-redesign.trellis-ui .rule-stat {
+      min-width: 0;
+      min-height: 38px;
+      display: grid;
+      gap: 3px;
+      padding: 7px 8px;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: var(--ui-surface-2);
+      color: var(--ui-muted);
+      font-size: 10px;
+      font-weight: 760;
+      line-height: 1;
+    }
+    body.zero-redesign.trellis-ui .rule-stat span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ui-text);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    body.zero-redesign.trellis-ui .preview-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px;
+    }
+    body.zero-redesign.trellis-ui .preview-panel .inspector-head {
+      border-bottom-color: color-mix(in srgb, var(--ui-blue) 24%, var(--ui-line));
+    }
+    body.zero-redesign.trellis-ui .preview-panel h2 {
+      font-size: 26px;
+    }
+    body.zero-redesign.trellis-ui .preview-hero {
+      min-height: 132px;
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      margin: 0;
+      padding: 12px;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, var(--ui-surface), var(--ui-surface-2));
+      box-shadow: none;
+    }
+    body.zero-redesign.trellis-ui .preview-hero img {
+      width: 112px;
+      height: 112px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--ui-line);
+      background: var(--ui-surface-3);
+      filter: none !important;
+    }
+    body.zero-redesign.trellis-ui .preview-title {
+      max-height: 70px;
+      overflow: hidden;
+      color: var(--ui-text);
+      font-size: 18px;
+      font-weight: 760;
+      line-height: 1.38;
+    }
+    body.zero-redesign.trellis-ui .preview-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    body.zero-redesign.trellis-ui .preview-metrics span {
+      min-height: 26px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--ui-line);
+      border-radius: 999px;
+      background: var(--ui-surface-2);
+      color: var(--ui-muted);
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+    body.zero-redesign.trellis-ui .product-list {
+      flex: 1 1 auto;
+      max-height: none;
+      min-height: 0;
+      display: grid;
+      grid-auto-rows: minmax(88px, auto);
+      gap: 8px;
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui .product-card {
+      display: grid;
+      grid-template-columns: 70px minmax(0, 1fr) 34px;
+      gap: 12px;
+      align-items: center;
+      min-height: 88px;
+      padding: 9px;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: var(--ui-surface);
+      box-shadow: none;
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .product-card:hover {
+      border-color: color-mix(in srgb, var(--ui-blue) 34%, var(--ui-line));
+      background: var(--ui-surface-2);
+      box-shadow: var(--ui-shadow-soft);
+    }
+    body.zero-redesign.trellis-ui .product-card img {
+      width: 70px;
+      height: 70px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--ui-line);
+      background: var(--ui-surface-3);
+      filter: none !important;
+    }
+    body.zero-redesign.trellis-ui .product-title {
+      color: var(--ui-text);
+      font-size: 14px;
+      line-height: 1.36;
+      font-weight: 730;
+      text-decoration: none;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    body.zero-redesign.trellis-ui .product-source {
+      margin-top: 7px;
+      color: var(--ui-muted);
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    body.zero-redesign.trellis-ui .product-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    body.zero-redesign.trellis-ui .studio-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto;
+      gap: 8px;
+      align-items: stretch;
+      align-content: start;
+      overflow: visible;
+      padding-right: 0;
+    }
+    body.zero-redesign.trellis-ui .field {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: var(--ui-surface-2);
+      box-shadow: none;
+    }
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(1),
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(2) {
+      grid-row: auto;
+      grid-column: span 6;
+    }
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(3),
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(4) {
+      grid-row: auto;
+      grid-column: span 3;
+    }
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(5) {
+      grid-row: auto;
+      grid-column: span 6;
+    }
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(6),
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(7) {
+      grid-row: auto;
+      grid-column: span 6;
+    }
+    body.zero-redesign.trellis-ui .field label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0;
+      color: var(--ui-muted);
+      font-size: 12px;
+      font-weight: 760;
+      line-height: 1.2;
+    }
+    body.zero-redesign.trellis-ui .field-icon,
+    body.zero-redesign.trellis-ui .switch-icon {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--ui-line);
+      border-radius: 50%;
+      background: var(--ui-surface);
+      color: var(--ui-cyan);
+    }
+    body.zero-redesign.trellis-ui .field input,
+    body.zero-redesign.trellis-ui .field select,
+    body.zero-redesign.trellis-ui .field textarea {
+      width: 100%;
+      min-width: 0;
+      height: 42px;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: var(--ui-surface);
+      color: var(--ui-text);
+      outline: none;
+      font-size: 14px;
+      font-weight: 680;
+      box-shadow: none;
+    }
+    body.zero-redesign.trellis-ui .field input:focus,
+    body.zero-redesign.trellis-ui .field select:focus,
+    body.zero-redesign.trellis-ui .filter-token-box:focus-within {
+      border-color: var(--ui-blue);
+      box-shadow: 0 0 0 3px var(--ui-blue-soft);
+    }
+    body.zero-redesign.trellis-ui .editor-panel .keyword-field input {
+      height: 74px;
+      min-height: 74px;
+      font-size: 20px;
+      font-weight: 800;
+      padding: 0 14px;
+    }
+    body.zero-redesign.trellis-ui .filter-token-box {
+      width: 100%;
+      height: 74px;
+      min-height: 74px;
+      max-height: 104px;
+      display: flex;
+      align-content: flex-start;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 7px;
+      overflow-y: auto;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: var(--ui-surface);
+      padding: 8px;
+      cursor: text;
+    }
+    body.zero-redesign.trellis-ui .filter-token {
+      min-height: 28px;
+      padding: 0 2px 0 8px;
+      max-width: 100%;
+    }
+    body.zero-redesign.trellis-ui .filter-token span {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.zero-redesign.trellis-ui .filter-token button {
+      width: 26px;
+      height: 26px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--ui-muted);
+      cursor: pointer;
+    }
+    body.zero-redesign.trellis-ui .filter-token button:hover {
+      background: var(--ui-red-soft);
+      color: var(--ui-red);
+    }
+    body.zero-redesign.trellis-ui .range-control {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 8px;
+    }
+    body.zero-redesign.trellis-ui .unit-control {
+      grid-template-columns: minmax(0, 1fr) 98px;
+      gap: 8px;
+    }
+    body.zero-redesign.trellis-ui .editor-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 0;
+      margin: 0;
+    }
+    body.zero-redesign.trellis-ui .switch-card,
+    body.zero-redesign.trellis-ui .notify-switch {
+      min-height: 42px;
+      border: 1px solid var(--ui-line);
+      border-radius: 999px;
+      background: var(--ui-surface-2);
+      color: var(--ui-text);
+      padding: 6px 8px 6px 9px;
+    }
+    body.zero-redesign.trellis-ui .notify-switch {
+      width: 100%;
+      margin: 0;
+      border-radius: 8px;
+      justify-content: space-between;
+    }
+    body.zero-redesign.trellis-ui .switch-copy strong,
+    body.zero-redesign.trellis-ui .setting-copy strong {
+      color: var(--ui-text);
+      font-size: 12px;
+      font-weight: 780;
+    }
+    body.zero-redesign.trellis-ui .switch-copy small,
+    body.zero-redesign.trellis-ui .setting-copy small {
+      color: var(--ui-muted);
+      font-size: 11px;
+      font-weight: 620;
+    }
+    body.zero-redesign.trellis-ui .switch > span {
+      background: var(--ui-line-strong);
+    }
+    body.zero-redesign.trellis-ui .switch input:checked + span,
+    body.zero-redesign.trellis-ui #enabledInput:checked + span,
+    body.zero-redesign.trellis-ui #telegramEnabled:checked + span {
+      background: var(--ui-green) !important;
+    }
+    body.zero-redesign.trellis-ui .notify-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      max-height: 154px;
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field {
+      grid-column: auto;
+      min-height: 74px;
+      padding: 9px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(2),
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(3),
+    body.zero-redesign.trellis-ui .notify-grid .setting-field {
+      grid-column: span 2;
+    }
+    body.zero-redesign.trellis-ui .empty,
+    body.zero-redesign.trellis-ui .empty-state {
+      min-height: 156px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 8px;
+      border: 1px dashed var(--ui-line-strong);
+      border-radius: 8px;
+      background: var(--ui-surface-2);
+      color: var(--ui-muted);
+      text-align: center;
+      padding: 18px 12px;
+    }
+    body.zero-redesign.trellis-ui .empty-state svg {
+      width: 48px;
+      height: 48px;
+      opacity: 0.62;
+      filter: none !important;
+    }
+    body.zero-redesign.trellis-ui :focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--ui-blue) 32%, transparent);
+      outline-offset: 2px;
+    }
+    body.zero-redesign.trellis-ui .rules-body::-webkit-scrollbar,
+    body.zero-redesign.trellis-ui .rule-filter::-webkit-scrollbar,
+    body.zero-redesign.trellis-ui .product-list::-webkit-scrollbar,
+    body.zero-redesign.trellis-ui .notify-grid::-webkit-scrollbar,
+    body.zero-redesign.trellis-ui .filter-token-box::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    body.zero-redesign.trellis-ui .rules-body::-webkit-scrollbar-thumb,
+    body.zero-redesign.trellis-ui .rule-filter::-webkit-scrollbar-thumb,
+    body.zero-redesign.trellis-ui .product-list::-webkit-scrollbar-thumb,
+    body.zero-redesign.trellis-ui .notify-grid::-webkit-scrollbar-thumb,
+    body.zero-redesign.trellis-ui .filter-token-box::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--ui-muted) 32%, transparent);
+    }
+    @media (max-width: 1370px) {
+      body.zero-redesign.trellis-ui .app-shell {
+        width: min(1120px, calc(100vw - 24px));
+        height: calc(100dvh - 24px);
+        grid-template-columns: minmax(360px, 440px) minmax(0, 1fr);
+        grid-template-areas:
+          "rules preview"
+          "editor preview"
+          "notify preview";
+        grid-template-rows: minmax(280px, 1fr) auto minmax(180px, 220px);
+      }
+      body.zero-redesign.trellis-ui .workbench,
+      body.zero-redesign.trellis-ui .inspector-column {
+        display: contents;
+      }
+      body.zero-redesign.trellis-ui .notify-grid {
+        max-height: 340px;
+      }
+    }
+    @media (max-width: 920px) {
+      body.zero-redesign.trellis-ui .app-shell {
+        width: calc(100vw - 18px);
+        height: auto;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "rules"
+          "editor"
+          "preview"
+          "notify";
+        gap: 10px;
+        padding: 9px 0 20px;
+      }
+      body.zero-redesign.trellis-ui .rail-panel,
+      body.zero-redesign.trellis-ui .studio-panel,
+      body.zero-redesign.trellis-ui .inspector-card {
+        padding: 12px;
+      }
+      body.zero-redesign.trellis-ui .rail-head,
+      body.zero-redesign.trellis-ui .studio-head,
+      body.zero-redesign.trellis-ui .inspector-head {
+        min-height: 0;
+        flex-direction: column;
+        gap: 10px;
+      }
+      body.zero-redesign.trellis-ui .rail-actions,
+      body.zero-redesign.trellis-ui .header-controls {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+      body.zero-redesign.trellis-ui .studio-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      body.zero-redesign.trellis-ui .studio-grid .field:nth-child(n),
+      body.zero-redesign.trellis-ui .field,
+      body.zero-redesign.trellis-ui .field.keyword-field,
+      body.zero-redesign.trellis-ui .field.filter-field,
+      body.zero-redesign.trellis-ui .field.wide {
+        grid-column: span 6;
+      }
+      body.zero-redesign.trellis-ui .preview-hero {
+        grid-template-columns: 88px minmax(0, 1fr);
+      }
+      body.zero-redesign.trellis-ui .preview-hero img {
+        width: 88px;
+        height: 88px;
+      }
+      body.zero-redesign.trellis-ui .product-list {
+        max-height: none;
+        overflow-y: visible;
+      }
+      body.zero-redesign.trellis-ui .notify-grid {
+        grid-template-columns: 1fr;
+        max-height: none;
+        overflow-y: visible;
+      }
+      body.zero-redesign.trellis-ui .notify-grid .field:nth-child(n) {
+        grid-column: auto;
+      }
+    }
+    @media (max-width: 640px) {
+      body.zero-redesign.trellis-ui h2 {
+        font-size: 21px;
+      }
+      body.zero-redesign.trellis-ui .preview-panel h2 {
+        font-size: 23px;
+      }
+      body.zero-redesign.trellis-ui .rule-card {
+        grid-template-columns: 52px minmax(0, 1fr) 34px;
+      }
+      body.zero-redesign.trellis-ui .rule-main {
+        grid-template-columns: 52px minmax(0, 1fr);
+      }
+      body.zero-redesign.trellis-ui .thumb {
+        width: 52px;
+        height: 52px;
+      }
+      body.zero-redesign.trellis-ui .product-card {
+        grid-template-columns: 58px minmax(0, 1fr) 34px;
+      }
+      body.zero-redesign.trellis-ui .product-card img {
+        width: 58px;
+        height: 58px;
+      }
+      body.zero-redesign.trellis-ui .range-control,
+      body.zero-redesign.trellis-ui .unit-control {
+        grid-template-columns: 1fr;
+      }
+      body.zero-redesign.trellis-ui .range-control .sep {
+        display: none;
+      }
+    }
+    /* Trellis final app shell, based on the approved reminder-workbench PRD. */
+    body.zero-redesign.trellis-ui {
+      --app-bg: #f5f7fb;
+      --app-surface: #ffffff;
+      --app-surface-soft: #f7f9fc;
+      --app-surface-strong: #eef3f9;
+      --app-line: #dde5ef;
+      --app-line-strong: #b8c6d8;
+      --app-text: #111827;
+      --app-muted: #65748a;
+      --app-faint: #93a1b4;
+      --app-primary: #2563eb;
+      --app-primary-strong: #1d4ed8;
+      --app-primary-soft: #eaf1ff;
+      --app-success: #059669;
+      --app-success-soft: #e7f7ef;
+      --app-danger: #dc2626;
+      --app-danger-soft: #feecec;
+      --app-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      --app-radius: 10px;
+      margin: 0;
+      min-height: 100dvh;
+      overflow: hidden;
+      color: var(--app-text);
+      background:
+        linear-gradient(180deg, #ffffff 0%, var(--app-bg) 58%, #edf2f8 100%),
+        linear-gradient(90deg, rgba(37, 99, 235, 0.05), transparent 42%, rgba(5, 150, 105, 0.04));
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Arial, sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+    @media (prefers-color-scheme: dark) {
+      body.zero-redesign.trellis-ui {
+        --app-bg: #10151d;
+        --app-surface: #171d27;
+        --app-surface-soft: #1d2632;
+        --app-surface-strong: #263241;
+        --app-line: #2f3b4d;
+        --app-line-strong: #526176;
+        --app-text: #f8fafc;
+        --app-muted: #b6c1d1;
+        --app-faint: #8190a3;
+        --app-primary: #7aa7ff;
+        --app-primary-strong: #a7c3ff;
+        --app-primary-soft: rgba(122, 167, 255, 0.16);
+        --app-success: #5ee0a0;
+        --app-success-soft: rgba(94, 224, 160, 0.15);
+        --app-danger: #ff8a80;
+        --app-danger-soft: rgba(255, 138, 128, 0.14);
+        --app-shadow: 0 16px 42px rgba(0, 0, 0, 0.3);
+        background:
+          linear-gradient(180deg, #151b24 0%, var(--app-bg) 58%, #0c1118 100%),
+          linear-gradient(90deg, rgba(122, 167, 255, 0.08), transparent 42%, rgba(94, 224, 160, 0.06));
+      }
+    }
+    body.zero-redesign.trellis-ui .app-shell {
+      width: min(1720px, calc(100vw - 24px));
+      height: calc(100dvh - 24px);
+      min-height: 0;
+      margin: 12px auto;
+      padding: 0;
+      display: grid;
+      grid-template-columns: minmax(330px, 390px) minmax(0, 7fr) minmax(260px, 3fr);
+      grid-template-rows: 60px minmax(300px, auto) minmax(260px, 1fr);
+      grid-template-areas:
+        "topbar topbar topbar"
+        "rules editor notify"
+        "rules preview preview";
+      gap: 12px;
+      align-items: stretch;
+    }
+    body.zero-redesign.trellis-ui .workbench,
+    body.zero-redesign.trellis-ui .inspector-column {
+      display: contents;
+    }
+    body.zero-redesign.trellis-ui .app-topbar {
+      grid-area: topbar;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-width: 0;
+      padding: 0 18px;
+      border: 1px solid var(--app-line);
+      border-radius: var(--app-radius);
+      background: color-mix(in srgb, var(--app-surface) 94%, transparent);
+      box-shadow: var(--app-shadow);
+      backdrop-filter: blur(16px) saturate(1.08);
+      -webkit-backdrop-filter: blur(16px) saturate(1.08);
+    }
+    body.zero-redesign.trellis-ui .top-brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      min-width: 0;
+    }
+    body.zero-redesign.trellis-ui .top-brand strong {
+      color: var(--app-text);
+      font-size: 18px;
+      font-weight: 820;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    body.zero-redesign.trellis-ui .top-brand span,
+    body.zero-redesign.trellis-ui .top-status span {
+      color: var(--app-muted);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    body.zero-redesign.trellis-ui .top-status {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+    }
+    body.zero-redesign.trellis-ui .top-pill {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--app-line);
+      border-radius: 999px;
+      background: var(--app-surface-soft);
+      padding: 0 12px;
+    }
+    body.zero-redesign.trellis-ui .top-pill.ok {
+      color: var(--app-success);
+      background: var(--app-success-soft);
+      border-color: color-mix(in srgb, var(--app-success) 26%, transparent);
+    }
+    body.zero-redesign.trellis-ui .top-pill.dirty {
+      color: var(--app-primary);
+      background: var(--app-primary-soft);
+      border-color: color-mix(in srgb, var(--app-primary) 28%, transparent);
+    }
+    body.zero-redesign.trellis-ui .top-pill.off {
+      color: var(--app-muted);
+    }
+    body.zero-redesign.trellis-ui .rules-panel.rail-panel {
+      grid-area: rules !important;
+    }
+    body.zero-redesign.trellis-ui .editor-panel.studio-panel {
+      grid-area: editor !important;
+    }
+    body.zero-redesign.trellis-ui .notification-shell.notify-panel {
+      grid-area: notify !important;
+    }
+    body.zero-redesign.trellis-ui .preview-panel.inspector-card {
+      grid-area: preview !important;
+    }
+    body.zero-redesign.trellis-ui .rail-panel,
+    body.zero-redesign.trellis-ui .studio-panel,
+    body.zero-redesign.trellis-ui .inspector-card {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid var(--app-line);
+      border-radius: var(--app-radius);
+      background: color-mix(in srgb, var(--app-surface) 94%, transparent);
+      box-shadow: var(--app-shadow);
+      backdrop-filter: blur(16px) saturate(1.06);
+      -webkit-backdrop-filter: blur(16px) saturate(1.06);
+    }
+    body.zero-redesign.trellis-ui .rail-panel::before,
+    body.zero-redesign.trellis-ui .studio-panel::before,
+    body.zero-redesign.trellis-ui .inspector-card::before {
+      display: none !important;
+    }
+    body.zero-redesign.trellis-ui .rail-panel,
+    body.zero-redesign.trellis-ui .studio-panel,
+    body.zero-redesign.trellis-ui .inspector-card {
+      padding: 14px;
+    }
+    body.zero-redesign.trellis-ui .rail-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 12px;
+    }
+    body.zero-redesign.trellis-ui .studio-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      align-content: stretch;
+    }
+    body.zero-redesign.trellis-ui .notification-shell {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 12px;
+    }
+    body.zero-redesign.trellis-ui .preview-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 12px;
+    }
+    body.zero-redesign.trellis-ui .rail-head,
+    body.zero-redesign.trellis-ui .studio-head,
+    body.zero-redesign.trellis-ui .inspector-head {
+      min-height: 44px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--app-line);
+    }
+    body.zero-redesign.trellis-ui h2 {
+      margin: 0;
+      color: var(--app-text);
+      font-size: 20px;
+      font-weight: 780;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+    body.zero-redesign.trellis-ui .meta {
+      margin: 5px 0 0;
+      color: var(--app-muted);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    body.zero-redesign.trellis-ui .btn {
+      min-width: 42px;
+      width: auto;
+      height: 42px;
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--app-line);
+      border-radius: 999px;
+      background: var(--app-surface);
+      color: var(--app-text);
+      box-shadow: none;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 140ms ease, box-shadow 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .btn:hover {
+      border-color: var(--app-line-strong);
+      background: var(--app-surface-soft);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+    }
+    body.zero-redesign.trellis-ui .btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+    body.zero-redesign.trellis-ui .icon-btn {
+      width: 42px;
+      min-width: 42px;
+      max-width: 42px;
+      height: 42px;
+      min-height: 42px;
+      max-height: 42px;
+      flex: 0 0 42px;
+      padding: 0;
+      border-radius: 50%;
+    }
+    body.zero-redesign.trellis-ui .btn.primary,
+    body.zero-redesign.trellis-ui #saveProductConfig,
+    body.zero-redesign.trellis-ui #searchAllRules {
+      border-color: transparent !important;
+      background: var(--app-primary) !important;
+      color: #fff !important;
+      box-shadow: 0 10px 20px color-mix(in srgb, var(--app-primary) 24%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui #searchRule,
+    body.zero-redesign.trellis-ui #openSearchPage,
+    body.zero-redesign.trellis-ui .btn.info,
+    body.zero-redesign.trellis-ui .btn.web {
+      border-color: color-mix(in srgb, var(--app-primary) 28%, transparent) !important;
+      background: var(--app-primary-soft) !important;
+      color: var(--app-primary) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #saveNotifyConfig,
+    body.zero-redesign.trellis-ui #addRule,
+    body.zero-redesign.trellis-ui .btn.success {
+      border-color: color-mix(in srgb, var(--app-success) 26%, transparent) !important;
+      background: var(--app-success-soft) !important;
+      color: var(--app-success) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #reloadProductConfig,
+    body.zero-redesign.trellis-ui #duplicateRule,
+    body.zero-redesign.trellis-ui .btn.refresh,
+    body.zero-redesign.trellis-ui .btn.copy,
+    body.zero-redesign.trellis-ui .btn.secondary {
+      border-color: var(--app-line) !important;
+      background: var(--app-surface-soft) !important;
+      color: var(--app-muted) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #removeRule,
+    body.zero-redesign.trellis-ui .btn.danger {
+      border-color: color-mix(in srgb, var(--app-danger) 26%, transparent) !important;
+      background: var(--app-danger-soft) !important;
+      color: var(--app-danger) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .rules-list {
+      display: grid;
+      min-height: 0;
+      overflow: hidden;
+    }
+    body.zero-redesign.trellis-ui .rules-body {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      height: 100%;
+      min-height: 0;
+      max-height: none !important;
+      overflow-y: auto;
+      padding: 0 3px 0 0;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui .rule-card {
+      min-height: 172px;
+      display: grid;
+      grid-template-columns: 66px minmax(0, 1fr) 34px;
+      grid-template-rows: 66px 28px 42px;
+      gap: 8px 10px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid var(--app-line);
+      border-radius: var(--app-radius);
+      background: var(--app-surface);
+      box-shadow: none;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .rule-card:hover {
+      border-color: var(--app-line-strong);
+      background: var(--app-surface-soft);
+      transform: none;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+    }
+    body.zero-redesign.trellis-ui .rule-card.active {
+      border-color: var(--app-primary);
+      background: linear-gradient(180deg, var(--app-primary-soft), var(--app-surface));
+      box-shadow: inset 3px 0 0 var(--app-primary);
+    }
+    body.zero-redesign.trellis-ui .rule-main {
+      grid-column: 1 / 3;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: 66px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    body.zero-redesign.trellis-ui .thumb {
+      width: 66px;
+      height: 66px;
+      border-radius: var(--app-radius);
+      object-fit: cover;
+      border: 1px solid var(--app-line);
+      background: var(--app-surface-strong);
+      filter: none !important;
+    }
+    body.zero-redesign.trellis-ui .rule-text {
+      min-height: 66px;
+      display: grid;
+      align-content: center;
+      justify-items: start;
+      gap: 8px;
+      min-width: 0;
+    }
+    body.zero-redesign.trellis-ui .keyword-name {
+      max-width: 100%;
+      overflow: hidden;
+      color: var(--app-text);
+      font-size: 15px;
+      font-weight: 780;
+      line-height: 1.24;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.zero-redesign.trellis-ui .tag,
+    body.zero-redesign.trellis-ui .filter-token {
+      min-height: 24px;
+      border-radius: 999px;
+      border: 1px solid var(--app-line);
+      background: var(--app-surface-soft);
+      color: var(--app-muted);
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 22px;
+      box-shadow: none;
+      white-space: nowrap;
+    }
+    body.zero-redesign.trellis-ui .tag.on {
+      color: var(--app-success);
+      background: var(--app-success-soft);
+      border-color: color-mix(in srgb, var(--app-success) 24%, transparent);
+    }
+    body.zero-redesign.trellis-ui .rule-filter {
+      grid-column: 1 / 3;
+      grid-row: 2;
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 6px;
+      max-height: 28px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    body.zero-redesign.trellis-ui .row-actions {
+      grid-column: 3;
+      grid-row: 1 / 3;
+      display: grid;
+      gap: 7px;
+      justify-content: end;
+      align-content: start;
+    }
+    body.zero-redesign.trellis-ui .row-actions .icon-btn,
+    body.zero-redesign.trellis-ui .product-action .icon-btn {
+      --small-action: 34px;
+      width: var(--small-action);
+      min-width: var(--small-action);
+      max-width: var(--small-action);
+      height: var(--small-action);
+      min-height: var(--small-action);
+      max-height: var(--small-action);
+      flex-basis: var(--small-action);
+    }
+    body.zero-redesign.trellis-ui .rule-metrics {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      display: grid;
+      grid-template-columns: 0.72fr 0.72fr 1fr;
+      gap: 6px;
+      margin: 0;
+    }
+    body.zero-redesign.trellis-ui .rule-stat {
+      min-width: 0;
+      min-height: 36px;
+      display: grid;
+      gap: 3px;
+      padding: 7px 8px;
+      border: 1px solid var(--app-line);
+      border-radius: var(--app-radius);
+      background: var(--app-surface-soft);
+      color: var(--app-muted);
+      font-size: 10px;
+      font-weight: 760;
+      line-height: 1;
+    }
+    body.zero-redesign.trellis-ui .rule-stat span {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--app-text);
+      font-size: 12px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.zero-redesign.trellis-ui .studio-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+      align-content: start;
+      min-height: 0;
+      overflow: visible;
+      padding-right: 0;
+    }
+    body.zero-redesign.trellis-ui .field {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--app-line);
+      border-radius: var(--app-radius);
+      background: var(--app-surface-soft);
+      box-shadow: none;
+    }
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(1),
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(2) {
+      grid-column: span 6;
+    }
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(3),
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(4) {
+      grid-column: span 3;
+    }
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(5) {
+      grid-column: span 6;
+    }
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(6),
+    body.zero-redesign.trellis-ui .studio-grid .field:nth-child(7) {
+      grid-column: span 6;
+    }
+    body.zero-redesign.trellis-ui .field label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0;
+      color: var(--app-muted);
+      font-size: 12px;
+      font-weight: 760;
+      line-height: 1.2;
+    }
+    body.zero-redesign.trellis-ui .field-icon,
+    body.zero-redesign.trellis-ui .switch-icon {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--app-line);
+      border-radius: 50%;
+      background: var(--app-surface);
+      color: var(--app-muted);
+    }
+    body.zero-redesign.trellis-ui .field input,
+    body.zero-redesign.trellis-ui .field select,
+    body.zero-redesign.trellis-ui .field textarea {
+      width: 100%;
+      min-width: 0;
+      height: 42px;
+      border: 1px solid var(--app-line);
+      border-radius: var(--app-radius);
+      background: var(--app-surface);
+      color: var(--app-text);
+      outline: none;
+      font-size: 14px;
+      font-weight: 680;
+      box-shadow: none;
+    }
+    body.zero-redesign.trellis-ui .field input:focus,
+    body.zero-redesign.trellis-ui .field select:focus,
+    body.zero-redesign.trellis-ui .filter-token-box:focus-within {
+      border-color: var(--app-primary);
+      box-shadow: 0 0 0 3px var(--app-primary-soft);
+    }
+    body.zero-redesign.trellis-ui .editor-panel .keyword-field input {
+      height: 74px;
+      min-height: 74px;
+      padding: 0 14px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+    body.zero-redesign.trellis-ui .filter-token-box {
+      width: 100%;
+      height: 74px;
+      min-height: 74px;
+      max-height: 104px;
+      display: flex;
+      align-content: flex-start;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 7px;
+      overflow-y: auto;
+      border: 1px solid var(--app-line);
+      border-radius: var(--app-radius);
+      background: var(--app-surface);
+      padding: 8px;
+      cursor: text;
+    }
+    body.zero-redesign.trellis-ui .filter-token {
+      min-height: 28px;
+      padding: 0 2px 0 8px;
+      max-width: 100%;
+      line-height: 26px;
+    }
+    body.zero-redesign.trellis-ui .filter-token span {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.zero-redesign.trellis-ui .filter-token button {
+      width: 26px;
+      height: 26px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--app-muted);
+      cursor: pointer;
+    }
+    body.zero-redesign.trellis-ui .filter-token button:hover {
+      background: var(--app-danger-soft);
+      color: var(--app-danger);
+    }
+    body.zero-redesign.trellis-ui .range-control {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 8px;
+    }
+    body.zero-redesign.trellis-ui .unit-control {
+      grid-template-columns: minmax(0, 1fr) 98px;
+      gap: 8px;
+    }
+    body.zero-redesign.trellis-ui .editor-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 0;
+      margin: 0;
+    }
+    body.zero-redesign.trellis-ui .switch-card,
+    body.zero-redesign.trellis-ui .notify-switch {
+      min-height: 42px;
+      border: 1px solid var(--app-line);
+      border-radius: 999px;
+      background: var(--app-surface-soft);
+      color: var(--app-text);
+      padding: 6px 8px 6px 9px;
+    }
+    body.zero-redesign.trellis-ui .notify-switch {
+      width: 100%;
+      margin: 0;
+      border-radius: var(--app-radius);
+      justify-content: space-between;
+    }
+    body.zero-redesign.trellis-ui .switch input:checked + span,
+    body.zero-redesign.trellis-ui #enabledInput:checked + span,
+    body.zero-redesign.trellis-ui #telegramEnabled:checked + span {
+      background: var(--app-success) !important;
+    }
+    body.zero-redesign.trellis-ui .notify-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field {
+      grid-column: auto;
+      min-height: 74px;
+      padding: 9px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(2),
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(3),
+    body.zero-redesign.trellis-ui .notify-grid .setting-field {
+      grid-column: span 2;
+    }
+    body.zero-redesign.trellis-ui .preview-hero {
+      display: none !important;
+    }
+    body.zero-redesign.trellis-ui .product-list {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(112px, 1fr));
+      gap: 10px;
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui .product-card {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr) 34px;
+      gap: 12px;
+      align-items: center;
+      min-height: 112px;
+      height: 100%;
+      padding: 10px;
+      border: 1px solid var(--app-line);
+      border-radius: var(--app-radius);
+      background: var(--app-surface);
+      box-shadow: none;
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .product-card:hover {
+      border-color: color-mix(in srgb, var(--app-primary) 34%, var(--app-line));
+      background: var(--app-surface-soft);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+    }
+    body.zero-redesign.trellis-ui .product-card img {
+      width: 82px;
+      height: 82px;
+      border-radius: var(--app-radius);
+      object-fit: cover;
+      border: 1px solid var(--app-line);
+      background: var(--app-surface-strong);
+      filter: none !important;
+    }
+    body.zero-redesign.trellis-ui .product-title {
+      color: var(--app-text);
+      font-size: 14px;
+      line-height: 1.36;
+      font-weight: 740;
+      text-decoration: none;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    body.zero-redesign.trellis-ui .product-source {
+      margin-top: 7px;
+      color: var(--app-muted);
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    body.zero-redesign.trellis-ui .product-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    body.zero-redesign.trellis-ui .product-price {
+      color: var(--app-primary);
+      background: var(--app-primary-soft);
+      border-color: color-mix(in srgb, var(--app-primary) 22%, transparent);
+    }
+    body.zero-redesign.trellis-ui .empty,
+    body.zero-redesign.trellis-ui .empty-state {
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 8px;
+      border: 1px dashed var(--app-line-strong);
+      border-radius: var(--app-radius);
+      background: var(--app-surface-soft);
+      color: var(--app-muted);
+      text-align: center;
+      padding: 18px 12px;
+    }
+    body.zero-redesign.trellis-ui .product-list .empty-state {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+    }
+    body.zero-redesign.trellis-ui .rules-body::-webkit-scrollbar,
+    body.zero-redesign.trellis-ui .rule-filter::-webkit-scrollbar,
+    body.zero-redesign.trellis-ui .product-list::-webkit-scrollbar,
+    body.zero-redesign.trellis-ui .notify-grid::-webkit-scrollbar,
+    body.zero-redesign.trellis-ui .filter-token-box::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    body.zero-redesign.trellis-ui .rules-body::-webkit-scrollbar-thumb,
+    body.zero-redesign.trellis-ui .rule-filter::-webkit-scrollbar-thumb,
+    body.zero-redesign.trellis-ui .product-list::-webkit-scrollbar-thumb,
+    body.zero-redesign.trellis-ui .notify-grid::-webkit-scrollbar-thumb,
+    body.zero-redesign.trellis-ui .filter-token-box::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--app-muted) 32%, transparent);
+    }
+    body.zero-redesign.trellis-ui :focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--app-primary) 32%, transparent);
+      outline-offset: 2px;
+    }
+    @media (max-width: 1180px) {
+      body.zero-redesign.trellis-ui {
+        overflow: auto;
+      }
+      body.zero-redesign.trellis-ui .app-shell {
+        width: calc(100vw - 20px);
+        height: auto;
+        min-height: calc(100dvh - 20px);
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+          "topbar"
+          "rules"
+          "editor"
+          "preview"
+          "notify";
+      }
+      body.zero-redesign.trellis-ui .app-topbar {
+        min-height: 58px;
+        flex-wrap: wrap;
+        padding: 10px 14px;
+      }
+      body.zero-redesign.trellis-ui .rules-body {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(300px, 340px);
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      body.zero-redesign.trellis-ui .rail-panel,
+      body.zero-redesign.trellis-ui .studio-panel,
+      body.zero-redesign.trellis-ui .inspector-card {
+        height: auto;
+      }
+      body.zero-redesign.trellis-ui .product-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: none;
+      }
+      body.zero-redesign.trellis-ui .notify-grid {
+        grid-template-columns: 1fr;
+        overflow: visible;
+      }
+      body.zero-redesign.trellis-ui .notify-grid .field:nth-child(n) {
+        grid-column: auto;
+      }
+    }
+    @media (max-width: 680px) {
+      body.zero-redesign.trellis-ui .app-shell {
+        width: calc(100vw - 16px);
+        margin: 8px auto;
+        gap: 10px;
+      }
+      body.zero-redesign.trellis-ui .top-status {
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+      body.zero-redesign.trellis-ui .rail-head,
+      body.zero-redesign.trellis-ui .studio-head,
+      body.zero-redesign.trellis-ui .inspector-head {
+        min-height: 0;
+        flex-direction: column;
+        gap: 10px;
+      }
+      body.zero-redesign.trellis-ui .rail-actions,
+      body.zero-redesign.trellis-ui .header-controls {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+      body.zero-redesign.trellis-ui .studio-grid,
+      body.zero-redesign.trellis-ui .product-list {
+        grid-template-columns: 1fr;
+      }
+      body.zero-redesign.trellis-ui .studio-grid .field:nth-child(n),
+      body.zero-redesign.trellis-ui .field,
+      body.zero-redesign.trellis-ui .field.keyword-field,
+      body.zero-redesign.trellis-ui .field.filter-field,
+      body.zero-redesign.trellis-ui .field.wide {
+        grid-column: auto;
+      }
+      body.zero-redesign.trellis-ui .product-card {
+        grid-template-columns: 72px minmax(0, 1fr) 34px;
+      }
+      body.zero-redesign.trellis-ui .product-card img {
+        width: 72px;
+        height: 72px;
+      }
+      body.zero-redesign.trellis-ui .range-control,
+      body.zero-redesign.trellis-ui .unit-control {
+        grid-template-columns: 1fr;
+      }
+      body.zero-redesign.trellis-ui .range-control .sep {
+        display: none;
+      }
+    }
   </style>
 </head>
-<body class="zero-redesign">
+<body class="zero-redesign trellis-ui">
 <div class="app-shell">
+  <header class="app-topbar" aria-label="全局状态">
+    <div class="top-brand">
+      <strong>商品提醒规则</strong>
+      <span id="topRuleStatus">等待配置</span>
+    </div>
+    <div class="top-status">
+      <span class="top-pill" id="topSaveStatus">配置就绪</span>
+      <span class="top-pill off" id="topTelegramStatus">TG 未启用</span>
+      <span class="top-pill">跟随系统主题</span>
+    </div>
+  </header>
   <aside class="rules-panel rail-panel" aria-label="商品规则">
     <div class="rail-head">
       <div>
@@ -4881,7 +6602,18 @@ var productConfig = {
 var selectedRuleIndex = -1;
 var previewOpenUrl = '';
 var filterEditorWords = [];
-var previewPlaceholder = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><rect width="100%" height="100%" rx="18" fill="#f0f0f2"/><circle cx="116" cy="108" r="34" fill="none" stroke="#b7b7bd" stroke-width="8"/><path d="M142 134l34 34" stroke="#b7b7bd" stroke-width="9" stroke-linecap="round"/><text x="50%" y="196" dominant-baseline="middle" text-anchor="middle" fill="#8e8e93" font-family="Arial" font-size="16">No Image</text></svg>');
+var previewPlaceholder = placeholderImage('商');
+
+function placeholderImage(label) {
+  var text = String(label || '商').trim().slice(0, 1) || '商';
+  text = text.replace(/[&<>]/g, function(ch){ return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[ch]; });
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">' +
+    '<rect width="240" height="240" rx="22" fill="#eef3f9"/>' +
+    '<rect x="1" y="1" width="238" height="238" rx="21" fill="none" stroke="#dbe3ee" stroke-width="2"/>' +
+    '<text x="120" y="132" dominant-baseline="middle" text-anchor="middle" fill="#65748a" font-family="Arial, sans-serif" font-size="76" font-weight="700">' + text + '</text>' +
+    '</svg>';
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
 
 layui.use(function(){
   var layer = layui.layer;
@@ -4921,6 +6653,7 @@ layui.use(function(){
     syncEditorToRule();
     updateSwitchLabels();
     renderRules();
+    markConfigDirty();
   });
   $('#telegramEnabled, #telegramDisablePreview').on('change', updateSwitchLabels);
   $('#previewImage').on('error', function(){
@@ -5055,6 +6788,7 @@ layui.use(function(){
         }
         selectRule(selectedRuleIndex);
         layer.msg(res.msg || '保存成功');
+        markConfigSaved();
         hydrateRuleThumbnails();
       },
       error: function(xhr) {
@@ -5080,9 +6814,9 @@ layui.use(function(){
       image.attr('alt', keywordRaw);
       image.on('error', function(){
         this.onerror = null;
-        this.src = previewPlaceholder;
+        this.src = placeholderImage(keywordRaw);
       });
-      image.attr('src', proxiedImageUrl(rule.previewPic));
+      image.attr('src', rule.previewPic ? proxiedImageUrl(rule.previewPic) : placeholderImage(keywordRaw));
       var wrap = $('<div class="rule-main"></div>');
       wrap.append(image);
       wrap.append('<div class="rule-text"><div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div>' + statusTag(rule.enabled) + '</div>');
@@ -5259,8 +6993,8 @@ layui.use(function(){
     }
     var body = $('#previewCards');
     body.empty();
-    body.toggleClass('is-scrollable', items.length > 5);
-    items.forEach(function(item){
+    body.toggleClass('is-scrollable', items.length > 6);
+    items.slice(0, 6).forEach(function(item){
       body.append(productCard(item));
     });
   }
@@ -5301,8 +7035,8 @@ layui.use(function(){
     $('#previewMetrics').html('<span>来自 ' + escapeHtml(first.keyword || '-') + '</span><span>价格 ' + escapeHtml(first.price || '-') + '</span><span>值率 ' + escapeHtml(first.worthy || '0') + '%</span><span>评论 ' + escapeHtml(first.comment || '0') + '</span>');
     var body = $('#previewCards');
     body.empty();
-    body.toggleClass('is-scrollable', items.length > 5);
-    items.forEach(function(item){
+    body.toggleClass('is-scrollable', items.length > 6);
+    items.slice(0, 6).forEach(function(item){
       body.append(productCard(item));
     });
   }
@@ -5367,6 +7101,15 @@ layui.use(function(){
     $('.notification-shell .switch-copy small').text('Telegram');
     $('.setting-copy strong').text(previewOff ? '隐藏网页卡片' : '显示网页卡片');
     $('.setting-copy small').text(previewOff ? '只发送文本与链接' : '保留 Telegram 预览');
+    $('#topTelegramStatus').text(botOn ? 'TG 正常' : 'TG 未启用').toggleClass('ok', botOn).toggleClass('off', !botOn);
+  }
+
+  function markConfigDirty() {
+    $('#topSaveStatus').text('有未保存更改').addClass('dirty').removeClass('ok');
+  }
+
+  function markConfigSaved() {
+    $('#topSaveStatus').text('已保存').addClass('ok').removeClass('dirty');
   }
 
   function clearPreview() {
@@ -5455,6 +7198,7 @@ layui.use(function(){
       filters = filters.concat(rule.filterWords || []);
     });
     $('#rulesMeta').text('规则 ' + rules.length + ' · 启用 ' + enabled + ' · 过滤词 ' + textToList(filters).length);
+    $('#topRuleStatus').text('规则 ' + rules.length + ' / 启用 ' + enabled);
   }
 
   function listToText(list) {
@@ -5561,9 +7305,9 @@ layui.use(function(){
     image.attr('alt', item.title || '商品图片');
     image.on('error', function(){
       this.onerror = null;
-      this.src = previewPlaceholder;
+      this.src = placeholderImage(item.title || '商');
     });
-    image.attr('src', proxiedImageUrl(item.pic));
+    image.attr('src', item.pic ? proxiedImageUrl(item.pic) : placeholderImage(item.title || '商'));
     var info = $('<div class="product-info"></div>');
     info.append('<a class="product-title" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">' + escapeHtml(item.title || '未命名商品') + '</a>');
     var keywordTag = item.keyword ? '<span class="tag info">' + escapeHtml(item.keyword) + '</span>' : '';
