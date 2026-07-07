@@ -3547,10 +3547,10 @@
       margin: 0 auto;
       padding: 16px 0;
       display: grid;
-      grid-template-columns: minmax(340px, 384px) minmax(520px, 1fr) minmax(380px, 440px);
+      grid-template-columns: minmax(332px, 368px) minmax(520px, 1fr) minmax(480px, 520px);
       grid-template-areas:
-        "rules editor preview"
-        "rules notify preview";
+        "rules preview editor"
+        "rules preview notify";
       gap: 16px;
       align-items: start;
     }
@@ -4645,12 +4645,19 @@
     @media (min-width: 1371px) {
       body.zero-redesign .app-shell {
         grid-template-areas:
-          "rules editor preview"
-          "rules notify preview";
+          "rules preview editor"
+          "rules preview notify";
       }
       body.zero-redesign .workbench,
       body.zero-redesign .inspector-column {
         display: contents;
+      }
+      body.zero-redesign .preview-panel.inspector-card {
+        align-self: stretch;
+      }
+      body.zero-redesign .preview-panel .product-list {
+        flex: 1 1 auto;
+        max-height: none;
       }
       body.zero-redesign .rules-panel.rail-panel {
         grid-area: rules !important;
