@@ -5376,8 +5376,23 @@
     }
     body.zero-redesign.trellis-ui .notify-grid .field {
       grid-column: auto;
-      min-height: 74px;
-      padding: 9px;
+      min-height: 0;
+      gap: 6px;
+      padding: 8px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field label {
+      gap: 6px;
+      font-size: 11px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field-icon {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field input,
+    body.zero-redesign.trellis-ui .notify-grid .field select {
+      height: 36px;
+      min-height: 36px;
     }
     body.zero-redesign.trellis-ui .notify-grid .field:nth-child(2),
     body.zero-redesign.trellis-ui .notify-grid .field:nth-child(3),
@@ -5723,8 +5738,11 @@
     }
     body.zero-redesign.trellis-ui .notification-shell {
       display: grid;
-      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-rows: auto auto auto;
       gap: 12px;
+      align-self: start;
+      height: auto;
+      overflow: visible;
     }
     body.zero-redesign.trellis-ui .preview-panel {
       display: grid;
@@ -6163,9 +6181,10 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
       min-height: 0;
-      overflow-y: auto;
+      height: auto;
+      max-height: none !important;
+      overflow: visible;
       padding-right: 3px;
-      scrollbar-gutter: stable;
     }
     body.zero-redesign.trellis-ui .notify-grid .field {
       grid-column: auto;
