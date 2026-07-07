@@ -2515,9 +2515,9 @@
     body.zero-redesign {
       --zr-bg: #f5f5f7;
       --zr-bg-top: #fbfbfd;
-      --zr-surface: rgba(255, 255, 255, 0.88);
-      --zr-surface-solid: #ffffff;
-      --zr-surface-soft: #f1f1f4;
+      --zr-surface: rgba(251, 251, 253, 0.9);
+      --zr-surface-solid: #fbfbfd;
+      --zr-surface-soft: #eeeef2;
       --zr-surface-hover: #e9e9ed;
       --zr-text: #111113;
       --zr-muted: #6f6f76;
@@ -2525,12 +2525,12 @@
       --zr-line: rgba(17, 17, 19, 0.1);
       --zr-line-strong: rgba(17, 17, 19, 0.2);
       --zr-ink: #111113;
-      --zr-ink-invert: #ffffff;
+      --zr-ink-invert: #f5f5f7;
       --zr-danger: #c62828;
-      --zr-danger-soft: #fff0f0;
-      --zr-radius-xl: 30px;
-      --zr-radius-lg: 22px;
-      --zr-radius-md: 16px;
+      --zr-danger-soft: rgba(198, 40, 40, 0.1);
+      --zr-radius-xl: 28px;
+      --zr-radius-lg: 20px;
+      --zr-radius-md: 14px;
       --zr-control: 44px;
       --zr-rule-row: 138px;
       --zr-shadow: 0 30px 90px rgba(18, 24, 38, 0.12);
@@ -2540,10 +2540,8 @@
       color: var(--zr-text);
       background-color: var(--zr-bg);
       background-image:
-        linear-gradient(180deg, var(--zr-bg-top) 0%, rgba(245, 245, 247, 0.96) 46%, var(--zr-bg) 100%),
-        linear-gradient(rgba(17, 17, 19, 0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(17, 17, 19, 0.028) 1px, transparent 1px);
-      background-size: auto, 48px 48px, 48px 48px;
+        linear-gradient(180deg, var(--zr-bg-top) 0%, rgba(245, 245, 247, 0.96) 48%, var(--zr-bg) 100%);
+      background-attachment: fixed;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Arial, sans-serif;
       letter-spacing: 0;
       overflow-x: hidden;
@@ -2569,9 +2567,7 @@
         --zr-shadow: 0 30px 96px rgba(0, 0, 0, 0.42);
         --zr-shadow-soft: 0 18px 48px rgba(0, 0, 0, 0.3);
         background-image:
-          linear-gradient(180deg, var(--zr-bg-top) 0%, rgba(15, 16, 19, 0.98) 52%, var(--zr-bg) 100%),
-          linear-gradient(rgba(255, 255, 255, 0.038) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+          linear-gradient(180deg, var(--zr-bg-top) 0%, rgba(15, 16, 19, 0.98) 52%, var(--zr-bg) 100%);
       }
     }
     .zero-redesign * {
@@ -2610,41 +2606,23 @@
     }
     .zero-redesign .rail-panel {
       display: grid;
-      grid-template-rows: auto auto auto minmax(0, 1fr);
-      gap: 14px;
-      padding: 22px;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 18px;
+      padding: 20px;
     }
-    .zero-redesign .brand-block {
-      min-height: 132px;
+    .zero-redesign .rail-head {
+      min-height: 62px;
       display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 4px 2px 6px;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
     }
-    .zero-redesign .brand-eyebrow,
-    .zero-redesign .section-kicker {
-      display: inline-flex;
-      align-items: center;
-      color: var(--zr-faint);
-      font-size: 11px;
-      font-weight: 780;
-      line-height: 1;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .zero-redesign .brand-block h1,
     .zero-redesign h2 {
       margin: 0;
       color: var(--zr-text);
       font-weight: 820;
       letter-spacing: 0;
     }
-    .zero-redesign .brand-block h1 {
-      margin-top: 12px;
-      font-size: clamp(34px, 3vw, 46px);
-      line-height: 0.98;
-    }
-    .zero-redesign .brand-block p,
     .zero-redesign .meta {
       margin: 8px 0 0;
       color: var(--zr-muted);
@@ -2653,7 +2631,6 @@
       font-weight: 520;
     }
     .zero-redesign h2 {
-      margin-top: 8px;
       font-size: 25px;
       line-height: 1.05;
     }
@@ -2667,19 +2644,9 @@
       gap: 10px;
     }
     .zero-redesign .rail-actions {
-      justify-content: flex-start;
-      padding: 4px 0 2px;
-    }
-    .zero-redesign .rail-summary {
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      border-top: 1px solid var(--zr-line);
-      border-bottom: 1px solid var(--zr-line);
-      color: var(--zr-muted);
-      font-size: 12px;
-      font-weight: 680;
-      line-height: 1.4;
+      flex: 0 0 auto;
+      justify-content: flex-end;
+      padding-top: 1px;
     }
     .zero-redesign .btn {
       width: auto;
@@ -2806,7 +2773,7 @@
       transform: translateY(-1px);
     }
     .zero-redesign .rule-card.active {
-      background: linear-gradient(90deg, var(--zr-surface-soft), var(--zr-surface-solid) 72%);
+      background: var(--zr-surface-soft);
       border-color: var(--zr-text);
     }
     .zero-redesign .rule-main {
@@ -2944,15 +2911,18 @@
       min-height: 0;
     }
     .zero-redesign .workbench {
-      display: grid;
+      display: block;
+      align-self: start;
     }
     .zero-redesign .studio-panel {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr) auto;
       gap: 18px;
       padding: 24px;
+      height: auto;
     }
     .zero-redesign .studio-head,
+    .zero-redesign .rail-head,
     .zero-redesign .inspector-head {
       min-height: 62px;
       justify-content: space-between;
@@ -3024,7 +2994,7 @@
     .zero-redesign .switch span::before {
       width: 24px;
       height: 24px;
-      background: #ffffff;
+      background: #f5f5f7;
     }
     .zero-redesign .switch input:checked + span {
       background: var(--zr-ink);
@@ -3035,13 +3005,13 @@
     .zero-redesign .studio-grid {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      grid-template-rows: minmax(176px, 1fr) minmax(122px, 0.62fr) minmax(122px, 0.62fr);
+      grid-template-rows: 148px 116px 116px;
       grid-auto-rows: auto;
       gap: 12px;
       min-height: 0;
       overflow-y: auto;
       padding-right: 2px;
-      align-content: stretch;
+      align-content: start;
       align-items: stretch;
     }
     .zero-redesign .field {
@@ -3050,7 +3020,7 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 10px;
       padding: 14px;
       border: 1px solid var(--zr-line);
@@ -3128,18 +3098,19 @@
       box-shadow: 0 0 0 4px rgba(120, 120, 128, 0.16);
     }
     .zero-redesign .editor-panel .keyword-field input {
-      flex: 1 1 auto;
-      height: auto;
-      min-height: 92px;
+      flex: 0 0 auto;
+      height: 76px;
+      min-height: 76px;
       padding: 0 16px;
       font-size: 22px;
       font-weight: 800;
     }
     .zero-redesign .filter-token-box {
       width: 100%;
-      flex: 1 1 auto;
+      flex: 0 0 auto;
       height: auto;
-      min-height: 92px;
+      min-height: 76px;
+      max-height: 84px;
       display: flex;
       align-content: flex-start;
       align-items: flex-start;
@@ -3197,8 +3168,7 @@
     .zero-redesign .editor-actions {
       justify-content: space-between;
       margin: 0;
-      padding-top: 16px;
-      border-top: 1px solid var(--zr-line);
+      padding-top: 10px;
     }
     .zero-redesign .inspector-column {
       display: grid;
@@ -3381,6 +3351,16 @@
       outline: 3px solid rgba(120, 120, 128, 0.45);
       outline-offset: 2px;
     }
+    @media (prefers-reduced-motion: reduce) {
+      .zero-redesign *,
+      .zero-redesign *::before,
+      .zero-redesign *::after {
+        transition-duration: 1ms !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
     @media (max-width: 1320px) {
       .zero-redesign .app-shell {
         width: min(1120px, calc(100vw - 32px));
@@ -3405,9 +3385,6 @@
       .zero-redesign .studio-panel,
       .zero-redesign .inspector-card {
         height: auto;
-      }
-      .zero-redesign .brand-block {
-        min-height: 96px;
       }
       .zero-redesign .inspector-column {
         grid-column: auto;
@@ -3447,6 +3424,7 @@
         padding: 16px;
       }
       .zero-redesign .studio-head,
+      .zero-redesign .rail-head,
       .zero-redesign .inspector-head {
         flex-direction: column;
         gap: 12px;
@@ -3459,9 +3437,6 @@
       .zero-redesign .switch-card {
         width: 100%;
         justify-content: space-between;
-      }
-      .zero-redesign .brand-block h1 {
-        font-size: 36px;
       }
       .zero-redesign h2 {
         font-size: 23px;
@@ -3493,26 +3468,26 @@
 <body class="zero-redesign">
 <div class="app-shell">
   <aside class="rules-panel rail-panel" aria-label="商品规则">
-    <div class="brand-block">
-      <span class="brand-eyebrow">SMZDM</span>
-      <h1>商品监控</h1>
-      <p>关键词规则, 过滤条件, 搜索预览.</p>
+    <div class="rail-head">
+      <div>
+        <h2>商品规则</h2>
+        <div class="meta" id="rulesMeta">0 条规则</div>
+      </div>
+      <div class="rail-actions" aria-label="规则操作">
+        <button class="btn primary icon-btn" id="searchAllRules" type="button" aria-label="全局搜索" title="全局搜索">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+          <span class="sr-only">全局搜索</span>
+        </button>
+        <button class="btn success icon-btn" id="addRule" type="button" aria-label="新增关键词" title="新增关键词">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          <span class="sr-only">新增关键词</span>
+        </button>
+        <button class="btn refresh icon-btn" id="reloadProductConfig" type="button" aria-label="重新加载" title="重新加载">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M18 3v5h-5"/><path d="M6 21v-5h5"/></svg>
+          <span class="sr-only">重新加载</span>
+        </button>
+      </div>
     </div>
-    <div class="rail-actions" aria-label="规则操作">
-      <button class="btn primary icon-btn" id="searchAllRules" type="button" aria-label="全局搜索" title="全局搜索">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
-        <span class="sr-only">全局搜索</span>
-      </button>
-      <button class="btn success icon-btn" id="addRule" type="button" aria-label="新增关键词" title="新增关键词">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-        <span class="sr-only">新增关键词</span>
-      </button>
-      <button class="btn refresh icon-btn" id="reloadProductConfig" type="button" aria-label="重新加载" title="重新加载">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M18 3v5h-5"/><path d="M6 21v-5h5"/></svg>
-        <span class="sr-only">重新加载</span>
-      </button>
-    </div>
-    <div class="rail-summary" id="rulesMeta">0 条规则</div>
     <div class="rules-list" aria-label="关键词规则">
       <div class="rules-body" id="rulesBody"></div>
     </div>
@@ -3522,7 +3497,6 @@
     <section class="editor-panel studio-panel" aria-label="规则详情">
       <div class="studio-head">
         <div>
-          <span class="section-kicker">Rule Studio</span>
           <h2>规则详情</h2>
           <div class="meta" id="editorMeta">未选择关键词</div>
         </div>
@@ -3609,7 +3583,6 @@
     <section class="preview-panel inspector-card" aria-label="搜索结果">
       <div class="inspector-head">
         <div>
-          <span class="section-kicker">Preview</span>
           <h2>搜索结果</h2>
           <div class="meta" id="previewMeta">等待搜索</div>
         </div>
@@ -3631,7 +3604,6 @@
     <section class="notification-shell inspector-card notify-panel" aria-label="Telegram 通知">
       <div class="inspector-head">
         <div>
-          <span class="section-kicker">Notification</span>
           <h2>Telegram 通知</h2>
           <div class="meta">Bot Token 与 Chat ID</div>
         </div>
