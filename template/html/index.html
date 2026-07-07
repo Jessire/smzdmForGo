@@ -5316,6 +5316,17 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    body.zero-redesign.trellis-ui .rule-price {
+      gap: 5px;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+    body.zero-redesign.trellis-ui .rule-price span {
+      font-size: 14px;
+      letter-spacing: 0;
+      overflow: visible;
+      text-overflow: clip;
+    }
     body.zero-redesign.trellis-ui .filter-token button {
       width: 26px;
       height: 26px;
@@ -5774,6 +5785,15 @@
       display: block;
       object-fit: contain;
     }
+    body.zero-redesign.trellis-ui #topTelegramStatus img {
+      opacity: 0.36;
+      filter: grayscale(1) saturate(0.45);
+      transition: opacity 160ms ease, filter 160ms ease;
+    }
+    body.zero-redesign.trellis-ui #topTelegramStatus.ok img {
+      opacity: 1;
+      filter: none;
+    }
     body.zero-redesign.trellis-ui button.top-pill {
       cursor: pointer;
       font: inherit;
@@ -6116,36 +6136,33 @@
       grid-column: 2;
       grid-row: 3;
       display: grid;
-      grid-template-columns: minmax(58px, 0.68fr) minmax(58px, 0.68fr) minmax(104px, 1.1fr);
+      grid-template-columns: minmax(58px, 0.62fr) minmax(58px, 0.62fr) minmax(118px, 1.25fr);
       gap: 6px;
       margin: 0;
       align-self: end;
     }
     body.zero-redesign.trellis-ui .rule-stat {
       min-width: 0;
-      min-height: 36px;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      grid-template-rows: auto auto;
+      min-height: 44px;
+      display: flex;
       align-items: center;
-      justify-items: center;
-      gap: 2px 4px;
-      padding: 7px 6px;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 10px;
       border: 1px solid var(--app-line) !important;
       border-radius: var(--app-radius);
       background: var(--app-surface-soft) !important;
       color: var(--app-muted);
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 760;
       line-height: 1;
       text-align: center;
       white-space: nowrap;
     }
     body.zero-redesign.trellis-ui .rule-stat > svg {
-      grid-column: 1;
-      grid-row: 1 / 3;
-      width: 16px;
-      height: 16px;
+      width: 17px;
+      height: 17px;
+      flex: 0 0 17px;
       color: var(--app-muted);
       stroke: currentColor;
       stroke-width: 2;
@@ -6155,24 +6172,27 @@
     }
     body.zero-redesign.trellis-ui .rule-stat span {
       min-width: 0;
-      grid-column: 2;
-      grid-row: 2;
       overflow: hidden;
       color: var(--app-text) !important;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 16px;
+      font-weight: 840;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    body.zero-redesign.trellis-ui .rule-price {
+      gap: 5px;
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+    body.zero-redesign.trellis-ui .rule-price span {
+      overflow: visible;
+      color: var(--app-text) !important;
+      font-size: 14px;
+      letter-spacing: 0;
+      text-overflow: clip;
+    }
     body.zero-redesign.trellis-ui .rule-stat::before {
-      grid-column: 2;
-      grid-row: 1;
-      content: attr(data-label);
-      color: var(--app-muted);
-      font-size: 10px;
-      font-weight: 780;
-      line-height: 1;
-      white-space: nowrap;
+      content: none;
     }
     body.zero-redesign.trellis-ui[data-theme="dark"] .rule-card {
       border-color: rgba(226, 232, 240, 0.16) !important;
@@ -6380,6 +6400,15 @@
       display: block;
       object-fit: contain;
     }
+    body.zero-redesign.trellis-ui .notify-switch .switch-icon img {
+      opacity: 0.38;
+      filter: grayscale(1) saturate(0.45);
+      transition: opacity 160ms ease, filter 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .notify-switch:has(#telegramEnabled:checked) .switch-icon img {
+      opacity: 1;
+      filter: none;
+    }
     body.zero-redesign.trellis-ui .field input,
     body.zero-redesign.trellis-ui .field select,
     body.zero-redesign.trellis-ui .field textarea {
@@ -6526,8 +6555,8 @@
     body.zero-redesign.trellis-ui .product-list {
       min-height: 0;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-auto-rows: 136px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: minmax(124px, max-content);
       align-content: start;
       gap: 10px;
       overflow-y: auto;
@@ -6537,10 +6566,10 @@
     body.zero-redesign.trellis-ui .product-card {
       display: grid;
       grid-template-columns: 116px minmax(0, 1fr) 34px;
-      gap: 12px;
+      gap: 14px;
       align-items: center;
-      min-height: 136px;
-      height: 100%;
+      min-height: 124px;
+      height: auto;
       padding: 10px;
       border: 1px solid var(--app-line);
       border-radius: var(--app-radius);
@@ -6556,7 +6585,7 @@
     body.zero-redesign.trellis-ui .product-media {
       width: 116px;
       height: 100%;
-      min-height: 114px;
+      min-height: 102px;
       border-radius: var(--app-radius);
       border: 1px solid var(--app-line);
       background: #fff;
@@ -6573,9 +6602,9 @@
     }
     body.zero-redesign.trellis-ui .product-title {
       color: var(--app-text);
-      font-size: 15px;
-      line-height: 1.36;
-      font-weight: 780;
+      font-size: 18px;
+      line-height: 1.28;
+      font-weight: 830;
       text-decoration: none;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -6588,8 +6617,8 @@
     body.zero-redesign.trellis-ui .product-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 8px;
+      gap: 6px;
+      margin-top: 10px;
     }
     body.zero-redesign.trellis-ui .product-price {
       color: #dc2626 !important;
@@ -7011,6 +7040,9 @@ function themeIconSvg(name) {
   if (name === 'moon') {
     return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z"/></svg>';
   }
+  if (name === 'system') {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18V3Z"/><path d="M12 3a9 9 0 0 1 0 18"/><path d="M12 7v10"/><path d="M8 12h8"/></svg>';
+  }
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>';
 }
 
@@ -7023,7 +7055,7 @@ function updateThemeButton() {
   var icon = button.querySelector('.theme-icon');
   if (icon) {
     var resolved = resolvedThemeMode();
-    icon.innerHTML = themeIconSvg(resolved === 'dark' ? 'moon' : 'sun');
+    icon.innerHTML = themeIconSvg(themeMode === 'system' ? 'system' : (resolved === 'dark' ? 'moon' : 'sun'));
   }
   var text = button.querySelector('.sr-only');
   if (text) {
@@ -7688,17 +7720,17 @@ layui.use(function(){
     var min = toFloat(rule.minPrice);
     var max = toFloat(rule.maxPrice);
     if (!min && !max) { return '不限'; }
-    if (min && max) { return formatPrice(min) + '-' + formatPrice(max); }
-    if (min) { return '≥' + formatPrice(min); }
-    return '≤' + formatPrice(max);
+    if (min && max) { return formatPlainPrice(min) + '-' + formatPlainPrice(max); }
+    if (min) { return '≥' + formatPlainPrice(min); }
+    return '≤' + formatPlainPrice(max);
   }
 
-  function formatPrice(value) {
+  function formatPlainPrice(value) {
     var text = String(value);
     if (text.indexOf('.') >= 0) {
       text = text.replace(/0+$/, '').replace(/\.$/, '');
     }
-    return '¥' + text;
+    return text;
   }
 
   function renderTags(list) {
