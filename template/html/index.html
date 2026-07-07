@@ -3543,20 +3543,23 @@
     .zero-redesign .app-shell {
       width: min(1680px, calc(100vw - 32px));
       min-height: 0;
-      height: min(900px, calc(100dvh - 32px));
+      height: auto;
       margin: 0 auto;
       padding: 16px 0;
       display: grid;
       grid-template-columns: minmax(340px, 384px) minmax(520px, 1fr) minmax(380px, 440px);
+      grid-template-areas:
+        "rules editor preview"
+        "rules notify preview";
       gap: 16px;
-      align-items: stretch;
+      align-items: start;
     }
     .zero-redesign .rail-panel,
     .zero-redesign .studio-panel,
     .zero-redesign .inspector-card {
       position: relative;
       isolation: isolate;
-      height: 100%;
+      height: auto;
       min-height: 0;
       overflow: hidden;
       border: 1px solid var(--zr-line);
@@ -3589,25 +3592,29 @@
       pointer-events: none;
     }
     .zero-redesign .rail-panel {
+      grid-area: rules;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, auto);
       gap: 16px;
       padding: 18px;
     }
     .zero-redesign .studio-panel {
+      grid-area: editor;
       display: grid;
       grid-template-rows: auto auto auto;
       align-content: start;
       gap: 16px;
       padding: 22px;
-      height: 100%;
+      height: auto;
     }
     .zero-redesign .inspector-column {
-      display: grid;
-      grid-template-rows: minmax(0, 1.08fr) minmax(324px, 0.92fr);
-      gap: 16px;
-      min-width: 0;
-      min-height: 0;
+      display: contents;
+    }
+    .zero-redesign .preview-panel {
+      grid-area: preview;
+    }
+    .zero-redesign .notify-panel {
+      grid-area: notify;
     }
     .zero-redesign .inspector-card {
       display: flex;
@@ -3615,9 +3622,10 @@
       padding: 18px;
     }
     .zero-redesign .workbench {
+      display: contents;
       min-width: 0;
       min-height: 0;
-      align-self: stretch;
+      align-self: start;
     }
     .zero-redesign .rail-head,
     .zero-redesign .studio-head,
@@ -4329,8 +4337,9 @@
       white-space: nowrap;
     }
     .zero-redesign .product-list {
-      flex: 1 1 auto;
+      flex: 0 1 auto;
       min-height: 0;
+      max-height: 330px;
       display: grid;
       grid-auto-rows: minmax(86px, auto);
       gap: 10px;
@@ -4399,6 +4408,7 @@
       grid-template-columns: 1fr;
       gap: 10px;
       min-height: 0;
+      max-height: 382px;
       overflow-y: auto;
       overscroll-behavior: contain;
     }
@@ -4502,18 +4512,39 @@
         height: auto;
         min-height: 0;
         grid-template-columns: 356px minmax(0, 1fr);
-        grid-template-rows: minmax(700px, auto) auto;
+        grid-template-areas:
+          "rules editor"
+          "inspector inspector";
+        grid-template-rows: auto auto;
+      }
+      .zero-redesign .workbench {
+        display: block;
+        grid-area: editor;
       }
       .zero-redesign .inspector-column {
+        display: grid;
+        grid-area: inspector;
         grid-column: 1 / -1;
         grid-template-columns: minmax(0, 1fr) minmax(340px, 0.78fr);
-        grid-template-rows: minmax(420px, auto);
+        grid-template-rows: auto;
+        align-content: start;
+        gap: 16px;
+        min-width: 0;
+        min-height: 0;
+      }
+      .zero-redesign .preview-panel,
+      .zero-redesign .notify-panel {
+        grid-area: auto;
       }
     }
     @media (max-width: 920px) {
       .zero-redesign .app-shell {
         width: calc(100vw - 24px);
         grid-template-columns: 1fr;
+        grid-template-areas:
+          "rules"
+          "editor"
+          "inspector";
         grid-template-rows: auto auto auto;
         padding: 12px 0 28px;
       }
@@ -4609,6 +4640,29 @@
       }
       .zero-redesign .range-control .sep {
         display: none;
+      }
+    }
+    @media (min-width: 1371px) {
+      body.zero-redesign .app-shell {
+        grid-template-areas:
+          "rules editor preview"
+          "rules notify preview";
+      }
+      body.zero-redesign .workbench,
+      body.zero-redesign .inspector-column {
+        display: contents;
+      }
+      body.zero-redesign .rules-panel.rail-panel {
+        grid-area: rules !important;
+      }
+      body.zero-redesign .editor-panel.studio-panel {
+        grid-area: editor !important;
+      }
+      body.zero-redesign .preview-panel.inspector-card {
+        grid-area: preview !important;
+      }
+      body.zero-redesign .notification-shell.notify-panel {
+        grid-area: notify !important;
       }
     }
   </style>
