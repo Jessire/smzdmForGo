@@ -5182,6 +5182,20 @@
       gap: 5px;
       margin-top: 8px;
     }
+    body.zero-redesign.trellis-ui .product-meta .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    body.zero-redesign.trellis-ui .product-meta .tag svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
     body.zero-redesign.trellis-ui .studio-grid {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -5658,7 +5672,7 @@
       margin: 12px auto;
       padding: 0;
       display: grid;
-      grid-template-columns: minmax(330px, 390px) minmax(0, 7fr) minmax(260px, 3fr);
+      grid-template-columns: minmax(370px, 440px) minmax(0, 7.6fr) minmax(220px, 260px);
       grid-template-rows: 60px minmax(300px, auto) minmax(260px, 1fr);
       grid-template-areas:
         "topbar topbar topbar"
@@ -5753,6 +5767,12 @@
       fill: none;
       stroke-linecap: round;
       stroke-linejoin: round;
+    }
+    body.zero-redesign.trellis-ui .top-pill img {
+      width: 19px;
+      height: 19px;
+      display: block;
+      object-fit: contain;
     }
     body.zero-redesign.trellis-ui button.top-pill {
       cursor: pointer;
@@ -5958,11 +5978,11 @@
       scrollbar-gutter: stable;
     }
     body.zero-redesign.trellis-ui .rule-card {
-      min-height: 134px;
+      min-height: 148px;
       display: grid;
-      grid-template-columns: 86px minmax(0, 1fr) 34px;
+      grid-template-columns: 126px minmax(0, 1fr);
       grid-template-rows: auto 28px minmax(42px, auto);
-      gap: 8px 12px;
+      gap: 9px 12px;
       align-items: stretch;
       padding: 10px;
       border: 1px solid var(--app-line);
@@ -5989,9 +6009,9 @@
     body.zero-redesign.trellis-ui .rule-thumb-media {
       grid-column: 1;
       grid-row: 1 / 4;
-      width: 86px;
+      width: 126px;
       height: 100%;
-      min-height: 112px;
+      min-height: 126px;
       border-radius: var(--app-radius);
       border: 1px solid var(--app-line) !important;
       background: #fff !important;
@@ -6002,7 +6022,7 @@
       height: 100%;
       display: block;
       object-fit: cover;
-      transform: scale(1.18);
+      transform: scale(1.08);
       transform-origin: center;
       filter: none !important;
     }
@@ -6010,6 +6030,9 @@
       grid-column: 2;
       grid-row: 1;
       min-height: 0;
+      min-width: 0;
+    }
+    body.zero-redesign.trellis-ui .rule-title-row {
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -6072,12 +6095,11 @@
       overflow-y: hidden;
     }
     body.zero-redesign.trellis-ui .row-actions {
-      grid-column: 3;
-      grid-row: 1 / 4;
-      display: grid;
+      display: inline-flex;
       gap: 7px;
-      justify-content: end;
-      align-content: start;
+      margin-left: auto;
+      justify-content: flex-end;
+      align-items: center;
     }
     body.zero-redesign.trellis-ui .row-actions .icon-btn,
     body.zero-redesign.trellis-ui .product-action .icon-btn {
@@ -6094,7 +6116,7 @@
       grid-column: 2;
       grid-row: 3;
       display: grid;
-      grid-template-columns: minmax(46px, 0.72fr) minmax(46px, 0.72fr) minmax(76px, 1fr);
+      grid-template-columns: minmax(58px, 0.68fr) minmax(58px, 0.68fr) minmax(104px, 1.1fr);
       gap: 6px;
       margin: 0;
       align-self: end;
@@ -6103,8 +6125,11 @@
       min-width: 0;
       min-height: 36px;
       display: grid;
-      place-items: center;
-      gap: 3px;
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+      align-items: center;
+      justify-items: center;
+      gap: 2px 4px;
       padding: 7px 6px;
       border: 1px solid var(--app-line) !important;
       border-radius: var(--app-radius);
@@ -6116,8 +6141,22 @@
       text-align: center;
       white-space: nowrap;
     }
+    body.zero-redesign.trellis-ui .rule-stat > svg {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      width: 16px;
+      height: 16px;
+      color: var(--app-muted);
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
     body.zero-redesign.trellis-ui .rule-stat span {
       min-width: 0;
+      grid-column: 2;
+      grid-row: 2;
       overflow: hidden;
       color: var(--app-text) !important;
       font-size: 12px;
@@ -6126,6 +6165,8 @@
       white-space: nowrap;
     }
     body.zero-redesign.trellis-ui .rule-stat::before {
+      grid-column: 2;
+      grid-row: 1;
       content: attr(data-label);
       color: var(--app-muted);
       font-size: 10px;
@@ -6154,9 +6195,124 @@
     body.zero-redesign.trellis-ui[data-theme="dark"] .rule-stat::before {
       color: #cbd5e1 !important;
     }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-stat > svg {
+      color: #cbd5e1 !important;
+    }
     body.zero-redesign.trellis-ui[data-theme="dark"] .rule-stat span {
       color: #ffffff !important;
       text-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .switch-card,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .filter-token-box,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .empty,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .empty-state {
+      background: var(--app-surface-soft) !important;
+      border-color: var(--app-line) !important;
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field input,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field select,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field textarea,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .range-control input,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .unit-control input,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .unit-control select {
+      background: var(--app-surface) !important;
+      border-color: var(--app-line) !important;
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field label,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .meta,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .empty-state p {
+      color: var(--app-muted) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .empty-state strong,
+    body.zero-redesign.trellis-ui[data-theme="dark"] h2 {
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .product-card {
+      background: var(--app-surface) !important;
+      border-color: var(--app-line) !important;
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .product-title {
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .app-topbar,
+    body.zero-redesign.trellis-ui[data-theme="light"] .rail-panel,
+    body.zero-redesign.trellis-ui[data-theme="light"] .studio-panel,
+    body.zero-redesign.trellis-ui[data-theme="light"] .inspector-card {
+      background: color-mix(in srgb, var(--app-surface) 94%, transparent) !important;
+      border-color: var(--app-line) !important;
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .field,
+    body.zero-redesign.trellis-ui[data-theme="light"] .switch-card,
+    body.zero-redesign.trellis-ui[data-theme="light"] .filter-token-box,
+    body.zero-redesign.trellis-ui[data-theme="light"] .empty,
+    body.zero-redesign.trellis-ui[data-theme="light"] .empty-state {
+      background: var(--app-surface-soft) !important;
+      border-color: var(--app-line) !important;
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .field input,
+    body.zero-redesign.trellis-ui[data-theme="light"] .field select,
+    body.zero-redesign.trellis-ui[data-theme="light"] .field textarea,
+    body.zero-redesign.trellis-ui[data-theme="light"] .range-control input,
+    body.zero-redesign.trellis-ui[data-theme="light"] .unit-control input,
+    body.zero-redesign.trellis-ui[data-theme="light"] .unit-control select {
+      background: var(--app-surface) !important;
+      border-color: var(--app-line) !important;
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-card,
+    body.zero-redesign.trellis-ui[data-theme="light"] .product-card {
+      background: var(--app-surface) !important;
+      border-color: var(--app-line) !important;
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-card.active {
+      background: linear-gradient(180deg, var(--app-primary-soft), var(--app-surface)) !important;
+      border-color: var(--app-primary) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .keyword-name,
+    body.zero-redesign.trellis-ui[data-theme="light"] .product-title,
+    body.zero-redesign.trellis-ui[data-theme="light"] h2 {
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .meta,
+    body.zero-redesign.trellis-ui[data-theme="light"] .field label,
+    body.zero-redesign.trellis-ui[data-theme="light"] .top-brand span {
+      color: var(--app-muted) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .tag,
+    body.zero-redesign.trellis-ui[data-theme="light"] .filter-token,
+    body.zero-redesign.trellis-ui[data-theme="light"] .product-meta .tag {
+      background: var(--app-surface-soft) !important;
+      border-color: var(--app-line) !important;
+      color: var(--app-muted) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .tag.on {
+      color: var(--app-success) !important;
+      background: var(--app-success-soft) !important;
+      border-color: color-mix(in srgb, var(--app-success) 24%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-stat {
+      color: var(--app-muted) !important;
+      background: var(--app-surface-soft) !important;
+      border-color: color-mix(in srgb, var(--app-primary) 18%, var(--app-line)) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-stat::before,
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-stat > svg {
+      color: var(--app-muted) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-stat span {
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .product-price {
+      color: #dc2626 !important;
+      background: #feecec !important;
+      border-color: rgba(220, 38, 38, 0.2) !important;
     }
     body.zero-redesign.trellis-ui .studio-grid {
       display: grid;
@@ -6217,6 +6373,12 @@
       border-radius: 50%;
       background: var(--app-surface);
       color: var(--app-muted);
+    }
+    body.zero-redesign.trellis-ui .switch-icon img {
+      width: 18px;
+      height: 18px;
+      display: block;
+      object-fit: contain;
     }
     body.zero-redesign.trellis-ui .field input,
     body.zero-redesign.trellis-ui .field select,
@@ -6365,7 +6527,8 @@
       min-height: 0;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-rows: repeat(2, minmax(96px, 1fr));
+      grid-auto-rows: 136px;
+      align-content: start;
       gap: 10px;
       overflow-y: auto;
       padding-right: 3px;
@@ -6373,12 +6536,12 @@
     }
     body.zero-redesign.trellis-ui .product-card {
       display: grid;
-      grid-template-columns: 72px minmax(0, 1fr) 34px;
-      gap: 10px;
+      grid-template-columns: 116px minmax(0, 1fr) 34px;
+      gap: 12px;
       align-items: center;
-      min-height: 96px;
+      min-height: 136px;
       height: 100%;
-      padding: 9px 10px;
+      padding: 10px;
       border: 1px solid var(--app-line);
       border-radius: var(--app-radius);
       background: var(--app-surface);
@@ -6391,9 +6554,9 @@
       box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
     }
     body.zero-redesign.trellis-ui .product-media {
-      width: 72px;
-      height: 84px;
-      aspect-ratio: 3 / 4;
+      width: 116px;
+      height: 100%;
+      min-height: 114px;
       border-radius: var(--app-radius);
       border: 1px solid var(--app-line);
       background: #fff;
@@ -6410,9 +6573,9 @@
     }
     body.zero-redesign.trellis-ui .product-title {
       color: var(--app-text);
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.36;
-      font-weight: 740;
+      font-weight: 780;
       text-decoration: none;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -6426,12 +6589,17 @@
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
-      margin-top: 6px;
+      margin-top: 8px;
     }
     body.zero-redesign.trellis-ui .product-price {
-      color: var(--app-primary);
-      background: var(--app-primary-soft);
-      border-color: color-mix(in srgb, var(--app-primary) 22%, transparent);
+      color: #dc2626 !important;
+      background: #feecec !important;
+      border-color: rgba(220, 38, 38, 0.22) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .product-price {
+      color: #ff9a8f !important;
+      background: rgba(255, 78, 78, 0.14) !important;
+      border-color: rgba(255, 138, 128, 0.25) !important;
     }
     body.zero-redesign.trellis-ui .empty,
     body.zero-redesign.trellis-ui .empty-state {
@@ -6582,11 +6750,11 @@
         <span class="sr-only">配置就绪</span>
       </span>
       <span class="top-pill off" id="topTelegramStatus" role="status" aria-label="TG 未启用" title="TG 未启用">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 4.5 2.5 12l7 2.5 2.5 7 9.5-17Z"/><path d="m9.5 14.5 4-4"/></svg>
+        <img src="https://telegram.org/img/t_logo.svg" alt="" aria-hidden="true">
         <span class="sr-only">TG 未启用</span>
       </span>
       <button class="top-pill" id="themeModeButton" type="button" aria-label="切换主题" title="切换主题">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 3v4"/><path d="M20 4l-4 4"/></svg>
+        <span class="theme-icon" aria-hidden="true"></span>
         <span class="sr-only">跟随系统主题</span>
       </button>
     </div>
@@ -6738,7 +6906,7 @@
       </div>
       <label class="header-switch switch-card notify-switch" title="Telegram 启用">
         <span class="switch-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M21.5 4.5 2.5 12l7 2.5 2.5 7 9.5-17Z"/><path d="m9.5 14.5 4-4"/></svg>
+          <img src="https://telegram.org/img/t_logo.svg" alt="">
         </span>
         <span class="switch-copy"><strong>Bot 启用</strong><small>Telegram</small></span>
         <span class="switch">
@@ -6823,12 +6991,27 @@ function readStoredThemeMode() {
 
 function applyThemeMode(mode) {
   themeMode = /^(system|light|dark)$/.test(mode) ? mode : 'system';
-  if (themeMode === 'system') {
-    document.body.removeAttribute('data-theme');
-  } else {
-    document.body.setAttribute('data-theme', themeMode);
-  }
+  document.body.setAttribute('data-theme-mode', themeMode);
+  document.body.setAttribute('data-theme', resolvedThemeMode());
   updateThemeButton();
+}
+
+function resolvedThemeMode() {
+  if (themeMode === 'dark' || themeMode === 'light') {
+    return themeMode;
+  }
+  try {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  } catch (e) {
+    return 'light';
+  }
+}
+
+function themeIconSvg(name) {
+  if (name === 'moon') {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z"/></svg>';
+  }
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>';
 }
 
 function updateThemeButton() {
@@ -6837,6 +7020,11 @@ function updateThemeButton() {
   var label = themeMode === 'light' ? '浅色主题' : (themeMode === 'dark' ? '深色主题' : '跟随系统主题');
   button.setAttribute('title', '当前: ' + label + '. 点击切换主题');
   button.setAttribute('aria-label', '当前: ' + label + '. 点击切换主题');
+  var icon = button.querySelector('.theme-icon');
+  if (icon) {
+    var resolved = resolvedThemeMode();
+    icon.innerHTML = themeIconSvg(resolved === 'dark' ? 'moon' : 'sun');
+  }
   var text = button.querySelector('.sr-only');
   if (text) {
     text.textContent = label;
@@ -6854,6 +7042,17 @@ function cycleThemeMode() {
   } catch (e) {}
   applyThemeMode(next);
 }
+
+try {
+  var colorSchemeQuery = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+  if (colorSchemeQuery) {
+    colorSchemeQuery.addEventListener('change', function(){
+      if (themeMode === 'system') {
+        applyThemeMode('system');
+      }
+    });
+  }
+} catch (e) {}
 
 layui.use(function(){
   var layer = layui.layer;
@@ -7061,19 +7260,22 @@ layui.use(function(){
       var media = $('<div class="rule-thumb-media"></div>').append(image);
       var wrap = $('<div class="rule-main"></div>');
       wrap.append(media);
-      wrap.append('<div class="rule-text"><div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div>' + statusTag(rule.enabled) + '</div>');
+      var actionWrap = $('<div class="row-actions"></div>');
+      actionWrap.append(iconButton('search', '预览', 'info icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
+      actionWrap.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; removeSelectedRule(); }));
+      var titleRow = $('<div class="rule-title-row"></div>');
+      titleRow.append('<div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div>');
+      titleRow.append(statusTag(rule.enabled));
+      titleRow.append(actionWrap);
+      wrap.append($('<div class="rule-text"></div>').append(titleRow));
       row.append(wrap);
       row.append('<div class="rule-filter">' + renderTags(rule.filterWords) + '</div>');
       var priceText = priceRange(rule);
       var metrics = $('<div class="rule-metrics"></div>');
-      metrics.append('<div class="rule-stat stat-comment" data-label="评论"><span>' + formatNumber(rule.lowCommentNum) + '</span></div>');
-      metrics.append('<div class="rule-stat stat-worthy" data-label="值率"><span>' + formatNumber(rule.lowWorthyNum) + '%</span></div>');
-      metrics.append('<div class="rule-stat rule-price stat-price" data-label="价格" title="' + escapeAttr(priceText) + '"><span>' + priceText + '</span></div>');
+      metrics.append('<div class="rule-stat stat-comment" data-label="评论">' + iconSvg('comment') + '<span>' + formatNumber(rule.lowCommentNum) + '</span></div>');
+      metrics.append('<div class="rule-stat stat-worthy" data-label="值率">' + iconSvg('worthy') + '<span>' + formatNumber(rule.lowWorthyNum) + '%</span></div>');
+      metrics.append('<div class="rule-stat rule-price stat-price" data-label="价格" title="' + escapeAttr(priceText) + '">' + iconSvg('price') + '<span>' + priceText + '</span></div>');
       row.append(metrics);
-      var actionWrap = $('<div class="row-actions"></div>');
-      actionWrap.append(iconButton('search', '预览', 'info icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
-      actionWrap.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; removeSelectedRule(); }));
-      row.append(actionWrap);
       row.on('click', function(){ selectRule(index); });
       row.on('keydown', function(e){
         if (e.key === 'Enter' || e.key === ' ') {
@@ -7564,7 +7766,7 @@ layui.use(function(){
     var info = $('<div class="product-info"></div>');
     info.append('<a class="product-title" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">' + escapeHtml(item.title || '未命名商品') + '</a>');
     var keywordTag = item.keyword ? '<span class="tag info">' + escapeHtml(item.keyword) + '</span>' : '';
-    info.append('<div class="product-meta">' + keywordTag + '<span class="tag info product-price">' + escapeHtml(item.price || '-') + '</span><span class="tag">值率 ' + escapeHtml(item.worthy || '0') + '%</span><span class="tag">评论 ' + escapeHtml(item.comment || '0') + '</span></div>');
+    info.append('<div class="product-meta">' + keywordTag + '<span class="tag info product-price">' + iconSvg('price') + escapeHtml(item.price || '-') + '</span><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span></div>');
     info.append('<div class="product-source">' + escapeHtml(item.referral || '什么值得买') + (item.date ? ' · ' + escapeHtml(item.date) : '') + '</div>');
     var action = $('<div class="product-action"></div>');
     action.append('<a class="btn web icon-btn" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '" aria-label="打开网页" title="打开网页">' + iconSvg('external') + '<span class="sr-only">打开网页</span></a>');
@@ -7632,6 +7834,24 @@ layui.use(function(){
     }
     if (name === 'external') {
       return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>';
+    }
+    if (name === 'comment') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H8l-5 3 1.6-4.4A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 10h8"/><path d="M8 14h5"/></svg>';
+    }
+    if (name === 'worthy') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5z"/><path d="M8 8h8"/><path d="M12 8v8"/><path d="M8.5 13h7"/></svg>';
+    }
+    if (name === 'price') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4 12 12l5.5-8"/><path d="M12 12v8"/><path d="M8 12h8"/><path d="M8 16h8"/></svg>';
+    }
+    if (name === 'sun') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>';
+    }
+    if (name === 'moon') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z"/></svg>';
+    }
+    if (name === 'auto') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-14.9 6.8"/><path d="M3 12A9 9 0 0 1 17.9 5.2"/><path d="M18 3v5h-5"/><path d="M6 21v-5h5"/></svg>';
     }
     if (name === 'x') {
       return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>';
