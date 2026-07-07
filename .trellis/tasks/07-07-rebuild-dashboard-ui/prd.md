@@ -19,6 +19,7 @@ Rebuild the Web panel UI around the product's real job: create scheduled product
 - Latest title/status feedback, 2026-07-07: page title should be "什么值得买商品提醒". Rule title and enabled indicator can be larger. A save action on the far right of the rule-detail title bar is not useful. Telegram enable state should be represented by a Telegram plane icon: enabled uses a filled blue background; disabled uses a blank/empty state.
 - Latest composition feedback, 2026-07-07: the dashboard may remain divided into functional blocks, but it must read as one integrated product surface. Avoid obvious heavy split lines, black gutters, and isolated floating islands that make each block look unrelated.
 - Latest icon feedback, 2026-07-07: icon colors are too scattered. Use a disciplined semantic icon color system instead of assigning a different color to each icon.
+- Latest feedback, 2026-07-08: top-bar Telegram uses the official logo and no text; Telegram panel itself uses a real switch control. Field icons should not use black square/circle backgrounds. Left rules must scroll internally when there are more than five rules. Search results should use space better, show up to eight visible result cards, allow product titles to wrap, and remove per-card open icons because the title is already clickable; keep only the preview panel's global open-web button.
 
 ## Requirements
 
@@ -42,11 +43,11 @@ Rebuild the Web panel UI around the product's real job: create scheduled product
 - Rule-detail actions belong to the rule-detail form footer. The footer contains a compact action group: secondary "preview current rule" and primary "save and enable". Do not split these actions left/right across the panel, and do not place the trigger in the search-preview section.
 - The active rule editor should shrink to actual content height. It must not reserve a large empty bottom region just to fill the panel.
 - The search preview spans the full right workspace width below both the active rule editor and Telegram summary.
-- Search preview should size to actual result count instead of reserving empty slots. Show up to six results in the first visible area; when more than six results exist, the preview list scrolls internally.
-- Desktop search preview uses independent product cards. Each product remains self-contained with its own image, title, metrics, and open-link action.
+- Search preview should size to actual result count instead of reserving empty slots. Show up to eight results in the first visible area; when more than eight results exist, the preview list scrolls internally.
+- Desktop search preview uses independent product cards. Each product remains self-contained with its own image, wrapping title, and metrics. The product title is clickable; do not render a separate open-link action inside every card.
 - Search result cards are compact wide validation cards, not large product-detail cards: fixed left media, right-side title, stable price/comment/worthy-rate metrics, and clear open-link action.
 - Search result typography must make the product title and price easy to read at a glance; do not reserve large blank lower areas inside cards.
-- Search-result open-web action sits at the card's top-right edge as a small external-link icon button.
+- Search-result open-web action appears only once in the search-preview title bar as the global open-web icon button.
 - Rule card actions for preview/search and delete align to the right side of the rule title row.
 - Rule enabled state should render as an icon in the rule list instead of text such as "已启用".
 - Rule titles and enabled-state icons should be larger than the current small status text treatment.
@@ -55,7 +56,7 @@ Rebuild the Web panel UI around the product's real job: create scheduled product
 - Form field icons should be preserved, but they must be the same visual size as the field label text, not large standalone circular badges. Icons must be semantically appropriate for each field and use theme-aware background/foreground colors for light and dark mode.
 - Telegram configuration should be more legible than the current narrow/tiny card, while keeping secondary priority. Its layout should be compact: Bot Token and Chat ID remain primary fields; Parse Mode / HTML and link preview should share a compact row when space allows.
 - Telegram's main enable switch belongs in the panel title bar. The body should contain only four configuration controls: Bot Token, Chat ID, Parse Mode / HTML, and link preview.
-- Telegram enable control should use the Telegram plane icon. Enabled state uses a filled blue button/background; disabled state uses a blank/empty button state.
+- Top-bar Telegram control should use the official Telegram logo. Enabled state uses normal color / filled emphasis; disabled state is greyed. The Telegram panel enable control itself uses a normal switch.
 - The rule detail/editor panel should not contain a rule enable switch. Saving a rule automatically enables it.
 - Product images use fixed dimensions and stable placeholders when loading fails: rule cards show the keyword initial; search results show the product-title initial.
 - Image placeholders must match loaded image dimensions, avoid broken-image icons, avoid grayscale/blurred real images, and prevent layout shift.
@@ -77,9 +78,9 @@ Rebuild the Web panel UI around the product's real job: create scheduled product
 - [ ] Desktop screenshot shows rule creation/editing as the primary hierarchy, temporary search preview as validation, and Telegram as secondary delivery readiness.
 - [ ] Rule card screenshot shows left thumbnail and right rule summary aligned to the same height.
 - [ ] Filter chip stress case with more than two rows scrolls inside the chip region without pushing neighboring fields or changing the editor height.
-- [ ] Search preview sizes to actual result count, shows up to six independent compact product cards before internal scrolling, and does not render as large product-detail cards.
+- [ ] Search preview sizes to actual result count, shows up to eight independent compact product cards before internal scrolling, and does not render as large product-detail cards.
 - [ ] Search result cards do not show large unused blank areas under the main content, and product title/price hierarchy is visibly stronger than secondary metadata.
-- [ ] Search-result cards place the open-web external-link action at the top-right edge.
+- [ ] Search-result cards do not render per-card open-web icons; only the search-preview header has the global open-web icon.
 - [ ] Rule cards place preview/search and delete actions on the right side of the title row.
 - [ ] Rule enabled state renders as an icon in the rule list, not as the text "已启用".
 - [ ] Rule title and enabled-state icon are visually larger than the previous small text status.
@@ -88,8 +89,8 @@ Rebuild the Web panel UI around the product's real job: create scheduled product
 - [ ] Rule editor contains no large unused bottom blank region; its actions sit close to the actual form content.
 - [ ] Rule-detail footer contains the current-rule preview action and the primary save-and-enable action together; the search-preview section contains results only.
 - [ ] Telegram panel is legible and compact: Parse Mode / HTML and link preview sit in one row on desktop.
-- [ ] Telegram enable switch is in the Telegram panel title bar, and the panel body contains only Bot Token, Chat ID, Parse Mode / HTML, and link preview.
-- [ ] Telegram enable control uses a Telegram plane icon; enabled appears filled blue, disabled appears blank/empty.
+- [ ] Telegram panel enable control is a real switch in the Telegram panel title bar, and the panel body contains only Bot Token, Chat ID, Parse Mode / HTML, and link preview.
+- [ ] Top-bar Telegram control uses the official Telegram logo; enabled appears normal/color-emphasized and disabled appears greyed.
 - [ ] Icon colors are visually consistent: primary/search/open actions, enabled/healthy state, delete/error, and neutral metadata are the only color categories.
 - [ ] Rule detail/editor contains no enable switch; saving a rule automatically marks it enabled.
 - [ ] Scan interval and per-push count remain directly visible and editable in the rule-detail form.
@@ -114,7 +115,7 @@ Rebuild the Web panel UI around the product's real job: create scheduled product
 - Metrics presentation: use inline SMZDM-like metadata for price, worthy-rate, and comment counts. Do not use large bordered metric boxes for rule cards or search result cards.
 - Telegram layout: put the main enable switch in the title bar. Keep only four body controls: Bot Token, Chat ID, Parse Mode / HTML, and link preview.
 - Field icon treatment: keep icons in the editor and Telegram forms, but make them label-sized, semantically matched to the field, and theme-aware instead of black circular badges.
-- Search preview density: size the preview to actual result count; show up to six independent product cards before internal scrolling.
+- Search preview density: size the preview to actual result count; show up to eight independent product cards before internal scrolling.
 - Rule enabled behavior: show enabled state as an icon in rule-list cards. Remove the enable switch from rule details; saving a rule automatically enables it.
 - Product title: use "什么值得买商品提醒".
 - Rule detail actions: do not put save on the far right of the rule-detail title bar.
@@ -122,7 +123,7 @@ Rebuild the Web panel UI around the product's real job: create scheduled product
 - Telegram enabled visual: use Telegram plane icon with filled blue enabled state and blank disabled state.
 - Rule-detail low-frequency fields: keep scan interval and per-push count visible in the main form.
 - Rule-detail field grid: preserve the current mixed layout rhythm rather than changing to a strict 2-column or 3-column grid.
-- Search-result action placement: put each card's open-web external-link action at the top-right edge.
+- Search-result action placement: do not put open-web actions on every card. Keep only the global open-web action in the search-preview title bar.
 - Overall composition: keep functional blocks, but make the dashboard read as one integrated canvas using soft gutters and low-contrast boundaries instead of heavy separators.
 - Icon color system: use semantic categories only. Primary/search/open = blue, enabled/healthy = green, destructive/error = red, fields/secondary metadata = neutral.
 

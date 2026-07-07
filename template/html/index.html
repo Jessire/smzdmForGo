@@ -3926,7 +3926,7 @@
       grid-column: 1 / 3;
       grid-row: 3;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px;
       margin: 0;
       min-width: 0;
@@ -6915,6 +6915,7 @@
       gap: 9px;
       width: 100%;
       flex-wrap: nowrap;
+      transform: translateY(12px);
     }
     body.zero-redesign.trellis-ui .rule-title-left {
       min-width: 0;
@@ -6927,7 +6928,7 @@
       align-self: center;
       justify-self: end;
       margin-left: 0;
-      transform: translate(10px, -8px);
+      transform: translateX(10px);
     }
     body.zero-redesign.trellis-ui .rule-title-row .row-actions .btn.info {
       background: #edf4ff !important;
@@ -7196,6 +7197,217 @@
       font-size: 14px;
       font-weight: 650;
     }
+    /* 2026-07-08 feedback pass: clearer type, official Telegram logo, internal scrolling, compact search cards. */
+    body.zero-redesign.trellis-ui,
+    body.zero-redesign.trellis-ui button,
+    body.zero-redesign.trellis-ui input,
+    body.zero-redesign.trellis-ui select,
+    body.zero-redesign.trellis-ui textarea {
+      font-family: "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+    body.zero-redesign.trellis-ui .app-shell {
+      height: calc(100dvh - 20px);
+      align-content: stretch;
+      grid-template-rows: 56px 500px minmax(0, 1fr);
+      overflow: hidden;
+    }
+    body.zero-redesign.trellis-ui h2 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    body.zero-redesign.trellis-ui .top-brand strong {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    body.zero-redesign.trellis-ui .keyword-name,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .keyword-name {
+      font-size: 18px;
+      font-weight: 760;
+      letter-spacing: 0;
+      text-shadow: none;
+    }
+    body.zero-redesign.trellis-ui .rules-panel.rail-panel {
+      min-height: 0;
+      height: calc(100dvh - 107px) !important;
+      max-height: calc(100dvh - 107px) !important;
+      align-self: stretch !important;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    body.zero-redesign.trellis-ui .rules-list {
+      min-height: 0;
+      overflow: hidden;
+    }
+    body.zero-redesign.trellis-ui .rules-body,
+    body.zero-redesign.trellis-ui .rules-body.is-scrollable {
+      height: 100%;
+      max-height: none;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+    }
+    body.zero-redesign.trellis-ui .rule-card.active,
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-card.active {
+      border-color: color-mix(in srgb, var(--app-primary) 62%, var(--app-line)) !important;
+      background: color-mix(in srgb, var(--app-primary-soft) 28%, var(--app-surface)) !important;
+      box-shadow: inset 3px 0 0 var(--app-primary) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-card.active {
+      border-color: rgba(122, 167, 255, 0.45) !important;
+      background: rgba(122, 167, 255, 0.08) !important;
+      box-shadow: inset 3px 0 0 var(--app-primary) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled {
+      border-color: color-mix(in srgb, var(--app-line) 78%, transparent) !important;
+      background: color-mix(in srgb, var(--app-surface) 92%, var(--app-surface-soft)) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled .thumb {
+      filter: grayscale(1) saturate(0.15) opacity(0.68) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled .keyword-name,
+    body.zero-redesign.trellis-ui .rule-card.disabled .tag,
+    body.zero-redesign.trellis-ui .rule-card.disabled .rule-stat,
+    body.zero-redesign.trellis-ui .rule-card.disabled .rule-stat span,
+    body.zero-redesign.trellis-ui .rule-card.disabled .rule-stat svg {
+      color: var(--app-faint) !important;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle img {
+      width: 20px;
+      height: 20px;
+      display: block;
+      filter: grayscale(1) saturate(0.2) opacity(0.55);
+      transition: filter 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle.is-on img {
+      filter: none;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle.is-on {
+      background: color-mix(in srgb, #2aabee 16%, transparent) !important;
+      border-color: color-mix(in srgb, #2aabee 36%, var(--app-line)) !important;
+      color: #2aabee !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle {
+      width: 52px;
+      height: 30px;
+      cursor: pointer;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle .toggle-shell {
+      width: 52px;
+      height: 30px;
+      justify-content: flex-start;
+      padding: 3px;
+      border-radius: 999px;
+      background: #e5e7eb !important;
+      border-color: color-mix(in srgb, var(--app-line) 76%, transparent) !important;
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.12);
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle .toggle-knob {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+      transform: translateX(0);
+      transition: transform 180ms ease;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle input:checked + .toggle-shell {
+      background: var(--app-success) !important;
+      border-color: color-mix(in srgb, var(--app-success) 72%, transparent) !important;
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.12);
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle input:checked + .toggle-shell .toggle-knob {
+      transform: translateX(22px);
+    }
+    body.zero-redesign.trellis-ui .field-icon,
+    body.zero-redesign.trellis-ui .switch-icon,
+    body.zero-redesign.trellis-ui .notify-grid .field-icon {
+      width: 17px;
+      height: 17px;
+      min-width: 17px;
+      border: 0 !important;
+      border-radius: 0;
+      background: transparent !important;
+      color: #667085 !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field-icon,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .switch-icon,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .notify-grid .field-icon {
+      color: #aab5c4 !important;
+    }
+    body.zero-redesign.trellis-ui .preview-panel {
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    body.zero-redesign.trellis-ui #previewHero {
+      display: none !important;
+    }
+    body.zero-redesign.trellis-ui .product-list,
+    body.zero-redesign.trellis-ui .product-list.is-scrollable {
+      height: 100%;
+      min-height: 0;
+      max-height: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-rows: minmax(86px, auto);
+      gap: 8px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    body.zero-redesign.trellis-ui .product-card {
+      grid-template-columns: 64px minmax(0, 1fr);
+      min-height: 86px;
+      align-items: start;
+      gap: 12px;
+      padding: 9px 10px;
+    }
+    body.zero-redesign.trellis-ui .product-media {
+      width: 64px;
+      min-height: 64px;
+      height: 64px;
+    }
+    body.zero-redesign.trellis-ui .product-action {
+      display: none !important;
+    }
+    body.zero-redesign.trellis-ui .product-title {
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 760;
+      letter-spacing: 0;
+      -webkit-line-clamp: 3;
+      text-wrap: pretty;
+    }
+    body.zero-redesign.trellis-ui .product-meta {
+      gap: 8px;
+      margin-top: 7px;
+    }
+    body.zero-redesign.trellis-ui .product-meta .tag,
+    body.zero-redesign.trellis-ui[data-theme="light"] .product-meta .tag,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .product-meta .tag {
+      font-size: 14px;
+      font-weight: 720;
+      color: var(--app-muted) !important;
+    }
+    body.zero-redesign.trellis-ui .product-price,
+    body.zero-redesign.trellis-ui[data-theme="light"] .product-price,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .product-price {
+      font-size: 15px;
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui .product-meta svg,
+    body.zero-redesign.trellis-ui .rule-stat > svg {
+      color: #7b8798 !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .product-meta svg,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-stat > svg {
+      color: #aeb8c8 !important;
+    }
     body.zero-redesign.trellis-ui .empty-state {
       min-height: 146px;
     }
@@ -7294,6 +7506,327 @@
         display: none;
       }
     }
+    /* 2026-07-08 final polish: remove noisy icon chrome, make preview readable, and keep long lists internal. */
+    body.zero-redesign.trellis-ui,
+    body.zero-redesign.trellis-ui button,
+    body.zero-redesign.trellis-ui input,
+    body.zero-redesign.trellis-ui select,
+    body.zero-redesign.trellis-ui textarea {
+      font-family: "Microsoft YaHei UI", "Segoe UI", "PingFang SC", Arial, sans-serif !important;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0 !important;
+    }
+    body.zero-redesign.trellis-ui .app-shell {
+      grid-template-columns: minmax(370px, 440px) minmax(0, 7.6fr) minmax(220px, 260px);
+      grid-template-rows: 60px minmax(294px, 0.92fr) minmax(330px, 1fr);
+      overflow: hidden;
+    }
+    body.zero-redesign.trellis-ui h2 {
+      font-size: 23px !important;
+      font-weight: 760 !important;
+      line-height: 1.12 !important;
+    }
+    body.zero-redesign.trellis-ui .top-brand strong {
+      font-size: 21px !important;
+      font-weight: 760 !important;
+    }
+    body.zero-redesign.trellis-ui .meta,
+    body.zero-redesign.trellis-ui .top-brand span {
+      font-size: 13px !important;
+      font-weight: 650 !important;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle,
+    body.zero-redesign.trellis-ui .top-telegram-toggle.is-on,
+    body.zero-redesign.trellis-ui button.top-telegram-toggle:hover,
+    body.zero-redesign.trellis-ui button.top-telegram-toggle.is-on:hover {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      color: inherit !important;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle img {
+      width: 22px !important;
+      height: 22px !important;
+      filter: grayscale(1) saturate(0.2) opacity(0.46) !important;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle.is-on img {
+      filter: none !important;
+    }
+    body.zero-redesign.trellis-ui .field-icon,
+    body.zero-redesign.trellis-ui .switch-icon,
+    body.zero-redesign.trellis-ui .notify-grid .field-icon {
+      display: none !important;
+    }
+    body.zero-redesign.trellis-ui .field label,
+    body.zero-redesign.trellis-ui .notify-grid .field label {
+      min-height: 22px;
+      gap: 0 !important;
+      color: var(--app-muted) !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+    }
+    body.zero-redesign.trellis-ui .rules-panel.rail-panel {
+      height: 100% !important;
+      max-height: none !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+    body.zero-redesign.trellis-ui .rules-list,
+    body.zero-redesign.trellis-ui .rules-body,
+    body.zero-redesign.trellis-ui .rules-body.is-scrollable {
+      min-height: 0 !important;
+      height: 100% !important;
+      max-height: none !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui .rule-card {
+      min-height: 148px !important;
+      display: grid !important;
+      grid-template-columns: 108px minmax(0, 1fr) !important;
+      grid-template-rows: auto minmax(30px, 1fr) auto !important;
+      align-items: stretch !important;
+      column-gap: 12px !important;
+      row-gap: 8px !important;
+      padding: 12px !important;
+    }
+    body.zero-redesign.trellis-ui .rule-main {
+      display: contents !important;
+    }
+    body.zero-redesign.trellis-ui .rule-thumb-media,
+    body.zero-redesign.trellis-ui .thumb {
+      width: 108px !important;
+      height: 108px !important;
+      min-height: 108px !important;
+      border-radius: 8px !important;
+    }
+    body.zero-redesign.trellis-ui .rule-thumb-media {
+      grid-column: 1 !important;
+      grid-row: 1 / 4 !important;
+      align-self: start !important;
+    }
+    body.zero-redesign.trellis-ui .rule-text {
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+      min-width: 0 !important;
+      align-self: start !important;
+    }
+    body.zero-redesign.trellis-ui .rule-title-row {
+      min-height: 36px !important;
+      align-items: center !important;
+      transform: none !important;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto !important;
+      gap: 10px !important;
+      width: 100% !important;
+    }
+    body.zero-redesign.trellis-ui .rule-title-left {
+      justify-content: flex-start !important;
+      gap: 0 !important;
+      min-width: 0 !important;
+      overflow: hidden !important;
+    }
+    body.zero-redesign.trellis-ui .keyword-name {
+      font-size: 21px !important;
+      font-weight: 760 !important;
+      line-height: 1.18 !important;
+    }
+    body.zero-redesign.trellis-ui .row-actions {
+      margin-left: auto !important;
+      justify-self: end !important;
+      transform: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      gap: 8px !important;
+      width: auto !important;
+      grid-column: auto !important;
+      grid-row: auto !important;
+    }
+    body.zero-redesign.trellis-ui .row-actions .rule-enabled-switch,
+    body.zero-redesign.trellis-ui .row-actions .icon-btn {
+      flex: 0 0 auto !important;
+      align-self: center !important;
+    }
+    body.zero-redesign.trellis-ui .rule-filter {
+      grid-column: 2 !important;
+      grid-row: 2 !important;
+      max-height: 34px !important;
+      align-self: start !important;
+      overflow: auto !important;
+    }
+    body.zero-redesign.trellis-ui .rule-metrics {
+      grid-column: 2 !important;
+      grid-row: 3 !important;
+      align-self: end !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      min-width: 0 !important;
+    }
+    body.zero-redesign.trellis-ui .rule-stat {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 5px !important;
+      min-width: 0 !important;
+      color: var(--app-muted) !important;
+      font-size: 14px !important;
+      font-weight: 720 !important;
+      line-height: 1 !important;
+      text-align: left !important;
+      white-space: nowrap !important;
+    }
+    body.zero-redesign.trellis-ui .rule-stat span {
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+    body.zero-redesign.trellis-ui .rule-price {
+      justify-content: flex-end !important;
+      max-width: 116px !important;
+      margin-left: auto !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled {
+      border-color: color-mix(in srgb, var(--app-line) 80%, transparent) !important;
+      background: color-mix(in srgb, var(--app-surface-soft) 92%, var(--app-surface)) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled .thumb,
+    body.zero-redesign.trellis-ui .rule-card.disabled .rule-filter,
+    body.zero-redesign.trellis-ui .rule-card.disabled .rule-metrics,
+    body.zero-redesign.trellis-ui .rule-card.disabled .keyword-name {
+      filter: grayscale(1) saturate(0.08) opacity(0.55) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-stat > svg,
+    body.zero-redesign.trellis-ui .product-meta svg {
+      color: var(--app-muted) !important;
+      opacity: 0.78;
+    }
+    body.zero-redesign.trellis-ui .preview-panel {
+      min-height: 0 !important;
+      grid-template-rows: auto minmax(0, 1fr) !important;
+      overflow: hidden !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards.product-list,
+    body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      grid-auto-rows: minmax(200px, 1fr) !important;
+      gap: 10px !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      padding: 0 4px 0 0 !important;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
+      grid-auto-rows: minmax(200px, auto) !important;
+      max-height: calc(200px * 4 + 10px * 3) !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-card {
+      min-height: 200px !important;
+      height: 100% !important;
+      grid-template-columns: 152px minmax(0, 1fr) !important;
+      align-items: stretch !important;
+      gap: 14px !important;
+      padding: 12px !important;
+      border-radius: 8px !important;
+      background: color-mix(in srgb, var(--app-surface) 96%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-media,
+    body.zero-redesign.trellis-ui #previewCards .product-card img {
+      width: 152px !important;
+      height: 100% !important;
+      min-height: 176px !important;
+      border-radius: 8px !important;
+      object-fit: cover !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-info {
+      min-width: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-title {
+      display: -webkit-box !important;
+      -webkit-box-orient: vertical !important;
+      -webkit-line-clamp: 3 !important;
+      overflow: hidden !important;
+      color: var(--app-text) !important;
+      font-size: 19px !important;
+      font-weight: 760 !important;
+      line-height: 1.26 !important;
+      text-decoration: none !important;
+      white-space: normal !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-meta {
+      margin-top: 10px !important;
+      gap: 10px !important;
+      align-items: center !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-meta .tag,
+    body.zero-redesign.trellis-ui #previewCards .product-price {
+      font-size: 15px !important;
+      font-weight: 720 !important;
+      line-height: 1.2 !important;
+      white-space: nowrap !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-source {
+      margin-top: auto !important;
+      color: var(--app-faint) !important;
+      font-size: 12px !important;
+      font-weight: 620 !important;
+    }
+    body.zero-redesign.trellis-ui .product-action {
+      display: none !important;
+    }
+    body.zero-redesign.trellis-ui .notify-head-actions {
+      justify-content: flex-end !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle {
+      width: 54px !important;
+      height: 32px !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle .toggle-shell {
+      width: 54px !important;
+      height: 32px !important;
+      padding: 3px !important;
+      background: #d9dee7 !important;
+      border: 1px solid color-mix(in srgb, var(--app-line-strong) 48%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle .toggle-knob {
+      width: 24px !important;
+      height: 24px !important;
+      background: #fff !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle input:checked + .toggle-shell {
+      background: #2aabee !important;
+      border-color: #2aabee !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle input:checked + .toggle-shell .toggle-knob {
+      transform: translateX(22px) !important;
+    }
+    @media (max-width: 1180px) {
+      body.zero-redesign.trellis-ui .app-shell {
+        overflow: visible;
+      }
+      body.zero-redesign.trellis-ui #previewCards.product-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+    }
+    @media (max-width: 680px) {
+      body.zero-redesign.trellis-ui #previewCards.product-list {
+        grid-template-columns: 1fr !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards .product-card {
+        grid-template-columns: 96px minmax(0, 1fr) !important;
+      }
+    }
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
@@ -7306,7 +7839,7 @@
     </div>
     <div class="top-status">
       <button class="top-pill top-telegram-toggle off" id="topTelegramToggle" type="button" aria-label="Telegram 未启用" title="Telegram 未启用" aria-pressed="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10 14"/><path d="m21 3-7 18-4-7-7-4 18-7Z"/></svg>
+        <img src="https://telegram.org/img/t_logo.svg" alt="" aria-hidden="true">
         <span class="sr-only">Telegram 未启用</span>
       </button>
       <button class="top-pill" id="themeModeButton" type="button" aria-label="切换主题" title="切换主题">
@@ -7438,15 +7971,9 @@
         <div class="notify-head-actions">
           <label class="notify-enabled-toggle" title="Telegram 启用" aria-label="Telegram 启用">
             <input id="telegramEnabled" type="checkbox">
-            <span class="toggle-shell" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M21 3 10 14"/><path d="m21 3-7 18-4-7-7-4 18-7Z"/></svg>
-            </span>
+            <span class="toggle-shell" aria-hidden="true"><span class="toggle-knob"></span></span>
             <span class="sr-only">Telegram 启用</span>
           </label>
-          <button type="button" class="btn primary icon-btn" id="saveNotifyConfig" aria-label="保存通知配置" title="保存通知配置">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
-            <span class="sr-only">保存通知配置</span>
-          </button>
         </div>
       </div>
       <div class="notify-grid">
@@ -7797,7 +8324,7 @@ layui.use(function(){
     productConfig.keywordRules.forEach(function(rule, index){
       var keywordRaw = firstWord(rule) || '未命名';
       var keyword = escapeHtml(keywordRaw);
-      var row = $('<div class="rule-card" role="button" tabindex="0"></div>').toggleClass('active', index === selectedRuleIndex);
+      var row = $('<div class="rule-card" role="button" tabindex="0"></div>').toggleClass('active', index === selectedRuleIndex).toggleClass('disabled', rule.enabled === false);
       var image = $('<img class="thumb" loading="lazy" decoding="async">');
       image.attr('alt', keywordRaw);
       image.on('error', function(){
@@ -7809,8 +8336,6 @@ layui.use(function(){
       var wrap = $('<div class="rule-main"></div>');
       wrap.append(media);
       var actionWrap = $('<div class="row-actions"></div>');
-      actionWrap.append(iconButton('search', '预览', 'info icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
-      actionWrap.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; removeSelectedRule(); }));
       var enabledSwitch = $(statusSwitch(rule.enabled));
       enabledSwitch.on('click', function(e){
         e.preventDefault();
@@ -7823,10 +8348,12 @@ layui.use(function(){
         renderRules();
         renderSummary();
       });
+      actionWrap.append(enabledSwitch);
+      actionWrap.append(iconButton('search', '预览', 'info icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
+      actionWrap.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; removeSelectedRule(); }));
       var titleRow = $('<div class="rule-title-row"></div>');
       var titleLeft = $('<div class="rule-title-left"></div>');
       titleLeft.append('<div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div>');
-      titleLeft.append(enabledSwitch);
       titleRow.append(titleLeft);
       titleRow.append(actionWrap);
       wrap.append($('<div class="rule-text"></div>').append(titleRow));
@@ -7896,7 +8423,7 @@ layui.use(function(){
   function currentRuleFromEditor() {
     var previous = currentRule() || {};
     var rule = normalizeRule({
-      enabled: previous.enabled !== false,
+      enabled: true,
       words: textToList($('#keywordInput').val()).slice(0, 1),
       filterWords: getFilterWordsFromEditor(),
       lowCommentNum: toInt($('#lowCommentInput').val()),
@@ -7999,7 +8526,7 @@ layui.use(function(){
     }
     var body = $('#previewCards');
     body.empty();
-    body.toggleClass('is-scrollable', items.length > 6);
+    body.toggleClass('is-scrollable', items.length > 8);
     items.forEach(function(item){
       body.append(productCard(item));
     });
@@ -8041,7 +8568,7 @@ layui.use(function(){
     $('#previewMetrics').html('<span>来自 ' + escapeHtml(first.keyword || '-') + '</span><span>价格 ' + escapeHtml(first.price || '-') + '</span><span>值率 ' + escapeHtml(first.worthy || '0') + '%</span><span>评论 ' + escapeHtml(first.comment || '0') + '</span>');
     var body = $('#previewCards');
     body.empty();
-    body.toggleClass('is-scrollable', items.length > 6);
+    body.toggleClass('is-scrollable', items.length > 8);
     items.forEach(function(item){
       body.append(productCard(item));
     });
@@ -8340,11 +8867,8 @@ layui.use(function(){
     var keywordTag = item.keyword ? '<span class="tag info">' + escapeHtml(item.keyword) + '</span>' : '';
     info.append('<div class="product-meta">' + keywordTag + '<span class="tag info product-price">' + iconSvg('price') + escapeHtml(item.price || '-') + '</span><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span></div>');
     info.append('<div class="product-source">' + escapeHtml(item.referral || '什么值得买') + (item.date ? ' · ' + escapeHtml(item.date) : '') + '</div>');
-    var action = $('<div class="product-action"></div>');
-    action.append('<a class="btn web icon-btn" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '" aria-label="打开网页" title="打开网页">' + iconSvg('external') + '<span class="sr-only">打开网页</span></a>');
     card.append(media);
     card.append(info);
-    card.append(action);
     return card;
   }
 
