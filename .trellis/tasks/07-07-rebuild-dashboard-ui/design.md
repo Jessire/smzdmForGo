@@ -22,6 +22,8 @@ topbar: 商品提醒规则 / 保存状态 / TG 状态 / 主题状态
 商品规则 | 搜索结果      | 搜索结果
 ```
 
+All desktop regions sit inside one shared app canvas. Functional areas remain visible, but separation is expressed with soft gutters, low-contrast borders, and aligned panel edges rather than heavy split lines or black gaps.
+
 Mobile:
 
 ```text
@@ -34,13 +36,13 @@ Telegram 通知
 ## Visual System
 
 - Dense admin surface with restrained color.
-- Neutral panels with clear borders, low shadow, and 8px-radius card geometry.
-- Blue for search/save/open primary actions, green for add/enabled/success, red for delete/destructive.
+- Shared app canvas with quiet internal panels, low shadow, and consistent 8px-radius geometry.
+- Icon colors use semantic categories only: blue for search/save/open primary actions, green for enabled/success, red for delete/destructive, neutral for field icons and secondary metadata.
 - Product and rule images stay in color.
 - Rules occupy the full left column and scroll internally.
 - Rule editor and Telegram share the right workspace top row at about 70/30.
 - Search preview spans the full right workspace below the editor and Telegram.
-- Search results render as 3 x 2 compact wide product cards on desktop.
+- Search results render as compact independent product cards on desktop. The preview area sizes to actual result count, shows up to six cards before internal scrolling, and does not reserve empty result slots.
 - Empty search state spans the full preview area instead of occupying one card slot.
 
 ## Risks

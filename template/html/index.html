@@ -5050,7 +5050,7 @@
     }
     body.zero-redesign.trellis-ui .rule-stat span {
       min-width: 0;
-      overflow: hidden;
+      overflow: visible;
       text-overflow: ellipsis;
       white-space: nowrap;
       color: var(--ui-text);
@@ -5779,20 +5779,33 @@
       stroke-linecap: round;
       stroke-linejoin: round;
     }
+    body.zero-redesign.trellis-ui .top-telegram-toggle {
+      background: transparent !important;
+      color: var(--app-muted) !important;
+      box-shadow: none !important;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle.is-on {
+      background: #2aabee !important;
+      border-color: #2aabee !important;
+      color: #fff !important;
+      box-shadow: 0 10px 20px rgba(42, 171, 238, 0.22) !important;
+    }
+    body.zero-redesign.trellis-ui button.top-telegram-toggle:hover {
+      background: color-mix(in srgb, var(--app-primary) 8%, transparent) !important;
+      border-color: color-mix(in srgb, var(--app-primary) 24%, var(--app-line)) !important;
+      color: var(--app-primary) !important;
+    }
+    body.zero-redesign.trellis-ui button.top-telegram-toggle.is-on:hover {
+      background: #2aabee !important;
+      border-color: #2aabee !important;
+      color: #fff !important;
+    }
     body.zero-redesign.trellis-ui .top-pill img {
       width: 19px;
       height: 19px;
       display: block;
       object-fit: contain;
-    }
-    body.zero-redesign.trellis-ui #topTelegramStatus img {
-      opacity: 0.36;
-      filter: grayscale(1) saturate(0.45);
-      transition: opacity 160ms ease, filter 160ms ease;
-    }
-    body.zero-redesign.trellis-ui #topTelegramStatus.ok img {
-      opacity: 1;
-      filter: none;
     }
     body.zero-redesign.trellis-ui button.top-pill {
       cursor: pointer;
@@ -6668,6 +6681,524 @@
       outline: 3px solid color-mix(in srgb, var(--app-primary) 32%, transparent);
       outline-offset: 2px;
     }
+
+    /* Trellis final polish: integrated canvas, semantic icon colors, compact rule workflow. */
+    body.zero-redesign.trellis-ui {
+      --app-canvas: color-mix(in srgb, var(--app-surface) 86%, var(--app-bg));
+      --app-panel: color-mix(in srgb, var(--app-surface-soft) 72%, var(--app-surface));
+      background: var(--app-bg);
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] {
+      --app-canvas: #151b22;
+      --app-panel: #1a222d;
+      background: #0f141b;
+    }
+    body.zero-redesign.trellis-ui .app-shell {
+      width: min(1740px, calc(100vw - 20px));
+      height: auto;
+      min-height: 0;
+      margin: 10px auto;
+      padding: 10px;
+      gap: 10px;
+      align-content: start;
+      border: 1px solid color-mix(in srgb, var(--app-line) 70%, transparent);
+      border-radius: 16px;
+      background: var(--app-canvas);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      grid-template-columns: minmax(370px, 440px) minmax(0, 7.6fr) minmax(300px, 340px);
+      grid-template-rows: 56px minmax(0, 492px) auto;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .app-shell {
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
+    }
+    body.zero-redesign.trellis-ui .app-topbar,
+    body.zero-redesign.trellis-ui .rail-panel,
+    body.zero-redesign.trellis-ui .studio-panel,
+    body.zero-redesign.trellis-ui .inspector-card,
+    body.zero-redesign.trellis-ui[data-theme="light"] .app-topbar,
+    body.zero-redesign.trellis-ui[data-theme="light"] .rail-panel,
+    body.zero-redesign.trellis-ui[data-theme="light"] .studio-panel,
+    body.zero-redesign.trellis-ui[data-theme="light"] .inspector-card {
+      border-color: color-mix(in srgb, var(--app-line) 72%, transparent) !important;
+      background: var(--app-panel) !important;
+      box-shadow: none !important;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    body.zero-redesign.trellis-ui .rail-panel,
+    body.zero-redesign.trellis-ui .studio-panel,
+    body.zero-redesign.trellis-ui .inspector-card {
+      padding: 14px;
+    }
+    body.zero-redesign.trellis-ui .studio-panel,
+    body.zero-redesign.trellis-ui .notification-shell,
+    body.zero-redesign.trellis-ui .rail-panel,
+    body.zero-redesign.trellis-ui .preview-panel {
+      height: auto;
+      align-self: start;
+    }
+    body.zero-redesign.trellis-ui .studio-panel {
+      grid-template-rows: auto auto auto;
+      align-content: start;
+    }
+    body.zero-redesign.trellis-ui .preview-panel {
+      grid-template-rows: auto auto;
+      min-height: 0;
+    }
+    body.zero-redesign.trellis-ui .preview-panel.inspector-card {
+      height: auto !important;
+      align-self: start !important;
+    }
+    body.zero-redesign.trellis-ui .rail-head,
+    body.zero-redesign.trellis-ui .studio-head,
+    body.zero-redesign.trellis-ui .inspector-head {
+      border-bottom-color: color-mix(in srgb, var(--app-line) 52%, transparent);
+    }
+    body.zero-redesign.trellis-ui .preview-panel .inspector-head {
+      padding-bottom: 4px;
+      border-bottom: 0 !important;
+    }
+    body.zero-redesign.trellis-ui .top-brand strong {
+      font-size: 21px;
+      font-weight: 850;
+    }
+    body.zero-redesign.trellis-ui .top-brand span,
+    body.zero-redesign.trellis-ui .top-status span {
+      font-size: 13px;
+    }
+    body.zero-redesign.trellis-ui h2 {
+      font-size: 24px;
+      line-height: 1.12;
+      font-weight: 850;
+    }
+    body.zero-redesign.trellis-ui .meta {
+      font-size: 14px;
+      font-weight: 720;
+    }
+    body.zero-redesign.trellis-ui .top-pill,
+    body.zero-redesign.trellis-ui .btn,
+    body.zero-redesign.trellis-ui #reloadProductConfig,
+    body.zero-redesign.trellis-ui #duplicateRule,
+    body.zero-redesign.trellis-ui .btn.secondary,
+    body.zero-redesign.trellis-ui .btn.copy,
+    body.zero-redesign.trellis-ui .btn.refresh {
+      background: color-mix(in srgb, var(--app-surface) 78%, var(--app-canvas)) !important;
+      border-color: color-mix(in srgb, var(--app-line) 76%, transparent) !important;
+      color: var(--app-muted) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle,
+    body.zero-redesign.trellis-ui .top-telegram-toggle.off {
+      background: transparent !important;
+      border-color: color-mix(in srgb, var(--app-line) 76%, transparent) !important;
+      color: var(--app-muted) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle.is-on {
+      background: #2aabee !important;
+      border-color: #2aabee !important;
+      color: #fff !important;
+      box-shadow: 0 10px 20px rgba(42, 171, 238, 0.22) !important;
+    }
+    body.zero-redesign.trellis-ui #searchAllRules,
+    body.zero-redesign.trellis-ui #addRule,
+    body.zero-redesign.trellis-ui #searchRule,
+    body.zero-redesign.trellis-ui #openSearchPage,
+    body.zero-redesign.trellis-ui #saveNotifyConfig,
+    body.zero-redesign.trellis-ui .btn.info,
+    body.zero-redesign.trellis-ui .btn.web {
+      background: var(--app-primary-soft) !important;
+      border-color: color-mix(in srgb, var(--app-primary) 28%, transparent) !important;
+      color: var(--app-primary) !important;
+    }
+    body.zero-redesign.trellis-ui #saveProductConfig,
+    body.zero-redesign.trellis-ui .btn.primary {
+      background: var(--app-primary) !important;
+      border-color: var(--app-primary) !important;
+      color: #fff !important;
+      box-shadow: 0 10px 20px color-mix(in srgb, var(--app-primary) 22%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui .btn.danger,
+    body.zero-redesign.trellis-ui #removeRule {
+      background: var(--app-danger-soft) !important;
+      border-color: color-mix(in srgb, var(--app-danger) 30%, transparent) !important;
+      color: var(--app-danger) !important;
+    }
+    body.zero-redesign.trellis-ui .action-button {
+      width: auto;
+      min-width: 92px;
+      max-width: none;
+      flex: 0 0 auto;
+      padding: 0 16px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 760;
+    }
+    body.zero-redesign.trellis-ui .action-button svg {
+      width: 17px;
+      height: 17px;
+    }
+    body.zero-redesign.trellis-ui .editor-actions {
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+    body.zero-redesign.trellis-ui .field-icon,
+    body.zero-redesign.trellis-ui .switch-icon {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border: 0;
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--app-muted) 9%, transparent);
+      color: var(--app-muted);
+    }
+    body.zero-redesign.trellis-ui .field-icon svg,
+    body.zero-redesign.trellis-ui .switch-icon svg,
+    body.zero-redesign.trellis-ui .product-meta svg,
+    body.zero-redesign.trellis-ui .rule-stat svg {
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    body.zero-redesign.trellis-ui .field label {
+      font-size: 15px;
+      gap: 7px;
+    }
+    body.zero-redesign.trellis-ui .field,
+    body.zero-redesign.trellis-ui[data-theme="light"] .field,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field {
+      background: color-mix(in srgb, var(--app-surface) 56%, var(--app-panel)) !important;
+      border-color: color-mix(in srgb, var(--app-line) 64%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui .field input,
+    body.zero-redesign.trellis-ui .field select,
+    body.zero-redesign.trellis-ui .field textarea,
+    body.zero-redesign.trellis-ui .range-control input,
+    body.zero-redesign.trellis-ui .unit-control input,
+    body.zero-redesign.trellis-ui .unit-control select {
+      font-size: 16px;
+      font-weight: 720;
+    }
+    body.zero-redesign.trellis-ui .filter-token,
+    body.zero-redesign.trellis-ui .tag {
+      font-size: 13px;
+    }
+    body.zero-redesign.trellis-ui .rule-card {
+      min-height: 136px;
+      grid-template-columns: 124px minmax(0, 1fr);
+      grid-template-rows: auto 28px 1fr;
+      border-color: color-mix(in srgb, var(--app-line) 70%, transparent) !important;
+      background: color-mix(in srgb, var(--app-surface) 88%, var(--app-panel)) !important;
+    }
+    body.zero-redesign.trellis-ui .rules-body.is-scrollable {
+      max-height: calc(136px * 5 + 8px * 4);
+      overflow-y: auto;
+    }
+    body.zero-redesign.trellis-ui .rule-card.active {
+      border-color: color-mix(in srgb, var(--app-primary) 62%, var(--app-line)) !important;
+      background: color-mix(in srgb, var(--app-primary-soft) 38%, var(--app-surface)) !important;
+      box-shadow: inset 3px 0 0 var(--app-primary) !important;
+    }
+    body.zero-redesign.trellis-ui .keyword-name {
+      font-size: 19px;
+      font-weight: 850;
+      min-width: 0;
+    }
+    body.zero-redesign.trellis-ui .rule-title-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      flex-wrap: nowrap;
+    }
+    body.zero-redesign.trellis-ui .rule-title-left {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+    body.zero-redesign.trellis-ui .rule-title-row .row-actions {
+      align-self: center;
+      justify-self: end;
+      margin-left: 0;
+      transform: translate(10px, -8px);
+    }
+    body.zero-redesign.trellis-ui .rule-title-row .row-actions .btn.info {
+      background: #edf4ff !important;
+      border-color: #b7d0ff !important;
+      color: #2563eb !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-title-row .row-actions .btn.info {
+      background: rgba(96, 165, 250, 0.16) !important;
+      border-color: rgba(147, 197, 253, 0.26) !important;
+      color: #bfdbfe !important;
+    }
+    body.zero-redesign.trellis-ui .rule-title-row .row-actions .btn.danger {
+      background: #fff1f2 !important;
+      border-color: #fecdd3 !important;
+      color: #e11d48 !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-title-row .row-actions .btn.danger {
+      background: rgba(244, 63, 94, 0.14) !important;
+      border-color: rgba(251, 113, 133, 0.26) !important;
+      color: #fda4af !important;
+    }
+    body.zero-redesign.trellis-ui .tag.on,
+    body.zero-redesign.trellis-ui .rule-enabled-switch.is-on {
+      color: #fff !important;
+      background: var(--app-success) !important;
+      border-color: color-mix(in srgb, var(--app-success) 72%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-enabled-switch {
+      width: 48px;
+      height: 28px;
+      min-width: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 3px;
+      border: 1px solid var(--app-line);
+      border-radius: 999px;
+      color: var(--app-muted);
+      background: #ffffff;
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
+      cursor: pointer;
+      transition: background .18s ease, border-color .18s ease;
+    }
+    body.zero-redesign.trellis-ui .rule-enabled-switch .switch-knob {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+      transform: translateX(0);
+      transition: transform .18s ease;
+    }
+    body.zero-redesign.trellis-ui .rule-enabled-switch.is-on .switch-knob {
+      transform: translateX(20px);
+    }
+    body.zero-redesign.trellis-ui .rule-metrics {
+      display: flex;
+      align-items: center;
+      align-self: end;
+      gap: 12px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    body.zero-redesign.trellis-ui .rule-stat,
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-stat,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-stat {
+      min-height: 0;
+      padding: 0;
+      border: 0 !important;
+      border-radius: 0;
+      background: transparent !important;
+      color: var(--app-muted) !important;
+      gap: 5px;
+      justify-content: flex-start;
+      flex: 0 1 auto;
+    }
+    body.zero-redesign.trellis-ui .rule-stat > svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      color: #8793a4 !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-stat > svg {
+      color: #8793a4 !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-stat > svg {
+      color: #cbd5e1 !important;
+    }
+    body.zero-redesign.trellis-ui .rule-stat span,
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-stat span,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-stat span {
+      color: var(--app-text) !important;
+      font-size: 15px;
+      font-weight: 820;
+      text-shadow: none;
+    }
+    body.zero-redesign.trellis-ui .rule-price {
+      margin-left: auto;
+      min-width: 0;
+      flex: 0 0 auto;
+    }
+    body.zero-redesign.trellis-ui .rule-price span {
+      max-width: none;
+      overflow: visible;
+      text-overflow: clip;
+    }
+    body.zero-redesign.trellis-ui .setting-copy strong {
+      color: var(--app-text);
+      font-weight: 760;
+    }
+    body.zero-redesign.trellis-ui .setting-copy small {
+      color: var(--app-muted);
+      font-weight: 650;
+    }
+    body.zero-redesign.trellis-ui .notify-head-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle {
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle .toggle-shell {
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid color-mix(in srgb, var(--app-line) 76%, transparent);
+      border-radius: 50%;
+      background: transparent !important;
+      color: var(--app-muted);
+      box-shadow: none;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle .toggle-shell svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle input:checked + .toggle-shell {
+      background: #2aabee !important;
+      border-color: #2aabee !important;
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(42, 171, 238, 0.22);
+    }
+    body.zero-redesign.trellis-ui .notify-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field label {
+      font-size: 13px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field input,
+    body.zero-redesign.trellis-ui .notify-grid .field select {
+      font-size: 15px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(1),
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(2) {
+      grid-column: span 2;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(3),
+    body.zero-redesign.trellis-ui .notify-grid .setting-field {
+      grid-column: auto;
+    }
+    body.zero-redesign.trellis-ui .preview-panel .inspector-head {
+      min-height: 42px;
+    }
+    body.zero-redesign.trellis-ui .product-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: auto;
+      max-height: calc(132px * 3 + 10px * 2);
+      overflow-y: auto;
+    }
+    body.zero-redesign.trellis-ui .product-list:not(.is-scrollable) {
+      overflow-y: visible;
+    }
+    body.zero-redesign.trellis-ui .product-card {
+      grid-template-columns: 104px minmax(0, 1fr) 34px;
+      align-items: start;
+      min-height: 132px;
+      padding: 10px;
+      gap: 12px;
+    }
+    body.zero-redesign.trellis-ui .product-media {
+      width: 104px;
+      min-height: 112px;
+      height: 112px;
+      align-self: stretch;
+    }
+    body.zero-redesign.trellis-ui .product-action {
+      align-self: start;
+      justify-self: end;
+    }
+    body.zero-redesign.trellis-ui .product-title {
+      font-size: 20px;
+      font-weight: 830;
+      line-height: 1.28;
+    }
+    body.zero-redesign.trellis-ui .product-meta .tag,
+    body.zero-redesign.trellis-ui[data-theme="light"] .product-meta .tag {
+      min-height: 0;
+      padding: 0;
+      border: 0 !important;
+      background: transparent !important;
+      color: var(--app-muted) !important;
+      font-size: 16px;
+      font-weight: 780;
+      line-height: 1.2;
+    }
+    body.zero-redesign.trellis-ui .product-price,
+    body.zero-redesign.trellis-ui[data-theme="light"] .product-price,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .product-price {
+      color: var(--app-text) !important;
+      background: transparent !important;
+      border-color: transparent !important;
+      font-size: 16px;
+      font-weight: 850;
+    }
+    body.zero-redesign.trellis-ui .preview-title {
+      font-size: 21px;
+      font-weight: 850;
+      line-height: 1.28;
+    }
+    body.zero-redesign.trellis-ui .preview-metrics span {
+      min-height: 30px;
+      font-size: 15px;
+      font-weight: 780;
+    }
+    body.zero-redesign.trellis-ui .product-meta {
+      gap: 9px;
+    }
+    body.zero-redesign.trellis-ui .product-meta svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 2px;
+      color: #8793a4 !important;
+      vertical-align: -3px;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .product-meta svg {
+      color: #cbd5e1 !important;
+    }
+    body.zero-redesign.trellis-ui .empty-state strong {
+      font-size: 18px;
+      font-weight: 820;
+    }
+    body.zero-redesign.trellis-ui .empty-state p {
+      font-size: 14px;
+      font-weight: 650;
+    }
+    body.zero-redesign.trellis-ui .empty-state {
+      min-height: 146px;
+    }
     @media (max-width: 1180px) {
       body.zero-redesign.trellis-ui {
         overflow: auto;
@@ -6770,18 +7301,14 @@
   <header class="app-topbar" aria-label="全局状态">
     <div class="top-brand">
       <img class="brand-logo" src="https://www.smzdm.com/favicon.ico" alt="什么值得买">
-      <strong>什么值得买 商品提醒规则</strong>
+      <strong>什么值得买商品提醒</strong>
       <span id="topRuleStatus">等待配置</span>
     </div>
     <div class="top-status">
-      <span class="top-pill" id="topSaveStatus" role="status" aria-label="配置就绪" title="配置就绪">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
-        <span class="sr-only">配置就绪</span>
-      </span>
-      <span class="top-pill off" id="topTelegramStatus" role="status" aria-label="TG 未启用" title="TG 未启用">
-        <img src="https://telegram.org/img/t_logo.svg" alt="" aria-hidden="true">
-        <span class="sr-only">TG 未启用</span>
-      </span>
+      <button class="top-pill top-telegram-toggle off" id="topTelegramToggle" type="button" aria-label="Telegram 未启用" title="Telegram 未启用" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 10 14"/><path d="m21 3-7 18-4-7-7-4 18-7Z"/></svg>
+        <span class="sr-only">Telegram 未启用</span>
+      </button>
       <button class="top-pill" id="themeModeButton" type="button" aria-label="切换主题" title="切换主题">
         <span class="theme-icon" aria-hidden="true"></span>
         <span class="sr-only">跟随系统主题</span>
@@ -6821,26 +7348,7 @@
           <h2>规则详情</h2>
           <div class="meta" id="editorMeta">未选择关键词</div>
         </div>
-        <div class="header-controls">
-          <label class="header-switch switch-card" title="规则启用">
-            <span class="switch-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/><path d="M21 12a9 9 0 1 1-3.6-7.2"/></svg>
-            </span>
-            <span class="switch-copy"><strong>规则启用</strong><small>匹配后推送</small></span>
-            <span class="switch">
-              <input id="enabledInput" type="checkbox">
-              <span></span>
-            </span>
-          </label>
-          <button class="btn copy icon-btn" id="duplicateRule" type="button" aria-label="复制" title="复制">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 16H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            <span class="sr-only">复制</span>
-          </button>
-          <button class="btn danger icon-btn" id="removeRule" type="button" aria-label="删除" title="删除">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 15h10l1-15"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-            <span class="sr-only">删除</span>
-          </button>
-        </div>
+        <input id="enabledInput" type="checkbox" hidden>
       </div>
 
       <div class="editor-grid studio-grid">
@@ -6888,13 +7396,13 @@
       </div>
 
       <div class="bottom-bar editor-actions">
-        <button class="btn info icon-btn" id="searchRule" type="button" aria-label="搜索预览" title="搜索预览">
+        <button class="btn info action-button" id="searchRule" type="button" aria-label="预览当前规则" title="预览当前规则">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
-          <span class="sr-only">搜索预览</span>
+          <span>预览</span>
         </button>
-        <button class="btn primary icon-btn" id="saveProductConfig" type="button" aria-label="保存配置" title="保存配置">
+        <button class="btn primary action-button" id="saveProductConfig" type="button" aria-label="保存并启用" title="保存并启用">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
-          <span class="sr-only">保存配置</span>
+          <span>保存并启用</span>
         </button>
       </div>
     </section>
@@ -6926,31 +7434,22 @@
       <div class="inspector-head">
         <div>
           <h2>Telegram 通知</h2>
-          <div class="meta">Bot Token 与 Chat ID</div>
         </div>
-        <button type="button" class="btn primary icon-btn" id="saveNotifyConfig" aria-label="保存配置" title="保存配置">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
-          <span class="sr-only">保存配置</span>
-        </button>
+        <div class="notify-head-actions">
+          <label class="notify-enabled-toggle" title="Telegram 启用" aria-label="Telegram 启用">
+            <input id="telegramEnabled" type="checkbox">
+            <span class="toggle-shell" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M21 3 10 14"/><path d="m21 3-7 18-4-7-7-4 18-7Z"/></svg>
+            </span>
+            <span class="sr-only">Telegram 启用</span>
+          </label>
+          <button type="button" class="btn primary icon-btn" id="saveNotifyConfig" aria-label="保存通知配置" title="保存通知配置">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+            <span class="sr-only">保存通知配置</span>
+          </button>
+        </div>
       </div>
-      <label class="header-switch switch-card notify-switch" title="Telegram 启用">
-        <span class="switch-icon" aria-hidden="true">
-          <img src="https://telegram.org/img/t_logo.svg" alt="">
-        </span>
-        <span class="switch-copy"><strong>Bot 启用</strong><small>Telegram</small></span>
-        <span class="switch">
-          <input id="telegramEnabled" type="checkbox">
-          <span></span>
-        </span>
-      </label>
       <div class="notify-grid">
-        <div class="field">
-          <label for="telegramParseMode"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h13"/></svg></span><span>Parse Mode</span></label>
-          <select id="telegramParseMode">
-            <option value="HTML">HTML</option>
-            <option value="">纯文本</option>
-          </select>
-        </div>
         <div class="field">
           <label for="telegramBotToken"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 7a4 4 0 1 0-4 4"/><path d="M11 11l9 9"/><path d="M16 16l-2 2"/><path d="M19 13l-2 2"/></svg></span><span>Bot Token</span></label>
           <input id="telegramBotToken" type="password" autocomplete="off">
@@ -6958,6 +7457,13 @@
         <div class="field">
           <label for="telegramChatId"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v14H8l-4 4V4Z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg></span><span>Chat ID</span></label>
           <input id="telegramChatId" type="text" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="telegramParseMode"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h13"/></svg></span><span>HTML</span></label>
+          <select id="telegramParseMode">
+            <option value="HTML">HTML</option>
+            <option value="">纯文本</option>
+          </select>
         </div>
         <div class="field setting-field">
           <label><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2a5 5 0 0 0 7.1 7.1l1.1-1.1"/></svg></span><span>链接预览</span></label>
@@ -7111,6 +7617,12 @@ layui.use(function(){
   $('#removeRule').on('click', removeSelectedRule);
   $('#saveProductConfig, #saveNotifyConfig').on('click', saveProductConfig);
   $('#searchRule').on('click', searchSelectedRule);
+  $('#topTelegramToggle').on('click', function(){
+    var next = !$('#telegramEnabled').is(':checked');
+    $('#telegramEnabled').prop('checked', next).trigger('change');
+    readNotifyForm();
+    markConfigDirty();
+  });
   $('#themeModeButton').on('click', cycleThemeMode);
   $('#openSearchPage').on('click', function(){
     var rule = currentRuleFromEditor();
@@ -7240,8 +7752,12 @@ layui.use(function(){
     });
   }
 
-  function saveProductConfig() {
+  function saveProductConfig(e) {
     syncEditorToRule();
+    if (e && e.currentTarget && e.currentTarget.id === 'saveProductConfig' && currentRule()) {
+      currentRule().enabled = true;
+      $('#enabledInput').prop('checked', true);
+    }
     readNotifyForm();
     productConfig.keyWords = flattenKeywords(productConfig.keywordRules);
     $.ajax({
@@ -7295,9 +7811,23 @@ layui.use(function(){
       var actionWrap = $('<div class="row-actions"></div>');
       actionWrap.append(iconButton('search', '预览', 'info icon-btn', function(e){ e.stopPropagation(); selectRule(index); searchSelectedRule(); }));
       actionWrap.append(iconButton('trash', '删除', 'danger icon-btn', function(e){ e.stopPropagation(); selectedRuleIndex = index; removeSelectedRule(); }));
+      var enabledSwitch = $(statusSwitch(rule.enabled));
+      enabledSwitch.on('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        syncEditorToRule();
+        productConfig.keywordRules[index].enabled = productConfig.keywordRules[index].enabled === false;
+        if (selectedRuleIndex === index) {
+          $('#enabledInput').prop('checked', !!productConfig.keywordRules[index].enabled);
+        }
+        renderRules();
+        renderSummary();
+      });
       var titleRow = $('<div class="rule-title-row"></div>');
-      titleRow.append('<div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div>');
-      titleRow.append(statusTag(rule.enabled));
+      var titleLeft = $('<div class="rule-title-left"></div>');
+      titleLeft.append('<div class="keyword-name' + (rule.enabled ? '' : ' disabled') + '">' + keyword + '</div>');
+      titleLeft.append(enabledSwitch);
+      titleRow.append(titleLeft);
       titleRow.append(actionWrap);
       wrap.append($('<div class="rule-text"></div>').append(titleRow));
       row.append(wrap);
@@ -7366,7 +7896,7 @@ layui.use(function(){
   function currentRuleFromEditor() {
     var previous = currentRule() || {};
     var rule = normalizeRule({
-      enabled: $('#enabledInput').is(':checked'),
+      enabled: previous.enabled !== false,
       words: textToList($('#keywordInput').val()).slice(0, 1),
       filterWords: getFilterWordsFromEditor(),
       lowCommentNum: toInt($('#lowCommentInput').val()),
@@ -7470,7 +8000,7 @@ layui.use(function(){
     var body = $('#previewCards');
     body.empty();
     body.toggleClass('is-scrollable', items.length > 6);
-    items.slice(0, 6).forEach(function(item){
+    items.forEach(function(item){
       body.append(productCard(item));
     });
   }
@@ -7512,7 +8042,7 @@ layui.use(function(){
     var body = $('#previewCards');
     body.empty();
     body.toggleClass('is-scrollable', items.length > 6);
-    items.slice(0, 6).forEach(function(item){
+    items.forEach(function(item){
       body.append(productCard(item));
     });
   }
@@ -7568,16 +8098,19 @@ layui.use(function(){
   }
 
   function updateSwitchLabels() {
-    var ruleOn = $('#enabledInput').is(':checked');
     var botOn = $('#telegramEnabled').is(':checked');
     var previewOff = $('#telegramDisablePreview').is(':checked');
-    $('.editor-panel .switch-copy strong').text(ruleOn ? '规则启用' : '规则停用');
-    $('.editor-panel .switch-copy small').text(ruleOn ? '匹配后推送' : '不会推送');
-    $('.notification-shell .switch-copy strong').text(botOn ? 'Bot 启用' : 'Bot 停用');
-    $('.notification-shell .switch-copy small').text('Telegram');
-    $('.setting-copy strong').text(previewOff ? '隐藏网页卡片' : '显示网页卡片');
-    $('.setting-copy small').text(previewOff ? '只发送文本与链接' : '保留 Telegram 预览');
-    setTopIconState('#topTelegramStatus', botOn ? 'TG 正常' : 'TG 未启用', botOn ? 'ok' : 'off');
+    $('.notify-enabled-toggle').attr('title', botOn ? 'Telegram 已启用' : 'Telegram 未启用')
+      .attr('aria-label', botOn ? 'Telegram 已启用' : 'Telegram 未启用');
+    $('#topTelegramToggle')
+      .toggleClass('is-on', botOn)
+      .toggleClass('off', !botOn)
+      .attr('title', botOn ? 'Telegram 已启用' : 'Telegram 未启用')
+      .attr('aria-label', botOn ? 'Telegram 已启用' : 'Telegram 未启用')
+      .attr('aria-pressed', botOn ? 'true' : 'false')
+      .find('.sr-only').text(botOn ? 'Telegram 已启用' : 'Telegram 未启用');
+    $('.setting-copy strong').text(previewOff ? '隐藏预览' : '网页预览');
+    $('.setting-copy small').text(previewOff ? '纯文本链接' : '保留预览');
   }
 
   function markConfigDirty() {
@@ -7738,8 +8271,9 @@ layui.use(function(){
     return list.map(function(item){ return '<span class="tag warn">' + escapeHtml(item) + '</span>'; }).join('');
   }
 
-  function statusTag(enabled) {
-    return enabled ? '<span class="tag on">已启用</span>' : '<span class="tag off">已停用</span>';
+  function statusSwitch(enabled) {
+    var label = enabled ? '关闭规则' : '启用规则';
+    return '<button type="button" class="rule-enabled-switch' + (enabled ? ' is-on' : '') + '" role="switch" aria-checked="' + (enabled ? 'true' : 'false') + '" title="' + label + '" aria-label="' + label + '"><span class="switch-knob"></span></button>';
   }
 
   function fillTickEditor(seconds) {
@@ -7771,6 +8305,12 @@ layui.use(function(){
     if (btn.hasClass('icon-btn')) {
       btn.attr('aria-label', label).attr('title', label);
       btn.find('.sr-only').text(label);
+      return;
+    }
+    var visibleLabel = btn.children('span').not('.sr-only').last();
+    if (visibleLabel.length) {
+      btn.attr('aria-label', label).attr('title', label);
+      visibleLabel.text(loading ? (loadingText || '搜索中') : (idleText || '预览'));
       return;
     }
     btn.text(label);
@@ -7868,13 +8408,19 @@ layui.use(function(){
       return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>';
     }
     if (name === 'comment') {
-      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H8l-5 3 1.6-4.4A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 10h8"/><path d="M8 14h5"/></svg>';
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-5 3v-3H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><circle cx="9" cy="11" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="11" r="1.1" fill="currentColor" stroke="none"/></svg>';
     }
     if (name === 'worthy') {
-      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5z"/><path d="M8 8h8"/><path d="M12 8v8"/><path d="M8.5 13h7"/></svg>';
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.4 2.55 5.16 5.7.83-4.12 4.02.97 5.68L12 16.41l-5.1 2.68.97-5.68-4.12-4.02 5.7-.83L12 3.4Z"/></svg>';
     }
     if (name === 'price') {
       return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4 12 12l5.5-8"/><path d="M12 12v8"/><path d="M8 12h8"/><path d="M8 16h8"/></svg>';
+    }
+    if (name === 'enabled') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 6"/></svg>';
+    }
+    if (name === 'paused') {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7v10"/><path d="M16 7v10"/></svg>';
     }
     if (name === 'sun') {
       return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>';
