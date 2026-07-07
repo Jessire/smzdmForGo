@@ -5605,6 +5605,52 @@
           linear-gradient(90deg, rgba(122, 167, 255, 0.08), transparent 42%, rgba(94, 224, 160, 0.06));
       }
     }
+    body.zero-redesign.trellis-ui[data-theme="light"] {
+      --app-bg: #f5f7fb;
+      --app-surface: #ffffff;
+      --app-surface-soft: #f7f9fc;
+      --app-surface-strong: #eef3f9;
+      --app-line: #dde5ef;
+      --app-line-strong: #b8c6d8;
+      --app-text: #111827;
+      --app-muted: #65748a;
+      --app-faint: #93a1b4;
+      --app-primary: #2563eb;
+      --app-primary-strong: #1d4ed8;
+      --app-primary-soft: #eaf1ff;
+      --app-success: #059669;
+      --app-success-soft: #e7f7ef;
+      --app-danger: #dc2626;
+      --app-danger-soft: #feecec;
+      --app-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      color-scheme: light;
+      background:
+        linear-gradient(180deg, #ffffff 0%, var(--app-bg) 58%, #edf2f8 100%),
+        linear-gradient(90deg, rgba(37, 99, 235, 0.05), transparent 42%, rgba(5, 150, 105, 0.04));
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] {
+      --app-bg: #10151d;
+      --app-surface: #171d27;
+      --app-surface-soft: #1d2632;
+      --app-surface-strong: #263241;
+      --app-line: #2f3b4d;
+      --app-line-strong: #526176;
+      --app-text: #f8fafc;
+      --app-muted: #b6c1d1;
+      --app-faint: #8190a3;
+      --app-primary: #7aa7ff;
+      --app-primary-strong: #a7c3ff;
+      --app-primary-soft: rgba(122, 167, 255, 0.16);
+      --app-success: #5ee0a0;
+      --app-success-soft: rgba(94, 224, 160, 0.15);
+      --app-danger: #ff8a80;
+      --app-danger-soft: rgba(255, 138, 128, 0.14);
+      --app-shadow: 0 16px 42px rgba(0, 0, 0, 0.3);
+      color-scheme: dark;
+      background:
+        linear-gradient(180deg, #151b24 0%, var(--app-bg) 58%, #0c1118 100%),
+        linear-gradient(90deg, rgba(122, 167, 255, 0.08), transparent 42%, rgba(94, 224, 160, 0.06));
+    }
     body.zero-redesign.trellis-ui .app-shell {
       width: min(1720px, calc(100vw - 24px));
       height: calc(100dvh - 24px);
@@ -5668,14 +5714,33 @@
       gap: 8px;
       min-width: 0;
     }
+    body.zero-redesign.trellis-ui .top-status .top-pill {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
     body.zero-redesign.trellis-ui .top-pill {
       min-height: 34px;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       border: 1px solid var(--app-line);
       border-radius: 999px;
       background: var(--app-surface-soft);
+      color: var(--app-muted);
       padding: 0 12px;
+    }
+    body.zero-redesign.trellis-ui button.top-pill {
+      cursor: pointer;
+      font: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    body.zero-redesign.trellis-ui button.top-pill:hover {
+      border-color: var(--app-line-strong);
+      color: var(--app-text);
+      background: var(--app-surface);
     }
     body.zero-redesign.trellis-ui .top-pill.ok {
       color: var(--app-success);
@@ -5733,7 +5798,7 @@
     body.zero-redesign.trellis-ui .studio-panel {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr) auto;
-      gap: 12px;
+      gap: 10px;
       align-content: stretch;
     }
     body.zero-redesign.trellis-ui .notification-shell {
@@ -6014,7 +6079,7 @@
     body.zero-redesign.trellis-ui .studio-grid {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 8px;
+      gap: 7px;
       align-items: stretch;
       align-content: start;
       min-height: 0;
@@ -6026,8 +6091,8 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding: 10px;
+      gap: 7px;
+      padding: 9px;
       border: 1px solid var(--app-line);
       border-radius: var(--app-radius);
       background: var(--app-surface-soft);
@@ -6093,16 +6158,16 @@
       box-shadow: 0 0 0 3px var(--app-primary-soft);
     }
     body.zero-redesign.trellis-ui .editor-panel .keyword-field input {
-      height: 74px;
-      min-height: 74px;
+      height: 64px;
+      min-height: 64px;
       padding: 0 14px;
       font-size: 20px;
       font-weight: 800;
     }
     body.zero-redesign.trellis-ui .filter-token-box {
       width: 100%;
-      height: 74px;
-      min-height: 74px;
+      height: 64px;
+      min-height: 64px;
       max-height: 104px;
       display: flex;
       align-content: flex-start;
@@ -6188,8 +6253,23 @@
     }
     body.zero-redesign.trellis-ui .notify-grid .field {
       grid-column: auto;
-      min-height: 74px;
-      padding: 9px;
+      min-height: 0;
+      gap: 6px;
+      padding: 8px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field label {
+      gap: 6px;
+      font-size: 11px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field-icon {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field input,
+    body.zero-redesign.trellis-ui .notify-grid .field select {
+      height: 36px;
+      min-height: 36px;
     }
     body.zero-redesign.trellis-ui .notify-grid .field:nth-child(2),
     body.zero-redesign.trellis-ui .notify-grid .field:nth-child(3),
@@ -6203,7 +6283,7 @@
       min-height: 0;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-rows: repeat(2, minmax(112px, 1fr));
+      grid-template-rows: repeat(2, minmax(96px, 1fr));
       gap: 10px;
       overflow-y: auto;
       padding-right: 3px;
@@ -6211,12 +6291,12 @@
     }
     body.zero-redesign.trellis-ui .product-card {
       display: grid;
-      grid-template-columns: 82px minmax(0, 1fr) 34px;
-      gap: 12px;
+      grid-template-columns: 62px minmax(0, 1fr) 34px;
+      gap: 10px;
       align-items: center;
-      min-height: 112px;
+      min-height: 96px;
       height: 100%;
-      padding: 10px;
+      padding: 9px 10px;
       border: 1px solid var(--app-line);
       border-radius: var(--app-radius);
       background: var(--app-surface);
@@ -6229,8 +6309,9 @@
       box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
     }
     body.zero-redesign.trellis-ui .product-card img {
-      width: 82px;
-      height: 82px;
+      width: 62px;
+      height: 84px;
+      aspect-ratio: 3 / 4;
       border-radius: var(--app-radius);
       object-fit: cover;
       border: 1px solid var(--app-line);
@@ -6249,19 +6330,13 @@
       overflow: hidden;
     }
     body.zero-redesign.trellis-ui .product-source {
-      margin-top: 7px;
-      color: var(--app-muted);
-      font-size: 11px;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      display: none;
     }
     body.zero-redesign.trellis-ui .product-meta {
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
-      margin-top: 8px;
+      margin-top: 6px;
     }
     body.zero-redesign.trellis-ui .product-price {
       color: var(--app-primary);
@@ -6387,11 +6462,11 @@
         grid-column: auto;
       }
       body.zero-redesign.trellis-ui .product-card {
-        grid-template-columns: 72px minmax(0, 1fr) 34px;
+        grid-template-columns: 56px minmax(0, 1fr) 34px;
       }
       body.zero-redesign.trellis-ui .product-card img {
-        width: 72px;
-        height: 72px;
+        width: 56px;
+        height: 76px;
       }
       body.zero-redesign.trellis-ui .range-control,
       body.zero-redesign.trellis-ui .unit-control {
@@ -6413,7 +6488,7 @@
     <div class="top-status">
       <span class="top-pill" id="topSaveStatus">配置就绪</span>
       <span class="top-pill off" id="topTelegramStatus">TG 未启用</span>
-      <span class="top-pill">跟随系统主题</span>
+      <button class="top-pill" id="themeModeButton" type="button" aria-label="切换主题" title="切换主题">跟随系统主题</button>
     </div>
   </header>
   <aside class="rules-panel rail-panel" aria-label="商品规则">
@@ -6622,6 +6697,9 @@ var selectedRuleIndex = -1;
 var previewOpenUrl = '';
 var filterEditorWords = [];
 var previewPlaceholder = placeholderImage('商');
+var themeMode = readStoredThemeMode();
+
+applyThemeMode(themeMode);
 
 function placeholderImage(label) {
   var text = String(label || '商').trim().slice(0, 1) || '商';
@@ -6632,6 +6710,46 @@ function placeholderImage(label) {
     '<text x="120" y="132" dominant-baseline="middle" text-anchor="middle" fill="#65748a" font-family="Arial, sans-serif" font-size="76" font-weight="700">' + text + '</text>' +
     '</svg>';
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+function readStoredThemeMode() {
+  try {
+    var value = localStorage.getItem('smzdmThemeMode') || 'system';
+    return /^(system|light|dark)$/.test(value) ? value : 'system';
+  } catch (e) {
+    return 'system';
+  }
+}
+
+function applyThemeMode(mode) {
+  themeMode = /^(system|light|dark)$/.test(mode) ? mode : 'system';
+  if (themeMode === 'system') {
+    document.body.removeAttribute('data-theme');
+  } else {
+    document.body.setAttribute('data-theme', themeMode);
+  }
+  updateThemeButton();
+}
+
+function updateThemeButton() {
+  var button = document.getElementById('themeModeButton');
+  if (!button) { return; }
+  var label = themeMode === 'light' ? '浅色主题' : (themeMode === 'dark' ? '深色主题' : '跟随系统主题');
+  button.textContent = label;
+  button.setAttribute('title', '当前: ' + label + '. 点击切换主题');
+  button.setAttribute('aria-label', '当前: ' + label + '. 点击切换主题');
+}
+
+function cycleThemeMode() {
+  var next = themeMode === 'system' ? 'light' : (themeMode === 'light' ? 'dark' : 'system');
+  try {
+    if (next === 'system') {
+      localStorage.removeItem('smzdmThemeMode');
+    } else {
+      localStorage.setItem('smzdmThemeMode', next);
+    }
+  } catch (e) {}
+  applyThemeMode(next);
 }
 
 layui.use(function(){
@@ -6659,6 +6777,7 @@ layui.use(function(){
   $('#removeRule').on('click', removeSelectedRule);
   $('#saveProductConfig, #saveNotifyConfig').on('click', saveProductConfig);
   $('#searchRule').on('click', searchSelectedRule);
+  $('#themeModeButton').on('click', cycleThemeMode);
   $('#openSearchPage').on('click', function(){
     var rule = currentRuleFromEditor();
     var keyword = firstWord(rule);
