@@ -8099,60 +8099,109 @@
       align-self: stretch !important;
     }
     body.zero-redesign.trellis-ui .preview-panel .inspector-head {
-      min-height: 48px !important;
-      padding-bottom: 8px !important;
+      min-height: 56px !important;
+      padding-bottom: 14px !important;
     }
     body.zero-redesign.trellis-ui #previewCards.product-list,
     body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
       display: grid !important;
-      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-      grid-auto-rows: minmax(138px, auto) !important;
-      gap: 10px !important;
-      height: auto !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      grid-auto-rows: calc((100% - 12px) / 2) !important;
+      gap: 12px !important;
+      height: 100% !important;
       min-height: 0 !important;
       max-height: none !important;
-      overflow-y: visible !important;
-      padding: 0 4px 0 0 !important;
+      overflow-y: hidden !important;
+      padding: 0 !important;
       align-content: start !important;
+      scroll-snap-type: y mandatory !important;
+      scroll-padding-block: 0 !important;
+      overscroll-behavior: contain !important;
     }
     body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
-      max-height: calc(138px * 2 + 10px) !important;
+      max-height: none !important;
       overflow-y: auto !important;
       scrollbar-gutter: stable;
     }
     body.zero-redesign.trellis-ui #previewCards .product-card {
-      min-height: 138px !important;
+      min-height: 0 !important;
       height: 100% !important;
       display: grid !important;
-      grid-template-columns: 86px minmax(0, 1fr) !important;
-      align-items: stretch !important;
-      gap: 10px !important;
-      padding: 10px !important;
+      grid-template-columns: 104px minmax(0, 1fr) !important;
+      align-items: center !important;
+      gap: 14px !important;
+      padding: 12px !important;
       border-radius: 10px !important;
       background: color-mix(in srgb, var(--app-surface) 94%, var(--app-panel)) !important;
+      scroll-snap-align: start !important;
     }
     body.zero-redesign.trellis-ui #previewCards .product-media,
     body.zero-redesign.trellis-ui #previewCards .product-card img {
-      width: 86px !important;
-      height: 118px !important;
-      min-height: 118px !important;
+      width: 104px !important;
+      height: 100% !important;
+      min-height: 0 !important;
       border-radius: 8px !important;
-      object-fit: cover !important;
+      object-fit: contain !important;
+      background: #fff !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-info {
+      min-width: 0 !important;
+      height: 100% !important;
+      display: grid !important;
+      grid-template-rows: minmax(0, 1fr) auto auto !important;
+      align-content: start !important;
     }
     body.zero-redesign.trellis-ui #previewCards .product-title {
-      font-size: 17px !important;
-      font-weight: 780 !important;
-      line-height: 1.28 !important;
-      -webkit-line-clamp: 3 !important;
+      font-size: 16px !important;
+      font-weight: 680 !important;
+      line-height: 1.26 !important;
+      -webkit-line-clamp: 2 !important;
       color: var(--app-text) !important;
     }
+    body.zero-redesign.trellis-ui #previewCards .product-price-row {
+      min-width: 0 !important;
+      margin-top: 6px !important;
+      display: flex !important;
+      align-items: baseline !important;
+      gap: 6px !important;
+      color: var(--app-text) !important;
+      font-size: 15px !important;
+      font-weight: 840 !important;
+      line-height: 1.18 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .price-currency {
+      color: var(--app-muted) !important;
+      font-size: 13px !important;
+      font-weight: 740 !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .price-main {
+      min-width: 0 !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .price-condition {
+      min-width: 0 !important;
+      margin-top: 2px !important;
+      color: var(--app-muted) !important;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      line-height: 1.16 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
     body.zero-redesign.trellis-ui #previewCards .product-meta {
-      margin-top: 8px !important;
-      gap: 8px !important;
+      margin-top: 6px !important;
+      gap: 7px !important;
+      align-items: center !important;
+      min-width: 0 !important;
+      flex-wrap: wrap !important;
     }
     body.zero-redesign.trellis-ui #previewCards .product-meta .tag,
-    body.zero-redesign.trellis-ui #previewCards .product-price {
-      font-size: 14px !important;
+    body.zero-redesign.trellis-ui #previewCards .product-time {
+      font-size: 13px !important;
       font-weight: 760 !important;
       line-height: 1.15 !important;
       color: var(--app-muted) !important;
@@ -8160,9 +8209,13 @@
       border: 0 !important;
       padding: 0 !important;
     }
-    body.zero-redesign.trellis-ui #previewCards .product-price {
-      color: var(--app-text) !important;
-      font-weight: 840 !important;
+    body.zero-redesign.trellis-ui #previewCards .product-time {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+      text-align: left !important;
     }
     body.zero-redesign.trellis-ui #previewCards .product-meta svg {
       width: 15px !important;
@@ -8172,20 +8225,24 @@
       vertical-align: -2px !important;
     }
     body.zero-redesign.trellis-ui[data-theme="dark"] #previewCards .product-meta svg { color: #b8c2d1 !important; }
+    body.zero-redesign.trellis-ui #previewCards .product-source {
+      display: none !important;
+    }
     body.zero-redesign.trellis-ui #previewCards .empty-state {
       grid-column: 1 / -1 !important;
-      align-self: stretch !important;
-      height: 100% !important;
-      min-height: 100% !important;
+      align-self: start !important;
+      height: auto !important;
+      min-height: 148px !important;
       padding: 18px !important;
     }
 
     body.zero-redesign.trellis-ui #previewCards:has(.empty-state) {
-      height: 100% !important;
+      height: auto !important;
     }
     body.zero-redesign.trellis-ui #previewCards.product-list:has(.empty-state) {
-      height: 100% !important;
-      grid-template-rows: minmax(0, 1fr) !important;
+      height: auto !important;
+      grid-template-rows: auto !important;
+      overflow: hidden !important;
     }
     body.zero-redesign.trellis-ui #previewCards .empty-state svg {
       width: 42px !important;
@@ -8208,7 +8265,7 @@
       }
       body.zero-redesign.trellis-ui #previewCards.product-list,
       body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
       }
     }
 
@@ -8230,7 +8287,152 @@
       body.zero-redesign.trellis-ui #previewCards .product-media,
       body.zero-redesign.trellis-ui #previewCards .product-card img {
         width: 82px !important;
+        height: 104px !important;
+        min-height: 104px !important;
       }
+    }
+
+    /* Final color pass: one semantic action system, Telegram top-bar intentionally untouched. */
+    body.zero-redesign.trellis-ui {
+      --action-neutral-bg: color-mix(in srgb, var(--app-surface) 88%, var(--app-canvas));
+      --action-neutral-border: color-mix(in srgb, var(--app-line) 78%, transparent);
+      --action-neutral-fg: color-mix(in srgb, var(--app-muted) 92%, var(--app-text));
+      --action-primary-bg: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
+      --action-primary-border: color-mix(in srgb, var(--app-primary) 34%, var(--app-line));
+      --action-danger-bg: color-mix(in srgb, var(--app-danger) 9%, var(--app-surface));
+      --action-danger-border: color-mix(in srgb, var(--app-danger) 26%, var(--app-line));
+      --switch-on-bg: #4f9476;
+      --switch-on-border: color-mix(in srgb, #4f9476 64%, var(--app-line));
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] {
+      --switch-on-bg: #6aa88a;
+      --switch-on-border: color-mix(in srgb, #6aa88a 58%, var(--app-line));
+    }
+    body.zero-redesign.trellis-ui .btn:not(.top-telegram-toggle),
+    body.zero-redesign.trellis-ui button.top-pill:not(.top-telegram-toggle) {
+      background: var(--action-neutral-bg) !important;
+      border-color: var(--action-neutral-border) !important;
+      color: var(--action-neutral-fg) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #searchAllRules,
+    body.zero-redesign.trellis-ui #searchRule,
+    body.zero-redesign.trellis-ui #addRule {
+      background: var(--action-primary-bg) !important;
+      border-color: var(--action-primary-border) !important;
+      color: var(--app-primary) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #reloadProductConfig,
+    body.zero-redesign.trellis-ui #duplicateRule,
+    body.zero-redesign.trellis-ui #themeModeButton,
+    body.zero-redesign.trellis-ui .btn.refresh,
+    body.zero-redesign.trellis-ui .btn.copy,
+    body.zero-redesign.trellis-ui .btn.secondary {
+      background: var(--action-neutral-bg) !important;
+      border-color: var(--action-neutral-border) !important;
+      color: var(--action-neutral-fg) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #saveProductConfig,
+    body.zero-redesign.trellis-ui #openSearchPage,
+    body.zero-redesign.trellis-ui #saveNotifyConfig,
+    body.zero-redesign.trellis-ui .btn.primary,
+    body.zero-redesign.trellis-ui .btn.web {
+      background: var(--app-primary) !important;
+      border-color: var(--app-primary) !important;
+      color: #fff !important;
+      box-shadow: 0 10px 22px color-mix(in srgb, var(--app-primary) 18%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui .btn.danger,
+    body.zero-redesign.trellis-ui #removeRule,
+    body.zero-redesign.trellis-ui .rule-title-row .row-actions .btn.danger {
+      background: var(--action-danger-bg) !important;
+      border-color: var(--action-danger-border) !important;
+      color: var(--app-danger) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .btn:not(.top-telegram-toggle):hover,
+    body.zero-redesign.trellis-ui button.top-pill:not(.top-telegram-toggle):hover {
+      border-color: color-mix(in srgb, currentColor 28%, var(--app-line)) !important;
+      background: color-mix(in srgb, currentColor 8%, var(--app-surface)) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled .stat-comment,
+    body.zero-redesign.trellis-ui .rule-card.disabled .stat-worthy,
+    body.zero-redesign.trellis-ui .rule-card.disabled .stat-comment span,
+    body.zero-redesign.trellis-ui .rule-card.disabled .stat-worthy span,
+    body.zero-redesign.trellis-ui .rule-card.disabled .stat-comment svg,
+    body.zero-redesign.trellis-ui .rule-card.disabled .stat-worthy svg {
+      color: color-mix(in srgb, var(--app-faint) 72%, var(--app-surface-strong)) !important;
+      opacity: .58 !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled .rule-enabled-switch {
+      background: color-mix(in srgb, var(--app-surface-strong) 72%, var(--app-surface)) !important;
+      border-color: color-mix(in srgb, var(--app-line) 88%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .btn.info,
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .btn.danger,
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .icon-btn,
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .btn.info:hover,
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .btn.danger:hover,
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .icon-btn:hover {
+      background: color-mix(in srgb, var(--app-surface-strong) 54%, var(--app-surface)) !important;
+      border-color: color-mix(in srgb, var(--app-line) 88%, transparent) !important;
+      color: color-mix(in srgb, var(--app-faint) 78%, var(--app-muted)) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .icon-btn svg {
+      color: color-mix(in srgb, var(--app-faint) 78%, var(--app-muted)) !important;
+      opacity: .62 !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled.active,
+    body.zero-redesign.trellis-ui[data-theme="light"] .rule-card.disabled.active,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-card.disabled.active {
+      border-color: color-mix(in srgb, var(--app-line-strong) 68%, transparent) !important;
+      background: color-mix(in srgb, var(--app-surface-soft) 88%, var(--app-surface)) !important;
+      box-shadow: inset 3px 0 0 color-mix(in srgb, var(--app-faint) 72%, var(--app-line-strong)) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .btn.info,
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .btn.danger,
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .icon-btn {
+      background: color-mix(in srgb, var(--app-surface-strong) 34%, var(--app-surface)) !important;
+      border-color: color-mix(in srgb, var(--app-line-strong) 46%, transparent) !important;
+      color: color-mix(in srgb, var(--app-muted) 86%, var(--app-text)) !important;
+      opacity: 1 !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .icon-btn svg {
+      color: color-mix(in srgb, var(--app-muted) 86%, var(--app-text)) !important;
+      opacity: 1 !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.info {
+      background: var(--action-neutral-bg) !important;
+      border-color: var(--action-neutral-border) !important;
+      color: var(--action-neutral-fg) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.info:hover,
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.info:focus-visible {
+      background: color-mix(in srgb, var(--app-muted) 9%, var(--app-surface)) !important;
+      border-color: color-mix(in srgb, var(--app-muted) 34%, var(--app-line)) !important;
+      color: color-mix(in srgb, var(--app-text) 74%, var(--app-muted)) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.danger {
+      background: var(--action-neutral-bg) !important;
+      border-color: var(--action-neutral-border) !important;
+      color: var(--action-neutral-fg) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.danger:hover,
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.danger:focus-visible {
+      background: color-mix(in srgb, var(--app-danger) 12%, var(--app-surface)) !important;
+      border-color: color-mix(in srgb, var(--app-danger) 34%, var(--app-line)) !important;
+      color: var(--app-danger) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-enabled-switch.is-on,
+    body.zero-redesign.trellis-ui .notify-enabled-toggle input:checked + .toggle-shell {
+      background: var(--switch-on-bg) !important;
+      border-color: var(--switch-on-border) !important;
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.12) !important;
     }
   </style>
 </head>
@@ -8479,7 +8681,7 @@ function themeIconSvg(name) {
     return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z"/></svg>';
   }
   if (name === 'system') {
-    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18V3Z"/><path d="M12 3a9 9 0 0 1 0 18"/><path d="M12 7v10"/><path d="M8 12h8"/></svg>';
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17Z" fill="currentColor" stroke="none"/></svg>';
   }
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>';
 }
@@ -8828,7 +9030,7 @@ layui.use(function(){
   function currentRuleFromEditor() {
     var previous = currentRule() || {};
     var rule = normalizeRule({
-      enabled: true,
+      enabled: previous.enabled !== false,
       words: textToList($('#keywordInput').val()).slice(0, 1),
       filterWords: getFilterWordsFromEditor(),
       lowCommentNum: toInt($('#lowCommentInput').val()),
@@ -8931,7 +9133,7 @@ layui.use(function(){
     }
     var body = $('#previewCards');
     body.empty();
-    body.toggleClass('is-scrollable', items.length > 8);
+    body.toggleClass('is-scrollable', items.length > 6);
     items.forEach(function(item){
       body.append(productCard(item));
     });
@@ -8973,7 +9175,7 @@ layui.use(function(){
     $('#previewMetrics').html('<span>来自 ' + escapeHtml(first.keyword || '-') + '</span><span>价格 ' + escapeHtml(first.price || '-') + '</span><span>值率 ' + escapeHtml(first.worthy || '0') + '%</span><span>评论 ' + escapeHtml(first.comment || '0') + '</span>');
     var body = $('#previewCards');
     body.empty();
-    body.toggleClass('is-scrollable', items.length > 8);
+    body.toggleClass('is-scrollable', items.length > 6);
     items.forEach(function(item){
       body.append(productCard(item));
     });
@@ -9269,12 +9471,41 @@ layui.use(function(){
     var media = $('<div class="product-media"></div>').append(image);
     var info = $('<div class="product-info"></div>');
     info.append('<a class="product-title" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">' + escapeHtml(item.title || '未命名商品') + '</a>');
-    var keywordTag = item.keyword ? '<span class="tag info">' + escapeHtml(item.keyword) + '</span>' : '';
-    info.append('<div class="product-meta">' + keywordTag + '<span class="tag info product-price">' + iconSvg('price') + escapeHtml(item.price || '-') + '</span><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span></div>');
-    info.append('<div class="product-source">' + escapeHtml(item.referral || '什么值得买') + (item.date ? ' · ' + escapeHtml(item.date) : '') + '</div>');
+    var priceParts = splitPriceText(item.price || '-');
+    info.append('<div class="product-price-row"><span class="price-currency">￥</span><span class="price-main">' + escapeHtml(priceParts.main) + '</span></div>');
+    if (priceParts.condition) {
+      info.append('<div class="price-condition">' + escapeHtml(priceParts.condition) + '</div>');
+    } else {
+      info.append('<div class="price-condition">&nbsp;</div>');
+    }
+    info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
     card.append(media);
     card.append(info);
     return card;
+  }
+
+  function splitPriceText(value) {
+    var text = String(value || '-').replace(/^\s*￥\s*/, '').trim();
+    if (!text || text === '-') {
+      return { main: '-', condition: '' };
+    }
+    var match = text.match(/^([^（(]+)\s*[（(](.+)[）)]\s*$/);
+    if (match) {
+      return { main: match[1].trim(), condition: match[2].trim() };
+    }
+    match = text.match(/^(.+?)(返.+|需用券.*|用券.*|券后.*|淘金币.*|低至.*)$/);
+    if (match) {
+      return { main: match[1].trim(), condition: match[2].trim() };
+    }
+    return { main: text, condition: '' };
+  }
+
+  function formatUpdateTime(value) {
+    var text = String(value || '').trim();
+    if (!text) {
+      return '时间未知';
+    }
+    return text;
   }
 
   function proxiedImageUrl(src) {
