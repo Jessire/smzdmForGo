@@ -8434,6 +8434,152 @@
       border-color: var(--switch-on-border) !important;
       box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.12) !important;
     }
+
+    /* Preview layout correction: square media, adaptive price text, plain icons. */
+    body.zero-redesign.trellis-ui .icon-btn:not(.top-telegram-toggle),
+    body.zero-redesign.trellis-ui #searchAllRules,
+    body.zero-redesign.trellis-ui #addRule,
+    body.zero-redesign.trellis-ui #reloadProductConfig,
+    body.zero-redesign.trellis-ui #openSearchPage,
+    body.zero-redesign.trellis-ui .row-actions .icon-btn {
+      background: transparent !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .icon-btn:not(.top-telegram-toggle):hover,
+    body.zero-redesign.trellis-ui .row-actions .icon-btn:hover,
+    body.zero-redesign.trellis-ui #openSearchPage:hover {
+      background: color-mix(in srgb, currentColor 8%, transparent) !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #searchRule {
+      background: transparent !important;
+      border-color: transparent !important;
+      color: var(--app-primary) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #searchAllRules,
+    body.zero-redesign.trellis-ui #addRule {
+      background: transparent !important;
+      border-color: transparent !important;
+      color: var(--action-neutral-fg) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #searchAllRules:hover,
+    body.zero-redesign.trellis-ui #searchAllRules:focus-visible,
+    body.zero-redesign.trellis-ui #addRule:hover,
+    body.zero-redesign.trellis-ui #addRule:focus-visible {
+      background: color-mix(in srgb, var(--app-muted) 8%, transparent) !important;
+      border-color: transparent !important;
+      color: color-mix(in srgb, var(--app-text) 76%, var(--app-muted)) !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #searchRule:hover,
+    body.zero-redesign.trellis-ui #searchRule:focus-visible {
+      background: color-mix(in srgb, var(--app-primary) 8%, transparent) !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-card {
+      grid-template-columns: 112px minmax(0, 1fr) !important;
+      align-items: start !important;
+      gap: 10px 14px !important;
+      padding: 12px !important;
+      overflow: hidden !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-media {
+      width: 112px !important;
+      height: 112px !important;
+      min-height: 112px !important;
+      align-self: start !important;
+      border-radius: 8px !important;
+      background: transparent !important;
+      border-color: var(--app-line) !important;
+      display: grid !important;
+      place-items: center !important;
+      overflow: hidden !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-card img {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      object-fit: contain !important;
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 6px !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-info {
+      height: 112px !important;
+      grid-template-rows: auto auto auto minmax(0, 1fr) !important;
+      align-content: start !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-title {
+      font-size: 15px !important;
+      font-weight: 720 !important;
+      line-height: 1.28 !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-price-row {
+      margin-top: 7px !important;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      align-items: baseline !important;
+      gap: 4px 6px !important;
+      white-space: normal !important;
+      overflow: visible !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .price-main {
+      overflow: visible !important;
+      text-overflow: clip !important;
+      white-space: normal !important;
+      word-break: normal !important;
+      overflow-wrap: anywhere !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .price-condition {
+      margin-top: 2px !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      display: -webkit-box !important;
+      -webkit-box-orient: vertical !important;
+      -webkit-line-clamp: 2 !important;
+      word-break: break-word !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-meta {
+      grid-column: auto !important;
+      margin-top: 6px !important;
+      padding-top: 0 !important;
+      display: grid !important;
+      grid-template-columns: auto auto minmax(52px, 1fr) !important;
+      align-items: center !important;
+      gap: 7px !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-time {
+      justify-self: end !important;
+      text-align: right !important;
+      white-space: nowrap !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards.product-list:not(:has(.empty-state)),
+    body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable:not(:has(.empty-state)) {
+      height: 316px !important;
+      min-height: 316px !important;
+      grid-auto-rows: calc((316px - 12px) / 2) !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card .row-actions .icon-btn,
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.info,
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.danger,
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .btn.info,
+    body.zero-redesign.trellis-ui .rule-card.disabled .row-actions .btn.danger {
+      background: transparent !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.danger:hover,
+    body.zero-redesign.trellis-ui .rule-card:not(.disabled) .row-actions .btn.danger:focus-visible {
+      background: color-mix(in srgb, var(--app-danger) 10%, transparent) !important;
+      border-color: transparent !important;
+      color: var(--app-danger) !important;
+    }
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
@@ -9505,7 +9651,20 @@ layui.use(function(){
     if (!text) {
       return '时间未知';
     }
-    return text;
+    var date = null;
+    if (/^\d{10,13}$/.test(text)) {
+      var timestamp = Number(text);
+      date = new Date(text.length === 10 ? timestamp * 1000 : timestamp);
+    } else {
+      var parsed = Date.parse(text.replace(/-/g, '/'));
+      if (!isNaN(parsed)) {
+        date = new Date(parsed);
+      }
+    }
+    if (!date || isNaN(date.getTime())) {
+      return text;
+    }
+    return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
   }
 
   function proxiedImageUrl(src) {
