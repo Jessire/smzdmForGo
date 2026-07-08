@@ -7518,7 +7518,8 @@
     }
     body.zero-redesign.trellis-ui .app-shell {
       grid-template-columns: minmax(370px, 440px) minmax(0, 7.6fr) minmax(220px, 260px);
-      grid-template-rows: 60px minmax(294px, 0.92fr) minmax(330px, 1fr);
+      grid-template-rows: 60px auto auto;
+      align-content: start;
       overflow: hidden;
     }
     body.zero-redesign.trellis-ui h2 {
@@ -7706,6 +7707,8 @@
       opacity: 0.78;
     }
     body.zero-redesign.trellis-ui .preview-panel {
+      height: auto !important;
+      align-self: start !important;
       min-height: 0 !important;
       grid-template-rows: auto minmax(0, 1fr) !important;
       overflow: hidden !important;
