@@ -9034,6 +9034,66 @@
         -webkit-line-clamp: 3 !important;
       }
     }
+
+    /* Balanced preview cards: avoid top-heavy content with empty lower halves. */
+    @media (min-width: 621px) {
+      body.zero-redesign.trellis-ui #previewCards .product-card {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: minmax(150px, 58%) minmax(0, 1fr) !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        padding: 12px !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards .product-media,
+      body.zero-redesign.trellis-ui #previewCards .product-media.media-wide,
+      body.zero-redesign.trellis-ui #previewCards .product-media.media-square,
+      body.zero-redesign.trellis-ui #previewCards .product-media.media-tall,
+      body.zero-redesign.trellis-ui[data-theme="dark"] #previewCards .product-media {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        aspect-ratio: auto !important;
+        align-self: stretch !important;
+        justify-self: stretch !important;
+        place-items: center !important;
+        overflow: hidden !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards .product-card img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+        object-position: center center !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards .product-info {
+        display: grid !important;
+        grid-template-rows: auto auto auto !important;
+        align-content: start !important;
+        justify-content: stretch !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards .product-title {
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 2 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: normal !important;
+        font-size: 16px !important;
+        line-height: 1.22 !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards .product-price-row {
+        margin-top: 7px !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards .product-meta {
+        margin-top: 8px !important;
+      }
+    }
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
