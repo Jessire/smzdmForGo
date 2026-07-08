@@ -7830,6 +7830,408 @@
         grid-template-columns: 96px minmax(0, 1fr) !important;
       }
     }
+
+    /* 2026-07-08 corrective pass: rebalance columns, remove topbar button noise, and make 8 preview results readable. */
+    body.zero-redesign.trellis-ui,
+    body.zero-redesign.trellis-ui button,
+    body.zero-redesign.trellis-ui input,
+    body.zero-redesign.trellis-ui select,
+    body.zero-redesign.trellis-ui textarea {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", Arial, sans-serif !important;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    body.zero-redesign.trellis-ui { font-size: 16px !important; }
+
+    body.zero-redesign.trellis-ui .app-shell {
+      grid-template-columns: minmax(390px, 440px) minmax(560px, 1fr) minmax(320px, 340px) !important;
+      grid-template-rows: 60px minmax(360px, auto) minmax(300px, 1fr) !important;
+      gap: 10px !important;
+      padding: 10px !important;
+      border-radius: 18px !important;
+      background:
+        radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--app-primary) 9%, transparent), transparent 28%),
+        radial-gradient(circle at 86% 14%, color-mix(in srgb, var(--app-success) 7%, transparent), transparent 25%),
+        var(--app-canvas) !important;
+    }
+
+    body.zero-redesign.trellis-ui[data-theme="dark"] .app-shell {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(122, 167, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 86% 14%, rgba(94, 224, 160, 0.08), transparent 25%),
+        var(--app-canvas) !important;
+    }
+
+    body.zero-redesign.trellis-ui .app-topbar { padding-inline: 18px !important; }
+    body.zero-redesign.trellis-ui .top-brand strong {
+      font-size: 24px !important;
+      font-weight: 820 !important;
+      line-height: 1.05 !important;
+    }
+    body.zero-redesign.trellis-ui .top-brand span,
+    body.zero-redesign.trellis-ui .meta {
+      font-size: 14px !important;
+      font-weight: 680 !important;
+    }
+    body.zero-redesign.trellis-ui h2 {
+      font-size: 25px !important;
+      font-weight: 820 !important;
+      line-height: 1.08 !important;
+    }
+
+    body.zero-redesign.trellis-ui .top-status { gap: 8px !important; }
+    body.zero-redesign.trellis-ui .top-telegram-toggle,
+    body.zero-redesign.trellis-ui .top-telegram-toggle.off,
+    body.zero-redesign.trellis-ui .top-telegram-toggle.is-on,
+    body.zero-redesign.trellis-ui button.top-telegram-toggle:hover,
+    body.zero-redesign.trellis-ui button.top-telegram-toggle.is-on:hover {
+      width: 34px !important;
+      height: 34px !important;
+      min-width: 34px !important;
+      min-height: 34px !important;
+      max-height: 34px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 50% !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      display: inline-grid !important;
+      place-items: center !important;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle img {
+      width: 24px !important;
+      height: 24px !important;
+      filter: grayscale(1) saturate(0.15) opacity(0.48) !important;
+    }
+    body.zero-redesign.trellis-ui .top-telegram-toggle.is-on img { filter: none !important; }
+
+    body.zero-redesign.trellis-ui .rail-panel,
+    body.zero-redesign.trellis-ui .studio-panel,
+    body.zero-redesign.trellis-ui .inspector-card {
+      border-radius: 12px !important;
+      border-color: color-mix(in srgb, var(--app-line) 68%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui .studio-panel { min-height: 0 !important; }
+    body.zero-redesign.trellis-ui .studio-grid { gap: 8px !important; }
+    body.zero-redesign.trellis-ui .field {
+      border-radius: 10px !important;
+      padding: 10px !important;
+      gap: 8px !important;
+    }
+    body.zero-redesign.trellis-ui .field label,
+    body.zero-redesign.trellis-ui .notify-grid .field label {
+      font-size: 15px !important;
+      font-weight: 760 !important;
+      line-height: 1.1 !important;
+    }
+    body.zero-redesign.trellis-ui .field input,
+    body.zero-redesign.trellis-ui .field select,
+    body.zero-redesign.trellis-ui .range-control input,
+    body.zero-redesign.trellis-ui .unit-control input,
+    body.zero-redesign.trellis-ui .unit-control select {
+      height: 44px !important;
+      font-size: 17px !important;
+      font-weight: 740 !important;
+      border-radius: 9px !important;
+    }
+
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-card,
+    body.zero-redesign.trellis-ui[data-theme="dark"] #previewCards .product-card {
+      background: #18212d !important;
+      border-color: #2f3e52 !important;
+      color: var(--app-text) !important;
+    }
+
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-card.active {
+      background: #202c3b !important;
+      border-color: rgba(122, 167, 255, 0.48) !important;
+      box-shadow: inset 3px 0 0 var(--app-primary) !important;
+    }
+
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field input,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field select,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .range-control input,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .unit-control input,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .unit-control select,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .filter-token-box {
+      background: #121a24 !important;
+      border-color: #3a4a60 !important;
+      color: #f8fafc !important;
+    }
+
+    body.zero-redesign.trellis-ui[data-theme="dark"] .filter-token-input {
+      background: transparent !important;
+      border-color: transparent !important;
+      color: #f8fafc !important;
+    }
+
+    body.zero-redesign.trellis-ui[data-theme="dark"] .field input::placeholder,
+    body.zero-redesign.trellis-ui[data-theme="dark"] .filter-token-input::placeholder {
+      color: #9aa7b8 !important;
+    }
+    body.zero-redesign.trellis-ui .editor-panel .keyword-field input,
+    body.zero-redesign.trellis-ui .filter-token-box {
+      height: 66px !important;
+      min-height: 66px !important;
+    }
+    body.zero-redesign.trellis-ui .editor-panel .keyword-field input {
+      font-size: 22px !important;
+      font-weight: 820 !important;
+    }
+    body.zero-redesign.trellis-ui .filter-token {
+      font-size: 14px !important;
+      font-weight: 720 !important;
+    }
+    body.zero-redesign.trellis-ui .editor-actions {
+      justify-content: flex-end !important;
+      gap: 10px !important;
+      margin-top: 4px !important;
+    }
+    body.zero-redesign.trellis-ui .action-button {
+      height: 42px !important;
+      min-width: 116px !important;
+      padding: 0 18px !important;
+      font-size: 16px !important;
+      font-weight: 780 !important;
+    }
+
+    body.zero-redesign.trellis-ui .rule-card {
+      min-height: 136px !important;
+      grid-template-columns: 108px minmax(0, 1fr) !important;
+      grid-template-rows: auto minmax(30px, 1fr) auto !important;
+      padding: 12px !important;
+      column-gap: 12px !important;
+      row-gap: 8px !important;
+    }
+    body.zero-redesign.trellis-ui .keyword-name {
+      font-size: 21px !important;
+      font-weight: 820 !important;
+      line-height: 1.15 !important;
+    }
+    body.zero-redesign.trellis-ui .row-actions { gap: 8px !important; }
+    body.zero-redesign.trellis-ui .row-actions .icon-btn {
+      width: 34px !important;
+      height: 34px !important;
+      min-width: 34px !important;
+      border-radius: 50% !important;
+    }
+    body.zero-redesign.trellis-ui .row-actions .icon-btn svg {
+      width: 16px !important;
+      height: 16px !important;
+    }
+    body.zero-redesign.trellis-ui .rule-stat,
+    body.zero-redesign.trellis-ui .rule-stat span {
+      font-size: 15px !important;
+      font-weight: 760 !important;
+    }
+    body.zero-redesign.trellis-ui .rule-stat > svg {
+      width: 17px !important;
+      height: 17px !important;
+      color: #7d8795 !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .rule-stat > svg { color: #b8c2d1 !important; }
+
+    body.zero-redesign.trellis-ui .notification-shell .inspector-head h2 { white-space: nowrap !important; }
+    body.zero-redesign.trellis-ui .notify-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 8px !important;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(1),
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(2) {
+      grid-column: span 2 !important;
+    }
+    body.zero-redesign.trellis-ui .notify-grid .field:nth-child(3),
+    body.zero-redesign.trellis-ui .notify-grid .setting-field {
+      grid-column: auto !important;
+    }
+    body.zero-redesign.trellis-ui .setting-row {
+      min-height: 44px !important;
+      gap: 8px !important;
+      align-items: center !important;
+    }
+    body.zero-redesign.trellis-ui .setting-copy strong {
+      font-size: 15px !important;
+      font-weight: 760 !important;
+      line-height: 1.1 !important;
+    }
+    body.zero-redesign.trellis-ui .setting-copy small {
+      font-size: 12px !important;
+      font-weight: 650 !important;
+      line-height: 1.1 !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle {
+      width: 54px !important;
+      height: 32px !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle .toggle-shell {
+      width: 54px !important;
+      height: 32px !important;
+      border-radius: 999px !important;
+      background: #e1e6ee !important;
+      border-color: color-mix(in srgb, var(--app-line-strong) 44%, transparent) !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] .notify-enabled-toggle .toggle-shell {
+      background: #344052 !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle .toggle-knob {
+      width: 24px !important;
+      height: 24px !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle input:checked + .toggle-shell {
+      background: #2aabee !important;
+      border-color: #2aabee !important;
+    }
+    body.zero-redesign.trellis-ui .notify-enabled-toggle input:checked + .toggle-shell .toggle-knob {
+      transform: translateX(22px) !important;
+    }
+
+    body.zero-redesign.trellis-ui .preview-panel {
+      display: grid !important;
+      grid-template-rows: auto minmax(0, 1fr) !important;
+      min-height: 0 !important;
+      height: 100% !important;
+      align-self: stretch !important;
+    }
+    body.zero-redesign.trellis-ui .preview-panel.inspector-card {
+      height: 100% !important;
+      align-self: stretch !important;
+    }
+    body.zero-redesign.trellis-ui .preview-panel .inspector-head {
+      min-height: 48px !important;
+      padding-bottom: 8px !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards.product-list,
+    body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      grid-auto-rows: minmax(138px, auto) !important;
+      gap: 10px !important;
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
+      overflow-y: visible !important;
+      padding: 0 4px 0 0 !important;
+      align-content: start !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
+      max-height: calc(138px * 2 + 10px) !important;
+      overflow-y: auto !important;
+      scrollbar-gutter: stable;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-card {
+      min-height: 138px !important;
+      height: 100% !important;
+      display: grid !important;
+      grid-template-columns: 86px minmax(0, 1fr) !important;
+      align-items: stretch !important;
+      gap: 10px !important;
+      padding: 10px !important;
+      border-radius: 10px !important;
+      background: color-mix(in srgb, var(--app-surface) 94%, var(--app-panel)) !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-media,
+    body.zero-redesign.trellis-ui #previewCards .product-card img {
+      width: 86px !important;
+      height: 118px !important;
+      min-height: 118px !important;
+      border-radius: 8px !important;
+      object-fit: cover !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-title {
+      font-size: 17px !important;
+      font-weight: 780 !important;
+      line-height: 1.28 !important;
+      -webkit-line-clamp: 3 !important;
+      color: var(--app-text) !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-meta {
+      margin-top: 8px !important;
+      gap: 8px !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-meta .tag,
+    body.zero-redesign.trellis-ui #previewCards .product-price {
+      font-size: 14px !important;
+      font-weight: 760 !important;
+      line-height: 1.15 !important;
+      color: var(--app-muted) !important;
+      background: transparent !important;
+      border: 0 !important;
+      padding: 0 !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-price {
+      color: var(--app-text) !important;
+      font-weight: 840 !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .product-meta svg {
+      width: 15px !important;
+      height: 15px !important;
+      color: #7d8795 !important;
+      margin-right: 2px !important;
+      vertical-align: -2px !important;
+    }
+    body.zero-redesign.trellis-ui[data-theme="dark"] #previewCards .product-meta svg { color: #b8c2d1 !important; }
+    body.zero-redesign.trellis-ui #previewCards .empty-state {
+      grid-column: 1 / -1 !important;
+      align-self: stretch !important;
+      height: 100% !important;
+      min-height: 100% !important;
+      padding: 18px !important;
+    }
+
+    body.zero-redesign.trellis-ui #previewCards:has(.empty-state) {
+      height: 100% !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards.product-list:has(.empty-state) {
+      height: 100% !important;
+      grid-template-rows: minmax(0, 1fr) !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .empty-state svg {
+      width: 42px !important;
+      height: 42px !important;
+      opacity: .62 !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .empty-state strong {
+      font-size: 19px !important;
+      font-weight: 800 !important;
+    }
+    body.zero-redesign.trellis-ui #previewCards .empty-state p {
+      font-size: 14px !important;
+      font-weight: 650 !important;
+      margin: 0 !important;
+    }
+
+    @media (max-width: 1280px) {
+      body.zero-redesign.trellis-ui .app-shell {
+        grid-template-columns: minmax(360px, 410px) minmax(470px, 1fr) minmax(280px, 320px) !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards.product-list,
+      body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      body.zero-redesign.trellis-ui #previewCards.product-list,
+      body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body.zero-redesign.trellis-ui #previewCards.product-list,
+      body.zero-redesign.trellis-ui #previewCards.product-list.is-scrollable {
+        grid-template-columns: 1fr !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards .product-card {
+        grid-template-columns: 82px minmax(0, 1fr) !important;
+      }
+      body.zero-redesign.trellis-ui #previewCards .product-media,
+      body.zero-redesign.trellis-ui #previewCards .product-card img {
+        width: 82px !important;
+      }
+    }
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
@@ -8145,7 +8547,7 @@ layui.use(function(){
     renderRules();
   });
   $('#removeRule').on('click', removeSelectedRule);
-  $('#saveProductConfig, #saveNotifyConfig').on('click', saveProductConfig);
+  $('#saveProductConfig').on('click', saveProductConfig);
   $('#searchRule').on('click', searchSelectedRule);
   $('#topTelegramToggle').on('click', function(){
     var next = !$('#telegramEnabled').is(':checked');
