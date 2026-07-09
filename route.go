@@ -6,6 +6,7 @@ import (
 	"ggball.com/smzdm/check_in"
 	"ggball.com/smzdm/db"
 	"ggball.com/smzdm/file"
+	"ggball.com/smzdm/push"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -169,6 +170,41 @@ func ProductConfigHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
+}
+
+func TelegramTestHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	body, _ := ioutil.ReadAll(r.Body)
+	var req telegramTestRequest
+	if err := json.Unmarshal(body, &req); err != nil {
+		writeError(w, fmt.Errorf("解析 Telegram 测试配置失败: %v", err))
+		return
+	}
+	if err := sendTelegramTest(req); err != nil {
+		writeError(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"code": "0",
+		"msg":  "测试发送成功",
+		"data": map[string]interface{}{},
+	})
+}
+
+func PushLogsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"code": "0",
+		"msg":  "",
+		"data": push.RecentLogs(),
+	})
 }
 
 func HealthHandler(w http.ResponseWriter, r *http.Request) {

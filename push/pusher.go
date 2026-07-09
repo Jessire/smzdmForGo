@@ -8,6 +8,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"sync"
+	"time"
 
 	"ggball.com/smzdm/file"
 	"ggball.com/smzdm/smzdm"
@@ -15,6 +17,16 @@ import (
 
 var telegramEndpointBase = "https://api.telegram.org"
 var httpClient = http.DefaultClient
+var logMu sync.Mutex
+var recentLogs []LogEntry
+
+type LogEntry struct {
+	Title  string `json:"title"`
+	Status string `json:"status"`
+	Reason string `json:"reason"`
+	Image  string `json:"image"`
+	Time   string `json:"time"`
+}
 
 func PushProducts(pro []smzdm.Product, conf file.Config) {
 	PushProWithTelegram(pro, conf)
@@ -34,7 +46,17 @@ func PushProWithTelegram(pro []smzdm.Product, conf file.Config) {
 	}
 	limit := productLimit(len(pro), conf.SatisfyNum)
 	content := buildProductsHTML(pro[:limit], "什么值得买好价")
-	pushTelegram(content, conf)
+	err := sendTelegram(content, conf)
+	for _, product := range pro[:limit] {
+		if err != nil {
+			logProduct(product, "fail", err.Error())
+			continue
+		}
+		logProduct(product, "success", "发送成功")
+	}
+	if err != nil {
+		fmt.Println("Telegram push failed:", err)
+	}
 }
 
 func PushTargetWithTelegram(pro []smzdm.Product, conf file.Config) {
@@ -52,7 +74,66 @@ func PushTextWithTelegram(resText string, conf file.Config) {
 	pushTelegram(html.EscapeString(resText)+"\n\n什么值得买", conf)
 }
 
+func SendTelegramTest(conf file.Config) error {
+	conf.Telegram.Enabled = true
+	err := sendTelegram("<b>什么值得买提醒</b>\nTelegram 测试发送成功。", conf)
+	if err != nil {
+		AddLog(LogEntry{Title: "Telegram 测试发送", Status: "fail", Reason: err.Error()})
+		return err
+	}
+	AddLog(LogEntry{Title: "Telegram 测试发送", Status: "success", Reason: "测试发送成功"})
+	return nil
+}
+
 func pushTelegram(content string, conf file.Config) {
+	if err := sendTelegram(content, conf); err != nil {
+		fmt.Println("Telegram push failed:", err)
+	}
+}
+
+func RecentLogs() []LogEntry {
+	logMu.Lock()
+	defer logMu.Unlock()
+	result := make([]LogEntry, len(recentLogs))
+	copy(result, recentLogs)
+	return result
+}
+
+func AddLog(entry LogEntry) {
+	if strings.TrimSpace(entry.Time) == "" {
+		entry.Time = time.Now().Format("15:04:05")
+	}
+	if strings.TrimSpace(entry.Status) == "" {
+		entry.Status = "success"
+	}
+	logMu.Lock()
+	defer logMu.Unlock()
+	recentLogs = append([]LogEntry{entry}, recentLogs...)
+	if len(recentLogs) > 20 {
+		recentLogs = recentLogs[:20]
+	}
+}
+
+func logProduct(product smzdm.Product, status string, reason string) {
+	title := strings.TrimSpace(product.ArticleTitle)
+	if title == "" {
+		title = "商品命中通知"
+	}
+	AddLog(LogEntry{
+		Title:  title,
+		Status: status,
+		Reason: reason,
+		Image:  product.ArticlePic,
+	})
+}
+
+func sendTelegram(content string, conf file.Config) error {
+	if strings.TrimSpace(conf.Telegram.BotToken) == "" {
+		return fmt.Errorf("bot token 不能为空")
+	}
+	if strings.TrimSpace(conf.Telegram.ChatID) == "" {
+		return fmt.Errorf("chat id 不能为空")
+	}
 	params := TelegramMessageParam{
 		ChatID:                conf.Telegram.ChatID,
 		Text:                  content,
@@ -64,21 +145,19 @@ func pushTelegram(content string, conf file.Config) {
 	endpoint := strings.TrimRight(telegramEndpointBase, "/") + "/bot" + strings.TrimSpace(conf.Telegram.BotToken) + "/sendMessage"
 	resp, err := httpClient.Post(endpoint, "application/json;charset=utf-8", bytes.NewBuffer(paramsJson))
 	if err != nil {
-		fmt.Println("Telegram push failed:", err)
-		return
+		return err
 	}
 	defer resp.Body.Close()
 
 	contentBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Telegram response read failed:", err)
-		return
+		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		fmt.Println("Telegram response status:", resp.StatusCode, string(contentBytes))
-		return
+		return fmt.Errorf("telegram response status %d: %s", resp.StatusCode, string(contentBytes))
 	}
 	fmt.Println(string(contentBytes))
+	return nil
 }
 
 func canPushTelegram(conf file.Config) bool {

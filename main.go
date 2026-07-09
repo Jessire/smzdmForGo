@@ -85,6 +85,8 @@ func init() {
 	http.HandleFunc("/productConfig", ProductConfigHandler)
 	http.HandleFunc("/productSearch", ProductSearchHandler)
 	http.HandleFunc("/imageProxy", ImageProxyHandler)
+	http.HandleFunc("/telegramTest", TelegramTestHandler)
+	http.HandleFunc("/pushLogs", PushLogsHandler)
 	http.HandleFunc("/health", HealthHandler)
 	http.HandleFunc("/html/", HtmlHandler)
 }

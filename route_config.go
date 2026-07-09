@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"ggball.com/smzdm/file"
+	"ggball.com/smzdm/push"
 )
 
 type productConfigRequest struct {
@@ -26,6 +28,10 @@ type telegramConfigRequest struct {
 	ChatID                string `json:"chatId"`
 	ParseMode             string `json:"parseMode"`
 	DisableWebPagePreview bool   `json:"disableWebPagePreview"`
+}
+
+type telegramTestRequest struct {
+	Telegram telegramConfigRequest `json:"telegram"`
 }
 
 type keywordRuleConfigRequest struct {
@@ -195,6 +201,24 @@ func (req productConfigRequest) applyTo(conf file.Config) file.Config {
 		}
 	}
 	return conf
+}
+
+func sendTelegramTest(req telegramTestRequest) error {
+	conf := currentConfig()
+	conf.Telegram = file.Telegram{
+		Enabled:               true,
+		BotToken:              strings.TrimSpace(req.Telegram.BotToken),
+		ChatID:                strings.TrimSpace(req.Telegram.ChatID),
+		ParseMode:             normalizedParseMode(req.Telegram.ParseMode),
+		DisableWebPagePreview: req.Telegram.DisableWebPagePreview,
+	}
+	if conf.Telegram.BotToken == "" {
+		return fmt.Errorf("bot token 不能为空")
+	}
+	if conf.Telegram.ChatID == "" {
+		return fmt.Errorf("chat id 不能为空")
+	}
+	return push.SendTelegramTest(conf)
 }
 
 func cleanWords(words []string) []string {

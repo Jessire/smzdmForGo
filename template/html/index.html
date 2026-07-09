@@ -16,6 +16,15 @@
     .preview-hero{display:none}.preview-panel{display:grid;grid-template-rows:auto minmax(0,auto);align-content:start}#previewCards.product-list:not(:has(.empty-state)),#previewCards.product-list.is-scrollable:not(:has(.empty-state)){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:190px;gap:12px;max-height:calc(190px * 3 + 24px);overflow-x:hidden;overflow-y:hidden;padding:0}#previewCards.product-list.is-scrollable:not(:has(.empty-state)){overflow-y:auto}.product-card{display:grid;grid-template-columns:148px minmax(0,1fr);align-items:center;gap:14px;min-height:190px;height:190px;padding:14px;border:1px solid color-mix(in srgb,var(--line) 56%,transparent);border-radius:8px;background:color-mix(in srgb,var(--surface) 92%,var(--canvas));overflow:hidden}.product-card:hover{border-color:color-mix(in srgb,var(--blue) 24%,var(--line))}.product-media{display:grid;place-items:center;width:148px;height:148px;min-width:148px;min-height:148px;overflow:hidden}.product-media img,.product-card img{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center;transform:none;border-radius:8px}.product-info{display:grid;grid-template-rows:auto auto auto;align-content:start;min-width:0;height:148px;overflow:hidden}.product-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;color:var(--text);font-size:18px;font-weight:780;line-height:1.18;text-decoration:none}.product-price-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 6px;margin-top:10px;color:var(--price);font-size:20px;font-weight:840;line-height:1.12}.price-currency,.price-main{color:var(--price)}.price-currency{font-size:15px;font-weight:780}.price-condition{color:color-mix(in srgb,var(--price) 78%,var(--muted));font-size:14px;font-weight:760;line-height:1.18}.product-meta{display:grid;grid-template-columns:auto auto minmax(68px,1fr);align-items:center;gap:12px;margin-top:13px;color:var(--muted)}.product-meta .tag,.product-time{padding:0;border:0;background:transparent;color:var(--muted);font-size:15px;font-weight:760}.product-time{justify-self:end;text-align:right;white-space:nowrap}.product-meta svg{width:17px;height:17px;color:color-mix(in srgb,var(--muted) 88%,var(--text))}.empty,.empty-state{grid-column:1/-1;display:grid;place-items:center;gap:8px;min-height:136px;padding:18px;border:1px dashed color-mix(in srgb,var(--line) 70%,transparent);border-radius:8px;color:var(--muted);text-align:center}.empty-state svg{width:42px;height:42px;opacity:.62}.empty-state strong{color:var(--text);font-size:18px;font-weight:800}.empty-state p{margin:0;font-size:14px;font-weight:650}
     .rail-actions .btn.primary,.rail-actions .btn.success,.rail-actions .btn.refresh{background:transparent;border-color:transparent;color:color-mix(in srgb,var(--muted) 92%,var(--text));box-shadow:none}.rail-actions .btn:hover{background:color-mix(in srgb,var(--muted) 8%,transparent);color:color-mix(in srgb,var(--text) 78%,var(--muted))}.row-actions .btn.info,.row-actions .btn.danger{color:color-mix(in srgb,var(--muted) 92%,var(--text));background:transparent;border-color:transparent;box-shadow:none}.row-actions .btn.info:hover{color:var(--blue);background:color-mix(in srgb,var(--blue) 8%,transparent)}.row-actions .btn.danger:hover{color:var(--red);background:color-mix(in srgb,var(--red) 8%,transparent)}
     @media (max-width:1280px){body.zero-redesign.trellis-ui .app-shell{grid-template-columns:minmax(360px,410px) minmax(470px,1fr) minmax(280px,320px)}.rule-card{min-height:168px;grid-template-columns:minmax(136px,43%) minmax(0,1fr)}}@media (max-width:980px){body.zero-redesign.trellis-ui{overflow:auto}body.zero-redesign.trellis-ui .app-shell{width:calc(100vw - 16px);height:auto;min-height:calc(100dvh - 16px);margin:8px;grid-template-columns:1fr;grid-template-rows:auto;grid-template-areas:"topbar" "rules" "editor" "preview" "notify";overflow:visible}.studio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.studio-grid .field:nth-child(n){grid-column:span 1}.studio-grid .field:nth-child(1),.studio-grid .field:nth-child(2),.studio-grid .field:nth-child(5){grid-column:span 2}#previewCards.product-list:not(:has(.empty-state)),#previewCards.product-list.is-scrollable:not(:has(.empty-state)){grid-template-columns:1fr;grid-auto-rows:180px;max-height:calc(180px * 3 + 24px)}.product-card{grid-template-columns:118px minmax(0,1fr);min-height:180px;height:180px}.product-media{width:118px;height:118px;min-width:118px;min-height:118px}.product-info{height:auto}}@media (max-width:620px){.top-brand strong{font-size:18px}.top-brand span{display:none}.rule-card{grid-template-columns:112px minmax(0,1fr);min-height:150px;padding:12px}.keyword-name{font-size:18px}.studio-grid{grid-template-columns:1fr}.studio-grid .field:nth-child(n){grid-column:span 1}.notify-grid{grid-template-columns:1fr}.notify-grid .field:nth-child(n){grid-column:span 1}.product-title{font-size:16px}.product-price-row{font-size:17px}}
+    /* Approved full-page console layout. Keep this block last so it overrides the older compact dashboard rules. */
+    body.zero-redesign.trellis-ui .app-shell{width:min(1684px,calc(100vw - 28px));height:auto;min-height:calc(100dvh - 28px);margin:14px auto;grid-template-columns:380px minmax(620px,1fr) 380px;grid-template-rows:56px auto minmax(0,1fr);grid-template-areas:"topbar topbar topbar" "rules editor notify" "rules preview logs";gap:14px;background:var(--bg);border-radius:16px;overflow:hidden;box-shadow:0 18px 48px rgb(31 50 85/.08)}
+    .app-topbar{height:56px;border-radius:0;border-width:0 0 1px;background:rgb(255 255 255/.95);box-shadow:none}.top-brand strong{font-size:20px;font-weight:900}.top-brand span{font-size:12px;font-weight:800}.top-pill{background:#f1f5f9}.top-telegram-toggle.is-on{background:#229ed9}.top-telegram-toggle.is-on img{filter:brightness(0) invert(1)}
+    .rail-panel,.studio-panel,.inspector-card{border-radius:14px;background:#fff;box-shadow:0 10px 28px rgb(31 50 85/.04)}.rules-panel,.editor-panel,.preview-panel,.notification-shell,.push-log-card{padding:16px;overflow:hidden}.push-log-card{grid-area:logs}.rail-head,.studio-head,.inspector-head{min-height:auto;margin-bottom:12px;align-items:flex-start}h2{font-size:18px;font-weight:900}.meta{font-size:12px;font-weight:750;white-space:normal}
+    .rules-body.is-scrollable{max-height:calc(100dvh - 178px)}.rule-card{min-height:108px;grid-template-columns:76px minmax(0,1fr);grid-template-rows:auto minmax(24px,1fr) auto;gap:8px 10px;padding:10px;border-radius:10px}.rule-thumb-media{width:76px;height:76px;aspect-ratio:auto;grid-row:1/4}.keyword-name{font-size:16px;font-weight:900}.rule-title-row{min-height:24px}.rule-filter{max-height:30px}.rule-metrics{display:flex;justify-content:space-between;gap:8px}.rule-stat{font-size:12px}.tag,.filter-token{min-height:22px;padding:0 8px;font-size:12px}.rule-enabled-switch{width:36px;height:22px;min-width:36px}.rule-enabled-switch .switch-knob{width:18px;height:18px}.rule-enabled-switch.is-on .switch-knob{transform:translateX(14px)}
+    .studio-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.studio-grid .field:nth-child(1),.studio-grid .field:nth-child(2){grid-column:span 2;min-height:70px;padding:10px;border-color:#cfe0fb;background:#f8fbff}.studio-grid .field:nth-child(1) input,.studio-grid .field:nth-child(2) .filter-token-box{min-height:38px;height:38px;font-size:14px;font-weight:850}.studio-grid .field:nth-child(1) label,.studio-grid .field:nth-child(2) label{font-size:12px;font-weight:850}.studio-grid .field:nth-child(3),.studio-grid .field:nth-child(4){grid-column:span 1;min-height:68px}.studio-grid .field:nth-child(5),.studio-grid .field:nth-child(6),.studio-grid .field:nth-child(7){grid-column:span 2;min-height:68px}.field{padding:10px;background:#f8fbff}.field input,.field select{height:36px;font-size:14px;font-weight:850}.filter-token-box{padding:6px}.editor-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.editor-actions #searchRule{grid-column:1}.editor-actions #saveProductConfig{grid-column:2;border-radius:9px}.editor-actions #removeRule,.editor-actions #duplicateRule{display:none}
+    .preview-panel{display:grid;grid-template-rows:auto minmax(0,1fr);align-content:stretch}#previewCards.product-list:not(:has(.empty-state)),#previewCards.product-list.is-scrollable:not(:has(.empty-state)){grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto;gap:8px;max-height:none;overflow:auto;padding:0}.product-card{grid-template-columns:78px minmax(0,1fr);min-height:104px;height:auto;padding:10px;gap:12px;border-radius:10px;background:#fff}.product-media{width:78px;height:78px;min-width:78px;min-height:78px}.product-info{height:auto;min-height:78px}.product-title{font-size:15px;font-weight:900;line-height:1.35}.product-price-row{margin-top:6px;font-size:16px}.price-currency{font-size:13px}.price-condition{font-size:12px}.product-meta{display:flex;gap:10px;margin-top:8px}.product-meta .tag,.product-time{font-size:12px}
+    .notification-shell{align-self:start}.notification-shell .inspector-head h2{font-size:18px;font-weight:900}.notify-title{display:flex;align-items:center;gap:8px}.tg-logo-mark{display:inline-grid;width:28px;height:28px;place-items:center;border-radius:999px;background:#f1f5f9;color:#64748b}.app-shell.tg-on .tg-logo-mark{background:#229ed9;color:#fff}.tg-logo-svg{width:17px;height:17px;display:block}.notify-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.notify-actions .btn{width:100%;border-radius:9px}.notify-actions .tg-logo-svg{margin-right:2px}.push-log-list{display:grid;gap:8px;max-height:calc(100dvh - 586px);overflow:auto}.push-log-item{display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}.push-log-thumb{position:relative;width:48px;height:48px;border:1px solid var(--line);border-radius:8px;background:var(--soft);overflow:hidden}.push-log-thumb img{width:100%;height:100%;object-fit:cover;display:block}.push-log-status{position:absolute;right:-5px;bottom:-5px;display:grid;place-items:center;width:20px;height:20px;border:2px solid #fff;border-radius:999px;color:#fff;font-size:12px;font-weight:900}.push-log-status.success{background:#059669}.push-log-status.fail{background:#dc2626}.push-log-status.skip{background:#b45309}.push-log-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:900}.push-log-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:5px;color:var(--muted);font-size:12px;font-weight:750}
+    @media (max-width:1280px){body.zero-redesign.trellis-ui .app-shell{grid-template-columns:340px minmax(560px,1fr) 340px}.preview-list,#previewCards.product-list:not(:has(.empty-state)){grid-template-columns:1fr}}@media (max-width:980px){body.zero-redesign.trellis-ui .app-shell{width:calc(100vw - 16px);margin:8px;grid-template-columns:1fr;grid-template-areas:"topbar" "rules" "editor" "preview" "notify" "logs";overflow:visible}.rules-body.is-scrollable,.push-log-list{max-height:none}.studio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.studio-grid .field:nth-child(n){grid-column:span 1}.studio-grid .field:nth-child(1),.studio-grid .field:nth-child(2),.studio-grid .field:nth-child(5),.studio-grid .field:nth-child(6),.studio-grid .field:nth-child(7){grid-column:span 2}}@media (max-width:620px){.studio-grid{grid-template-columns:1fr}.studio-grid .field:nth-child(n){grid-column:span 1}.notify-grid,.notify-actions,.editor-actions{grid-template-columns:1fr}.rule-card{grid-template-columns:72px minmax(0,1fr)}.rule-thumb-media{width:72px;height:72px}}
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
@@ -118,9 +127,9 @@
       </div>
 
       <div class="bottom-bar editor-actions">
-        <button class="btn info action-button" id="searchRule" type="button" aria-label="预览当前规则" title="预览当前规则">
+        <button class="btn info action-button" id="searchRule" type="button" aria-label="搜索预览当前规则" title="搜索预览当前规则">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
-          <span>预览</span>
+          <span>搜索预览</span>
         </button>
         <button class="btn primary action-button" id="saveProductConfig" type="button" aria-label="保存并启用" title="保存并启用">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
@@ -131,10 +140,10 @@
   </main>
 
   <aside class="inspector-column" aria-label="预览与通知">
-    <section class="preview-panel inspector-card" aria-label="搜索结果">
+    <section class="preview-panel inspector-card" aria-label="搜索预览">
       <div class="inspector-head">
         <div>
-          <h2>搜索结果</h2>
+          <h2>搜索预览</h2>
           <div class="meta" id="previewMeta">等待搜索</div>
         </div>
         <button class="btn web icon-btn" id="openSearchPage" type="button" aria-label="打开网页" title="打开网页">
@@ -155,7 +164,13 @@
     <section class="notification-shell inspector-card notify-panel" aria-label="Telegram 通知">
       <div class="inspector-head">
         <div>
-          <h2>Telegram 通知</h2>
+          <div class="notify-title">
+            <span class="tg-logo-mark" aria-hidden="true">
+              <svg class="tg-logo-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056Zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472c-.18 1.898-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.065-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.48.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.245-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635Z"/></svg>
+            </span>
+            <h2>Telegram 通知</h2>
+          </div>
+          <div class="meta">配置推送通道, 测试成功后再启用</div>
         </div>
         <div class="notify-head-actions">
           <label class="notify-enabled-toggle" title="Telegram 启用" aria-label="Telegram 启用">
@@ -192,6 +207,30 @@
           </div>
         </div>
       </div>
+      <div class="notify-actions">
+        <button class="btn" id="testTelegram" type="button">
+          <svg class="tg-logo-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056Zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472c-.18 1.898-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.065-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.48.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.245-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635Z"/></svg>
+          <span>测试发送</span>
+        </button>
+        <button class="btn primary" id="saveNotifyConfig" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+          <span>保存配置</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="push-log-card inspector-card" aria-label="推送记录">
+      <div class="inspector-head">
+        <div>
+          <h2>推送记录</h2>
+          <div class="meta">确认命中后有没有真的发送出去</div>
+        </div>
+        <button class="btn icon-btn" id="reloadPushLogs" type="button" aria-label="刷新推送记录" title="刷新推送记录">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M18 3v5h-5"/><path d="M6 21v-5h5"/></svg>
+          <span class="sr-only">刷新推送记录</span>
+        </button>
+      </div>
+      <div class="push-log-list" id="pushLogList"></div>
     </section>
   </aside>
 </div>
@@ -368,8 +407,10 @@ layui.use(function(){
     renderRules();
   });
   $('#removeRule').on('click', removeSelectedRule);
-  $('#saveProductConfig').on('click', saveProductConfig);
+  $('#saveProductConfig, #saveNotifyConfig').on('click', saveProductConfig);
   $('#searchRule').on('click', searchSelectedRule);
+  $('#testTelegram').on('click', testTelegram);
+  $('#reloadPushLogs').on('click', loadPushLogs);
   $('#topTelegramToggle').on('click', function(){
     var next = !$('#telegramEnabled').is(':checked');
     $('#telegramEnabled').prop('checked', next).trigger('change');
@@ -399,6 +440,7 @@ layui.use(function(){
   });
 
   loadProductConfig();
+  loadPushLogs();
 
   function loadProductConfig() {
     $.ajax({
@@ -857,6 +899,7 @@ layui.use(function(){
   function updateSwitchLabels() {
     var botOn = $('#telegramEnabled').is(':checked');
     var previewOff = $('#telegramDisablePreview').is(':checked');
+    $('.app-shell').toggleClass('tg-on', botOn);
     $('.notify-enabled-toggle').attr('title', botOn ? 'Telegram 已启用' : 'Telegram 未启用')
       .attr('aria-label', botOn ? 'Telegram 已启用' : 'Telegram 未启用');
     $('#topTelegramToggle')
@@ -868,6 +911,91 @@ layui.use(function(){
       .find('.sr-only').text(botOn ? 'Telegram 已启用' : 'Telegram 未启用');
     $('.setting-copy strong').text(previewOff ? '隐藏预览' : '网页预览');
     $('.setting-copy small').text(previewOff ? '纯文本链接' : '保留预览');
+  }
+
+  function testTelegram() {
+    readNotifyForm();
+    var btn = $('#testTelegram');
+    btn.prop('disabled', true).addClass('loading');
+    $.ajax({
+      url: BASE_URL + '/telegramTest',
+      contentType: 'application/json;charset=utf-8',
+      data: JSON.stringify({ telegram: productConfig.telegram }),
+      dataType: 'json',
+      type: 'POST',
+      success: function(res) {
+        layer.msg(res.msg || '测试发送成功');
+        loadPushLogs();
+      },
+      error: function(xhr) {
+        layer.msg(readError(xhr));
+        loadPushLogs();
+      },
+      complete: function() {
+        btn.prop('disabled', false).removeClass('loading');
+      }
+    });
+  }
+
+  function loadPushLogs() {
+    $.ajax({
+      url: BASE_URL + '/pushLogs',
+      dataType: 'json',
+      type: 'GET',
+      success: function(res) {
+        renderPushLogs(res.data || []);
+      },
+      error: function() {
+        renderPushLogs([]);
+      }
+    });
+  }
+
+  function renderPushLogs(logs) {
+    var list = $('#pushLogList');
+    list.empty();
+    if (!logs.length) {
+      list.append(pushLogCard({
+        title: '暂无推送记录',
+        status: 'skip',
+        reason: '测试发送或商品命中后会显示在这里',
+        image: 'https://www.smzdm.com/favicon.ico',
+        time: '待触发'
+      }));
+      return;
+    }
+    logs.forEach(function(log){
+      list.append(pushLogCard(log));
+    });
+  }
+
+  function pushLogCard(log) {
+    log = log || {};
+    var status = log.status || 'success';
+    var statusText = status === 'fail' ? '!' : (status === 'skip' || status === 'pending' ? '-' : '✓');
+    var card = $('<article class="push-log-item"></article>');
+    var thumb = $('<div class="push-log-thumb"></div>');
+    var image = $('<img loading="lazy" decoding="async" alt="">');
+    image.on('error', function(){
+      this.onerror = null;
+      this.src = placeholderImage(log.title || '推');
+    });
+    image.attr('src', proxiedImageUrl(log.image || 'https://www.smzdm.com/favicon.ico'));
+    thumb.append(image);
+    thumb.append('<span class="push-log-status ' + escapeAttr(status === 'pending' ? 'skip' : status) + '">' + statusText + '</span>');
+    var content = $('<div></div>');
+    content.append('<div class="push-log-title">' + escapeHtml(log.title || 'Telegram 通知') + '</div>');
+    content.append('<div class="push-log-meta"><span>' + escapeHtml(log.time || '-') + '</span><span>' + escapeHtml(log.reason || statusLabel(status)) + '</span></div>');
+    card.append(thumb);
+    card.append(content);
+    return card;
+  }
+
+  function statusLabel(status) {
+    if (status === 'fail') { return '发送失败'; }
+    if (status === 'pending') { return '正在发送'; }
+    if (status === 'skip') { return '已跳过'; }
+    return '发送成功';
   }
 
   function markConfigDirty() {
