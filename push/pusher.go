@@ -52,7 +52,7 @@ func PushProWithTelegram(pro []smzdm.Product, conf file.Config) {
 			logProduct(product, "fail", err.Error())
 			continue
 		}
-		logProduct(product, "success", "发送成功")
+		logProduct(product, "success", "已推送")
 	}
 	if err != nil {
 		fmt.Println("Telegram push failed:", err)
@@ -81,7 +81,7 @@ func SendTelegramTest(conf file.Config) error {
 		AddLog(LogEntry{Title: "Telegram 测试发送", Status: "fail", Reason: err.Error()})
 		return err
 	}
-	AddLog(LogEntry{Title: "Telegram 测试发送", Status: "success", Reason: "测试发送成功"})
+	AddLog(LogEntry{Title: "Telegram 测试发送", Status: "success", Reason: "已推送"})
 	return nil
 }
 
