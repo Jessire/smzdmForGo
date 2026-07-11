@@ -13,8 +13,8 @@ func TestDashboardSearchFeedbackPlacement(t *testing.T) {
 	}
 	page := string(html)
 	required := []string{
-		".editor-panel .editor-actions #searchRule{flex:0 0 min(95px,12%);min-width:95px;padding-inline:4px;font-size:13px;gap:5px}",
-		".editor-panel .editor-actions #saveProductConfig{flex:0 0 190px;min-width:190px}",
+		"grid-auto-rows:170px",
+		".product-card{min-height:170px;height:170px}",
 		".rule-auto-state.is-searching:before",
 		"<strong>本次搜索</strong>",
 		"toggleClass('is-searching', state === '搜索中')",
