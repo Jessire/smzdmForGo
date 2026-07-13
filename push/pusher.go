@@ -44,18 +44,46 @@ func PushProWithTelegram(pro []smzdm.Product, conf file.Config) {
 	if len(pro) == 0 || !canPushTelegram(conf) {
 		return
 	}
-	limit := productLimit(len(pro), conf.SatisfyNum)
-	content := buildProductsHTML(pro[:limit], "什么值得买好价")
-	err := sendTelegram(content, conf)
-	for _, product := range pro[:limit] {
-		if err != nil {
-			logProduct(product, "fail", err.Error())
-			continue
-		}
-		logProduct(product, "success", "已推送")
+
+	// SatisfyNum = max products per Telegram message. Overflow is sent in follow-up messages.
+	batchSize := conf.SatisfyNum
+	if batchSize <= 0 {
+		batchSize = 5
 	}
-	if err != nil {
-		fmt.Println("Telegram push failed:", err)
+	totalBatches := (len(pro) + batchSize - 1) / batchSize
+
+	for batchNo := 0; batchNo < totalBatches; batchNo++ {
+		start := batchNo * batchSize
+		end := start + batchSize
+		if end > len(pro) {
+			end = len(pro)
+		}
+		batch := pro[start:end]
+
+		title := "什么值得买好价"
+		if totalBatches > 1 {
+			title = fmt.Sprintf("什么值得买好价（%d/%d）", batchNo+1, totalBatches)
+		}
+		content := buildProductsHTML(batch, title)
+		err := sendTelegram(content, conf)
+		for _, product := range batch {
+			if err != nil {
+				logProduct(product, "fail", err.Error())
+				continue
+			}
+			reason := "已推送"
+			if totalBatches > 1 {
+				reason = fmt.Sprintf("已推送 · 第%d/%d批", batchNo+1, totalBatches)
+			}
+			logProduct(product, "success", reason)
+		}
+		if err != nil {
+			fmt.Println("Telegram push failed:", err)
+		}
+		// Mild delay between batches to avoid Telegram flood limits.
+		if batchNo+1 < totalBatches {
+			time.Sleep(400 * time.Millisecond)
+		}
 	}
 }
 
@@ -109,8 +137,8 @@ func AddLog(entry LogEntry) {
 	logMu.Lock()
 	defer logMu.Unlock()
 	recentLogs = append([]LogEntry{entry}, recentLogs...)
-	if len(recentLogs) > 20 {
-		recentLogs = recentLogs[:20]
+	if len(recentLogs) > 80 {
+		recentLogs = recentLogs[:80]
 	}
 }
 
@@ -193,6 +221,7 @@ func telegramParseMode(value string) string {
 	return value
 }
 
+// productLimit is kept for tests/helpers: clamp batch size to available items.
 func productLimit(length int, satisfyNum int) int {
 	if satisfyNum <= 0 || satisfyNum > length {
 		return length

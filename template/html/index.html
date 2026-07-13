@@ -603,11 +603,11 @@
         <div class="rule-summary-field">
           <label for="satisfyNumInput">推送上限</label>
           <div class="summary-inline push-limit-control">
-            <span>每次最多</span>
+            <span>每条消息最多</span>
             <input id="satisfyNumInput" type="number" min="1">
             <span>条</span>
           </div>
-          <div class="field-hint">超出上限的命中将标记为「跳过」</div>
+          <div class="field-hint">超出则自动拆成多条 Telegram 消息发送</div>
         </div>
       </div>
       <input id="enabledInput" type="checkbox" hidden>
@@ -1099,6 +1099,8 @@ layui.use(function(){
 
   loadProductConfig();
   loadPushLogs();
+  // Light background refresh so async pushes appear without manual reload.
+  setInterval(loadPushLogs, 30000);
 
   function loadProductConfig() {
     $.ajax({
@@ -1307,6 +1309,8 @@ layui.use(function(){
         layer.msg(res.msg || (e && e.currentTarget && e.currentTarget.id === 'saveDraftConfig' ? '草稿已保存' : '保存成功'));
         markConfigSaved();
         hydrateRuleThumbnails();
+        // Save triggers async scan+push; poll logs so the panel catches results.
+        watchPushLogs(120000);
       },
       error: function(xhr) {
         layer.msg(readError(xhr));
@@ -1801,6 +1805,24 @@ layui.use(function(){
     });
   }
 
+  var pushLogWatchTimer = null;
+
+  function watchPushLogs(ms) {
+    if (pushLogWatchTimer) {
+      clearInterval(pushLogWatchTimer);
+      pushLogWatchTimer = null;
+    }
+    var until = Date.now() + (ms || 90000);
+    loadPushLogs();
+    pushLogWatchTimer = setInterval(function(){
+      loadPushLogs();
+      if (Date.now() >= until) {
+        clearInterval(pushLogWatchTimer);
+        pushLogWatchTimer = null;
+      }
+    }, 2500);
+  }
+
   function loadPushLogs() {
     $.ajax({
       url: BASE_URL + '/pushLogs',
@@ -1825,7 +1847,7 @@ layui.use(function(){
       list.append(pushLogCard({
         title: '暂无推送记录',
         status: 'skip',
-        reason: '测试发送或商品命中后会显示在这里',
+        reason: '保存配置或到点扫描后会出现；可点右上角刷新',
         image: 'https://www.smzdm.com/favicon.ico',
         time: '待触发'
       }));
@@ -2021,7 +2043,7 @@ layui.use(function(){
     syncFilterPresetState();
     $('#summaryThreshold').text('评论 ≥' + comment + ' · 值率 ≥' + worthy + '%');
     $('#summaryFreq').text('每 ' + tickValue + ' ' + tickUnit);
-    $('#summaryLimit').text('每次最多 ' + limit + ' 条');
+    $('#summaryLimit').text('每条消息最多 ' + limit + ' 条');
   }
 
   function updateTickHint() {
