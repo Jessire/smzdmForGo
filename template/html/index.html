@@ -264,22 +264,10 @@
       border:0;background:transparent;color:var(--faint);cursor:pointer;padding:0 2px;font-size:11px;line-height:1;
     }
     .filter-token .pin-common:hover,.filter-token .pin-common.is-pinned{color:var(--blue)}
-    /* Dense preview for many results */
+    /* Preview cards stay the same layout regardless of result count */
     #previewCards.product-list.is-dense{
-      gap:8px!important;
+      gap:10px!important;
     }
-    #previewCards.product-list.is-dense .product-card{
-      padding:8px!important;
-      gap:8px!important;
-      grid-template-columns:64px minmax(0,1fr)!important;
-    }
-    #previewCards.product-list.is-dense .product-media{
-      width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important;
-    }
-    #previewCards.product-list.is-dense .product-title{font-size:13px!important;-webkit-line-clamp:2}
-    #previewCards.product-list.is-dense .product-price-row{margin-top:4px;font-size:14px}
-    #previewCards.product-list.is-dense .product-meta{margin-top:4px;gap:8px}
-    #previewCards.product-list.is-dense .hit-reason{margin-top:4px;padding:3px 6px;font-size:10px;-webkit-line-clamp:1!important}
     /* Hover: no translateY lift — lift was clipping top border under siblings/overflow */
     .rule-card,
     .rule-card:hover,
@@ -356,12 +344,44 @@
       align-items:start!important;
       padding:12px!important;
     }
-    .product-media{width:88px!important;height:88px!important;min-width:88px!important;min-height:88px!important}
-    .product-info{min-height:0!important;height:auto!important;overflow:visible!important}
+    /* Fixed square thumbs — ignore wide/tall classification size drift */
+    .product-media,
+    .product-media.media-square,
+    .product-media.media-wide,
+    .product-media.media-tall{
+      width:88px!important;
+      height:88px!important;
+      min-width:88px!important;
+      min-height:88px!important;
+      max-width:88px!important;
+      max-height:88px!important;
+      border-radius:10px;
+      overflow:hidden;
+    }
+    .product-media img{
+      width:100%!important;
+      height:100%!important;
+      object-fit:cover!important;
+      object-position:center!important;
+      display:block;
+    }
+    .product-info{min-height:0!important;height:auto!important;overflow:visible!important;display:flex;flex-direction:column;gap:0;min-width:0}
+    .product-title{
+      display:-webkit-box!important;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:2;
+      overflow:hidden;
+      word-break:break-word;
+    }
     .hit-reason{
-      -webkit-line-clamp:3!important;
+      margin-top:8px!important;
+      padding:5px 8px!important;
+      font-size:11px!important;
+      line-height:1.45!important;
+      -webkit-line-clamp:2!important;
       white-space:normal;
       word-break:break-word;
+      flex-shrink:0;
     }
     /* Filter tokens: allow multi-line, no hard 27px clip */
     .rule-summary-field .filter-token-box{
@@ -1582,10 +1602,10 @@ layui.use(function(){
   function renderPreviewItems(items) {
     var body = $('#previewCards');
     body.empty();
+    body.removeClass('is-dense');
     body.toggleClass('is-scrollable', items.length > 6);
-    body.toggleClass('is-dense', items.length >= 8);
     items.forEach(function(item){
-      body.append(productCard(item, items.length >= 8));
+      body.append(productCard(item));
     });
   }
 
@@ -1633,12 +1653,8 @@ layui.use(function(){
     $('#previewImage').attr('alt', first.title || '商品图片');
     $('#previewTitle').text(first.title || '未命名商品');
     $('#previewMetrics').html('<span>来自 ' + escapeHtml(first.keyword || '-') + '</span><span>价格 ' + escapeHtml(first.price || '-') + '</span><span>值率 ' + escapeHtml(first.worthy || '0') + '%</span><span>评论 ' + escapeHtml(first.comment || '0') + '</span>');
-    var body = $('#previewCards');
-    body.empty();
-    body.toggleClass('is-scrollable', items.length > 6);
-    items.forEach(function(item){
-      body.append(productCard(item));
-    });
+    lastPreviewItems = items.slice();
+    renderPreviewItems(sortPreviewItems(items.slice(), $('#previewSort').val()));
   }
 
   function hydrateRuleThumbnails() {
@@ -2068,8 +2084,9 @@ layui.use(function(){
   }
 
   function buildHitReason(item) {
+    item = item || {};
     var rule = currentRuleFromEditor();
-    var keyword = firstWord(rule) || item.keyword || '';
+    var keyword = item.keyword || firstWord(rule) || firstWord(currentRule()) || '';
     var worthy = item.worthy || '0';
     var priceMain = splitPriceText(item.price || '-').main || '-';
     var parts = [];
@@ -2198,15 +2215,13 @@ layui.use(function(){
     $('#previewCards').removeClass('is-scrollable').html('<div class="empty-state">' + emptyStateSvg() + '<strong>' + escapeHtml(title) + '</strong><p>' + escapeHtml(message) + '</p></div>');
   }
 
-  function productCard(item, dense) {
+  function productCard(item) {
     item = item || {};
     var card = $('<article class="product-card"></article>');
     var image = $('<img loading="lazy" decoding="async">');
+    // Always square frame — product images vary but card layout must not.
     var media = $('<div class="product-media media-square"></div>').append(image);
     image.attr('alt', item.title || '商品图片');
-    image.on('load', function(){
-      classifyProductMedia(media, this);
-    });
     image.on('error', function(){
       this.onerror = null;
       media.removeClass('media-wide media-tall').addClass('media-square');
@@ -2217,21 +2232,24 @@ layui.use(function(){
     info.append('<a class="product-title" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">' + escapeHtml(item.title || '未命名商品') + '</a>');
     var priceParts = splitPriceText(item.price || '-');
     var priceHtml = '<div class="product-price-row"><span class="price-currency">￥</span><span class="price-main">' + escapeHtml(priceParts.main) + '</span>';
-    if (priceParts.condition && !dense) {
+    if (priceParts.condition) {
       priceHtml += '<span class="price-condition">' + escapeHtml(priceParts.condition) + '</span>';
     }
     priceHtml += '</div>';
     info.append(priceHtml);
     info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
-    if (!dense) {
-      info.append('<div class="hit-reason"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
-    }
+    info.append('<div class="hit-reason"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
     card.append(media);
     card.append(info);
     return card;
   }
 
   function classifyProductMedia(media, img) {
+    // Rule-list thumbs only; preview product cards keep fixed square frames.
+    if (!media || media.hasClass('product-media')) {
+      if (media) { media.removeClass('media-wide media-tall').addClass('media-square'); }
+      return;
+    }
     var width = img && img.naturalWidth ? img.naturalWidth : 1;
     var height = img && img.naturalHeight ? img.naturalHeight : 1;
     var ratio = width / height;
