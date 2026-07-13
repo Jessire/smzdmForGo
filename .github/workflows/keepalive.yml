@@ -1,16 +1,23 @@
-name: Keep Render service awake
+name: Keep Render + Aiven DB awake
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    # Every 6 hours — enough to reduce free Aiven idle power-off risk
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     steps:
-      - name: Ping health endpoint
+      - name: Ping app (process)
         run: |
-          curl --fail --show-error --silent --max-time 20 \
+          curl --fail --show-error --silent --max-time 30 \
             https://smzdm-for-go.onrender.com/health
+
+      - name: Ping database via app
+        run: |
+          # Must hit an endpoint that opens Postgres (SELECT/Ping), not plain /health
+          curl --fail --show-error --silent --max-time 45 \
+            https://smzdm-for-go.onrender.com/health/db

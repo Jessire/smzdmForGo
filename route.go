@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type addCheckInfoRequest struct {
@@ -211,6 +212,43 @@ func HealthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"status":"ok"}`))
+}
+
+// HealthDBHandler pings Postgres so free-tier providers see activity.
+func HealthDBHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if err := pingDatabase(); err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		writeJSON(w, http.StatusServiceUnavailable, map[string]interface{}{
+			"status": "db_down",
+			"error":  err.Error(),
+		})
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"status":"ok","db":"up"}`))
+}
+
+func pingDatabase() error {
+	database, err := db.NewDB(userDbPath)
+	if err != nil {
+		return err
+	}
+	defer database.Close()
+	return database.Ping()
+}
+
+func keepaliveDatabase() {
+	// First ping shortly after boot, then every 6 hours.
+	time.Sleep(30 * time.Second)
+	for {
+		if err := pingDatabase(); err != nil {
+			log.Printf("db keepalive failed: %v", err)
+		} else {
+			log.Printf("db keepalive ok")
+		}
+		time.Sleep(6 * time.Hour)
+	}
 }
 
 func readCheckInfoJson() []byte {

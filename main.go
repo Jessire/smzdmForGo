@@ -89,7 +89,11 @@ func init() {
 	http.HandleFunc("/telegramAvatar", TelegramAvatarHandler)
 	http.HandleFunc("/pushLogs", PushLogsHandler)
 	http.HandleFunc("/health", HealthHandler)
+	http.HandleFunc("/health/db", HealthDBHandler)
 	http.HandleFunc("/html/", HtmlHandler)
+
+	// Lightweight DB keepalive so free Aiven Postgres is less likely to power off.
+	go keepaliveDatabase()
 }
 
 func currentConfig() file.Config {
