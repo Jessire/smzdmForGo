@@ -41,7 +41,15 @@ func PushTargetProducts(pro []smzdm.Product, conf file.Config, atMobiles []strin
 }
 
 func PushProWithTelegram(pro []smzdm.Product, conf file.Config) {
-	if len(pro) == 0 || !canPushTelegram(conf) {
+	if len(pro) == 0 {
+		return
+	}
+	if !canPushTelegram(conf) {
+		AddLog(LogEntry{
+			Title:  "扫描有命中但未推送",
+			Status: "skip",
+			Reason: "Telegram 未启用或未配置 Bot Token / Chat ID",
+		})
 		return
 	}
 
@@ -51,6 +59,7 @@ func PushProWithTelegram(pro []smzdm.Product, conf file.Config) {
 		batchSize = 5
 	}
 	totalBatches := (len(pro) + batchSize - 1) / batchSize
+	delivered := make([]smzdm.Product, 0, len(pro))
 
 	for batchNo := 0; batchNo < totalBatches; batchNo++ {
 		start := batchNo * batchSize
@@ -76,6 +85,7 @@ func PushProWithTelegram(pro []smzdm.Product, conf file.Config) {
 				reason = fmt.Sprintf("已推送 · 第%d/%d批", batchNo+1, totalBatches)
 			}
 			logProduct(product, "success", reason)
+			delivered = append(delivered, product)
 		}
 		if err != nil {
 			fmt.Println("Telegram push failed:", err)
@@ -84,6 +94,11 @@ func PushProWithTelegram(pro []smzdm.Product, conf file.Config) {
 		if batchNo+1 < totalBatches {
 			time.Sleep(400 * time.Millisecond)
 		}
+	}
+
+	// Only mark successfully delivered IDs so a failed send can be retried next scan.
+	if len(delivered) > 0 {
+		smzdm.MarkPushed(delivered)
 	}
 }
 

@@ -77,10 +77,17 @@ func GetSatisfiedGoods(conf file.Config) ([]Product, []Product) {
 	//过滤出自己的商品
 	satisfyGoodsListBySelf = filterMyselfProduct(satisfyGoodsList)
 
-	// 保存推送商品，去重使用
-	savePushed(pushedMap, pushedPath, satisfyGoodsList)
-
+	// Do NOT mark as pushed here — only after Telegram send succeeds (see MarkPushed).
 	return satisfyGoodsList, satisfyGoodsListBySelf
+}
+
+// MarkPushed records successfully delivered product IDs so they won't be re-sent.
+func MarkPushed(goods []Product) {
+	if len(goods) == 0 {
+		return
+	}
+	pushedMap := file.ReadPusedInfo(pushedPath)
+	savePushed(pushedMap, pushedPath, goods)
 }
 
 func getSatisfiedGoodsFromFeed(pushedMap map[string]interface{}) []Product {

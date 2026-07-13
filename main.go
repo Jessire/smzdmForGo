@@ -67,13 +67,19 @@ func requestSmzdm() {
 	productScanMu.Lock()
 	defer productScanMu.Unlock()
 
-	// 搜索商品
+	// 搜索商品（已推送过 / 超过约2天 的会在这里被去掉）
 	satisfyGoodsList, _ := smzdm.GetSatisfiedGoods(currentConfig())
 	if len(satisfyGoodsList) == 0 {
 		log.Printf("商品扫描完成：无新命中，跳过推送")
+		// Surface to UI so "save but no Telegram" is explainable.
+		push.AddLog(push.LogEntry{
+			Title:  "扫描完成 · 无新推送",
+			Status: "skip",
+			Reason: "没有新命中（预览里的商品可能已推送过，或太旧/未过门槛）",
+		})
 		return
 	}
-	// 推送商品
+	// 推送商品（成功后才写入已推送去重）
 	push.PushProducts(satisfyGoodsList, currentConfig())
 	time.Sleep(1 * time.Second)
 }
