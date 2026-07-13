@@ -383,6 +383,18 @@
       word-break:break-word;
       flex-shrink:0;
     }
+    .product-card.is-not-pushable{opacity:.78}
+    .product-card .push-state-tag{
+      display:inline-flex;align-items:center;margin-top:6px;padding:2px 8px;border-radius:999px;
+      font-size:11px;font-weight:800;line-height:1.4;border:1px solid transparent;
+    }
+    .product-card .push-state-tag.ok{color:#047857;background:#ecfdf5;border-color:#a7f3d0}
+    .product-card .push-state-tag.already_pushed{color:#9a6700;background:#fff7df;border-color:#eed38b}
+    .product-card .push-state-tag.too_old,.product-card .push-state-tag.bad_date{color:#64748b;background:#f1f5f9;border-color:#dbe3ee}
+    body.zero-redesign.trellis-ui[data-theme=dark] .product-card .push-state-tag.ok{background:#173f34;border-color:#245e4b;color:#7fe2bd}
+    body.zero-redesign.trellis-ui[data-theme=dark] .product-card .push-state-tag.already_pushed{background:#3f2f12;border-color:#6b5420;color:#f0c674}
+    body.zero-redesign.trellis-ui[data-theme=dark] .product-card .push-state-tag.too_old,
+    body.zero-redesign.trellis-ui[data-theme=dark] .product-card .push-state-tag.bad_date{background:#1e293b;border-color:#334155;color:#94a3b8}
     /* Filter tokens: allow multi-line, no hard 27px clip */
     .rule-summary-field .filter-token-box{
       height:auto!important;
@@ -757,7 +769,7 @@
       <div class="push-legend" aria-label="状态图例">
         <div class="push-legend-item"><span class="dot ok"></span>已推送</div>
         <div class="push-legend-item"><span class="dot fail"></span>失败可重试</div>
-        <div class="push-legend-item"><span class="dot skip"></span>跳过（达上限）</div>
+        <div class="push-legend-item"><span class="dot skip"></span>扫描无新命中</div>
         <div class="push-legend-item"><span class="dot wait"></span>待触发</div>
       </div>
     </section>
@@ -1578,9 +1590,13 @@ layui.use(function(){
     previewOpenUrl = data.openUrl || keywordSearchUrl(keyword);
     var now = new Date();
     var cacheLabel = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-    $('#previewMeta').text((keyword || '') + ' · ' + items.length + ' 条结果 · 按' + previewSortLabel($('#previewSort').val()) + '排序');
+    var pushable = typeof data.pushable === 'number' ? data.pushable : countPushable(items);
+    var metaExtra = items.length
+      ? (' · ' + pushable + '/' + items.length + ' 可推送')
+      : '';
+    $('#previewMeta').text((keyword || '') + ' · ' + items.length + ' 条结果' + metaExtra + ' · 按' + previewSortLabel($('#previewSort').val()) + '排序');
     updateCurrentRuleOverview('已自动搜索', false);
-    $('#ruleSearchSummary').text('共 ' + items.length + ' 条 · ' + items.length + ' 条符合当前规则');
+    $('#ruleSearchSummary').text('共 ' + items.length + ' 条符合规则 · 其中 ' + pushable + ' 条可推送（其余已推送或超过约2天）');
     $('#previewCacheMeta').text('预览缓存于 ' + cacheLabel);
     if (keyword) {
       ruleRuntime[keyword] = {
@@ -2247,9 +2263,26 @@ layui.use(function(){
     $('#previewCards').removeClass('is-scrollable').html('<div class="empty-state">' + emptyStateSvg() + '<strong>' + escapeHtml(title) + '</strong><p>' + escapeHtml(message) + '</p></div>');
   }
 
+  function countPushable(items) {
+    return (items || []).filter(function(item){
+      return !item.pushState || item.pushState === 'ok';
+    }).length;
+  }
+
+  function pushStateLabel(state) {
+    if (state === 'already_pushed') { return '已推送过 · 本次不会再推'; }
+    if (state === 'too_old') { return '超过约2天 · 后台不推'; }
+    if (state === 'bad_date') { return '时间异常 · 后台不推'; }
+    return '可推送';
+  }
+
   function productCard(item) {
     item = item || {};
+    var pushState = item.pushState || 'ok';
     var card = $('<article class="product-card"></article>');
+    if (pushState !== 'ok') {
+      card.addClass('is-not-pushable');
+    }
     var image = $('<img loading="lazy" decoding="async">');
     // Always square frame — product images vary but card layout must not.
     var media = $('<div class="product-media media-square"></div>').append(image);
@@ -2271,6 +2304,7 @@ layui.use(function(){
     info.append(priceHtml);
     info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
     info.append('<div class="hit-reason"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
+    info.append('<span class="push-state-tag ' + escapeAttr(pushState) + '">' + escapeHtml(pushStateLabel(pushState)) + '</span>');
     card.append(media);
     card.append(info);
     return card;

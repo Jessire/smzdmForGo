@@ -221,33 +221,37 @@ func removeByFilterRules(good Product, pushedMap map[string]interface{}) bool {
 }
 
 func removePushedOrOld(good Product, pushedMap map[string]interface{}) bool {
-	// 根据已推送文章id map 判断是否需要去除，如果已经推送过的，则去除
-	_, b := pushedMap[good.ArticleId]
-	if b {
-		// fmt.Println(good.ArticleTitle + "文章已存在,不予添加")
-		return true
+	return PushSkipReason(good, pushedMap) != ""
+}
+
+// LoadPushedMap loads the on-disk set of already-delivered article IDs.
+func LoadPushedMap() map[string]interface{} {
+	return file.ReadPusedInfo(pushedPath)
+}
+
+// PushSkipReason explains why a product would not be Telegram-pushed.
+// Empty string means eligible for push (subject to rule match already applied).
+// Values: already_pushed | too_old | bad_date
+func PushSkipReason(good Product, pushedMap map[string]interface{}) string {
+	if good.ArticleId != "" {
+		if _, ok := pushedMap[good.ArticleId]; ok {
+			return "already_pushed"
+		}
 	}
 
-	// 文章时间小于昨天 去除
-	// var timeLayoutStr = "2006-01-02 15:04:05" //go中的时间格式化必须是这个时间
-	nTime := time.Now()
-	// 前天
-	beforeYesDate := nTime.AddDate(0, 0, -2)
+	// Only keep roughly last 2 days for background push (preview used to skip this).
 	if good.ArticleDate == "" {
-		return false
+		return ""
 	}
-	dateInt64, err1 := strconv.ParseInt(good.ArticleDate, 10, 64)
-
-	if err1 != nil {
-		return true
+	dateInt64, err := strconv.ParseInt(good.ArticleDate, 10, 64)
+	if err != nil {
+		return "bad_date"
 	}
 	arDate := time.Unix(dateInt64, 0)
-	// fmt.Println("文章时间：" + arDate.Format(timeLayoutStr) + "昨天时间：" + beforeYesDate.Format(timeLayoutStr))
-	if arDate.Before(beforeYesDate) {
-		return true
+	if arDate.Before(time.Now().AddDate(0, 0, -2)) {
+		return "too_old"
 	}
-
-	return false
+	return ""
 }
 
 // 根据规则判断符合规则的商品

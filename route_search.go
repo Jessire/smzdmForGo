@@ -17,20 +17,24 @@ type productSearchRequest struct {
 }
 
 type productSearchResponse struct {
-	Keyword string                 `json:"keyword"`
-	OpenURL string                 `json:"openUrl"`
-	Items   []productSearchProduct `json:"items"`
+	Keyword     string                 `json:"keyword"`
+	OpenURL     string                 `json:"openUrl"`
+	Items       []productSearchProduct `json:"items"`
+	Pushable    int                    `json:"pushable"`
+	AlreadyPush int                    `json:"alreadyPushed"`
+	TooOld      int                    `json:"tooOld"`
 }
 
 type productSearchProduct struct {
-	Title    string `json:"title"`
-	Price    string `json:"price"`
-	Worthy   string `json:"worthy"`
-	Comment  string `json:"comment"`
-	Pic      string `json:"pic"`
-	URL      string `json:"url"`
-	Referral string `json:"referral"`
-	Date     string `json:"date"`
+	Title     string `json:"title"`
+	Price     string `json:"price"`
+	Worthy    string `json:"worthy"`
+	Comment   string `json:"comment"`
+	Pic       string `json:"pic"`
+	URL       string `json:"url"`
+	Referral  string `json:"referral"`
+	Date      string `json:"date"`
+	PushState string `json:"pushState"` // ok | already_pushed | too_old | bad_date
 }
 
 func ProductSearchHandler(w http.ResponseWriter, r *http.Request) {
@@ -54,17 +58,29 @@ func ProductSearchHandler(w http.ResponseWriter, r *http.Request) {
 	keyword := words[0]
 	rule := searchRuleFromRequest(req.Rule)
 	products := smzdm.SearchGoods(keyword, rule, req.Limit)
+	pushedMap := smzdm.LoadPushedMap()
 	items := make([]productSearchProduct, 0, len(products))
+	pushable, already, tooOld := 0, 0, 0
 	for _, product := range products {
+		state := smzdm.PushSkipReason(product, pushedMap)
+		if state == "" {
+			state = "ok"
+			pushable++
+		} else if state == "already_pushed" {
+			already++
+		} else if state == "too_old" || state == "bad_date" {
+			tooOld++
+		}
 		items = append(items, productSearchProduct{
-			Title:    product.ArticleTitle,
-			Price:    product.ArticlePrice,
-			Worthy:   product.ArticleWorthy,
-			Comment:  product.ArticleComment,
-			Pic:      product.ArticlePic,
-			URL:      product.ArticleUrl,
-			Referral: product.Referral,
-			Date:     product.ArticleDate,
+			Title:     product.ArticleTitle,
+			Price:     product.ArticlePrice,
+			Worthy:    product.ArticleWorthy,
+			Comment:   product.ArticleComment,
+			Pic:       product.ArticlePic,
+			URL:       product.ArticleUrl,
+			Referral:  product.Referral,
+			Date:      product.ArticleDate,
+			PushState: state,
 		})
 	}
 
@@ -72,9 +88,12 @@ func ProductSearchHandler(w http.ResponseWriter, r *http.Request) {
 		"code": "0",
 		"msg":  "",
 		"data": productSearchResponse{
-			Keyword: keyword,
-			OpenURL: keywordSearchURL(keyword),
-			Items:   items,
+			Keyword:     keyword,
+			OpenURL:     keywordSearchURL(keyword),
+			Items:       items,
+			Pushable:    pushable,
+			AlreadyPush: already,
+			TooOld:      tooOld,
 		},
 	})
 }
