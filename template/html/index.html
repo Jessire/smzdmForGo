@@ -1305,7 +1305,8 @@ layui.use(function(){
         if (selectedRuleIndex >= productConfig.keywordRules.length) {
           selectedRuleIndex = productConfig.keywordRules.length - 1;
         }
-        selectRule(selectedRuleIndex);
+        // Preserve search preview after save (do not clear the list below).
+        selectRule(selectedRuleIndex, { keepPreview: true });
         layer.msg(res.msg || (e && e.currentTarget && e.currentTarget.id === 'saveDraftConfig' ? '草稿已保存' : '保存成功'));
         markConfigSaved();
         hydrateRuleThumbnails();
@@ -1407,12 +1408,21 @@ layui.use(function(){
   }
 
   function selectRule(index, options) {
+    options = options || {};
     syncEditorToRule();
     selectedRuleIndex = index;
     renderRules();
     fillEditor();
-    clearPreview();
-    if (options && options.search && currentRule() && firstWord(currentRule())) {
+    // Keep existing search preview when re-selecting after save / light refresh.
+    if (!options.keepPreview) {
+      clearPreview();
+    } else if (lastPreviewItems.length) {
+      var keyword = firstWord(currentRule()) || '';
+      $('#previewMeta').text((keyword || '') + ' · ' + lastPreviewItems.length + ' 条结果 · 按' + previewSortLabel($('#previewSort').val()) + '排序');
+      updateCurrentRuleOverview('已自动搜索', false);
+      renderPreviewItems(sortPreviewItems(lastPreviewItems.slice(), $('#previewSort').val()));
+    }
+    if (options.search && currentRule() && firstWord(currentRule())) {
       searchSelectedRule();
     }
   }
