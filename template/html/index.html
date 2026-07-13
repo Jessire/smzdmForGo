@@ -105,10 +105,12 @@
       min-height:0;
     }
     .tg-setup-steps{margin-top:12px;text-align:left;background:color-mix(in srgb,var(--soft) 78%,var(--surface));border-radius:10px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
-    .tg-setup-steps .steps-title{font-size:12px;font-weight:850;margin-bottom:6px;color:var(--muted)}
+    .tg-setup-steps>summary.steps-title{font-size:12px;font-weight:850;margin-bottom:0;color:var(--muted);cursor:pointer}
+    .tg-setup-steps[open]>summary.steps-title{margin-bottom:6px}
     .tg-setup-steps .step{display:flex;gap:8px;font-size:12px;font-weight:700;color:var(--faint);padding:4px 0}
     .tg-setup-steps .step-num{width:16px;height:16px;border-radius:50%;background:color-mix(in srgb,var(--line) 70%,var(--surface));color:var(--muted);display:grid;place-items:center;font-size:10px;font-weight:900;flex:0 0 16px;margin-top:1px}
     .notification-shell.is-expanded .tg-setup-steps{display:none}
+    .tg-setup-steps>summary::-webkit-details-marker{display:none}
     .tg-inline-editor{
       display:none;
       margin-top:12px;
@@ -177,13 +179,24 @@
     }
     .editor-panel{
       flex:0 1 auto;
-      max-height:min(58vh,620px);
+      max-height:min(42vh,460px);
       min-height:0;
       overflow:hidden!important; /* body scrolls; sticky actions stay visible */
       display:flex!important;
       flex-direction:column;
       padding-bottom:12px!important;
     }
+    .preview-panel{min-height:280px!important;flex:1 1 55%!important}
+    .advanced-toggle{
+      display:inline-flex;align-items:center;gap:4px;margin:8px 0 0;
+      border:0;background:transparent;color:var(--blue);font-size:12px;font-weight:800;cursor:pointer;padding:0;
+    }
+    .advanced-rule-fields{display:none;margin-top:8px}
+    .advanced-rule-fields.is-open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .preset-chip.is-on{border-color:color-mix(in srgb,var(--blue) 40%,var(--line));background:color-mix(in srgb,var(--blue) 12%,var(--surface));color:var(--blue)}
+    .preset-chip.is-on::after{content:" ✓";font-size:10px}
+    .price-summary-control input:placeholder-shown{color:var(--faint);font-weight:700}
+    .filtered-panel{display:none!important}
     .editor-panel-scroll{
       flex:1 1 auto;
       min-height:0;
@@ -207,17 +220,33 @@
       grid-template-rows:auto minmax(0,1fr) auto;
       overflow:hidden;
     }
-    /* Selected card: hover must NOT kill the blue border line */
-    .rule-card:hover{border-color:var(--line2)}
+    /* Hover: no translateY lift — lift was clipping top border under siblings/overflow */
+    .rule-card,
+    .rule-card:hover,
+    .rule-card.active,
+    .rule-card.active:hover,
+    .rule-card:focus,
+    .rule-card:focus-visible{
+      transform:none!important;
+    }
+    .rule-card:hover{
+      border-color:var(--line2);
+      box-shadow:0 2px 10px rgb(15 23 42/.06);
+      z-index:1;
+    }
     .rule-card.active,
     .rule-card.active:hover,
     .rule-card.active:focus,
     .rule-card.active:focus-visible{
       border:1px solid var(--blue)!important;
-      box-shadow:0 0 0 1px color-mix(in srgb,var(--blue) 18%,transparent)!important;
+      box-shadow:0 0 0 1px color-mix(in srgb,var(--blue) 18%,transparent),0 2px 10px rgb(37 99 235/.08)!important;
       outline:none;
+      z-index:2;
     }
-    .rule-card{transition:background .16s ease,box-shadow .16s ease,transform .16s ease}
+    .rule-card{transition:background .16s ease,border-color .16s ease,box-shadow .16s ease;position:relative}
+    .rules-list,.rules-body,.rules-body.is-scrollable{overflow-x:visible!important;padding-top:2px}
+    .rules-panel{overflow:hidden}
+    .rules-body.is-scrollable{overflow-y:auto!important}
     .inspector-column{
       display:flex!important;
       flex-direction:column;
@@ -482,6 +511,9 @@
             <button type="button" class="preset-chip" data-threshold="strict">严格</button>
           </div>
         </div>
+      </div>
+      <button type="button" class="advanced-toggle" id="toggleAdvancedRule" aria-expanded="false">高级设置 · 频率与推送上限 ▾</button>
+      <div class="advanced-rule-fields" id="advancedRuleFields">
         <div class="rule-summary-field">
           <label for="tickValueInput">扫描频率</label>
           <div class="summary-inline frequency-summary-control">
@@ -586,12 +618,12 @@
           <span>编辑配置</span>
         </button>
       </div>
-      <div class="tg-setup-steps" id="tgSetupSteps">
-        <div class="steps-title">快速接入</div>
+      <details class="tg-setup-steps" id="tgSetupSteps">
+        <summary class="steps-title" style="cursor:pointer;list-style:none">如何配置？点击展开</summary>
         <div class="step"><span class="step-num">1</span>创建 Bot 并复制 Token</div>
         <div class="step"><span class="step-num">2</span>获取 Chat ID</div>
         <div class="step"><span class="step-num">3</span>测试发送 → 开启自动推送</div>
-      </div>
+      </details>
       <div class="tg-inline-editor" id="notifyDetails">
         <div class="tg-enable-row">
           <strong>启用 Telegram 推送</strong>
@@ -934,14 +966,24 @@ layui.use(function(){
     var word = $(this).data('filter-word');
     if (!word) { return; }
     var words = getFilterWordsFromEditor();
-    if (words.indexOf(word) === -1) {
+    var idx = words.indexOf(word);
+    if (idx === -1) {
       words.push(word);
-      setFilterWordsInEditor(words);
-      syncEditorToRule();
-      updateRuleSummaryStrip();
-      markConfigDirty();
-      renderRules();
+    } else {
+      words.splice(idx, 1);
     }
+    setFilterWordsInEditor(words);
+    syncEditorToRule();
+    updateRuleSummaryStrip();
+    syncFilterPresetState();
+    markConfigDirty();
+    renderRules();
+  });
+  $('#toggleAdvancedRule').on('click', function(){
+    var open = !$('#advancedRuleFields').hasClass('is-open');
+    $('#advancedRuleFields').toggleClass('is-open', open);
+    $(this).attr('aria-expanded', open ? 'true' : 'false')
+      .text(open ? '高级设置 · 频率与推送上限 ▴' : '高级设置 · 频率与推送上限 ▾');
   });
   $('#thresholdPresets').on('click', '.preset-chip', function(){
     var kind = $(this).data('threshold');
@@ -1026,6 +1068,7 @@ layui.use(function(){
     filterEditorWords = textToList(list);
     $('#filterInput').val('');
     renderFilterTokens();
+    syncFilterPresetState();
   }
 
   function getFilterWordsFromEditor() {
@@ -1038,6 +1081,7 @@ layui.use(function(){
     filterEditorWords = textToList(filterEditorWords.concat(words));
     $('#filterInput').val('');
     renderFilterTokens();
+    syncFilterPresetState();
     syncEditorToRule();
     renderRules();
   }
@@ -1046,6 +1090,7 @@ layui.use(function(){
     if (index < 0 || index >= filterEditorWords.length) { return; }
     filterEditorWords.splice(index, 1);
     renderFilterTokens();
+    syncFilterPresetState();
     syncEditorToRule();
     renderRules();
   }
@@ -1407,20 +1452,9 @@ layui.use(function(){
     });
   }
 
-  function renderFilteredNote(items) {
-    // Server returns only matched items; show guidance instead of fake filtered rows.
-    var panel = $('#filteredPanel');
-    var body = $('#filteredBody');
-    body.empty();
-    if (!items.length) {
-      panel.removeClass('is-visible is-open');
-      return;
-    }
-    panel.addClass('is-visible').removeClass('is-open');
-    $('#filteredHeadText').text('命中说明 · 服务端仅返回符合门槛商品');
-    $('#filteredToggleHint').text('点击展开说明 ▾');
-    body.append('<div class="filtered-item"><span>接口只返回已通过关键词 / 过滤词 / 价格 / 门槛的结果</span><span class="why">已全部展示</span></div>');
-    body.append('<div class="filtered-item"><span>若结果偏少，可放宽值率、评论或价格，并减少过滤词</span><span class="why">调参提示</span></div>');
+  function renderFilteredNote() {
+    // Card-level hit reasons are enough; hide redundant footer panel.
+    $('#filteredPanel').removeClass('is-visible is-open');
   }
 
   function renderGlobalPreview(results) {
@@ -1826,10 +1860,11 @@ layui.use(function(){
     var limit = toInt($('#satisfyNumInput').val()) || productConfig.satisfyNum || 5;
     var tickValue = toInt($('#tickValueInput').val()) || 1;
     var tickUnit = $('#tickUnitInput option:selected').text() || '小时';
-    var priceText = '¥ ' + (minP || '不限') + ' – ' + (maxP || '不限');
+    var priceText = (!minP && maxP) ? ('≤ ¥' + maxP) : ((minP && !maxP) ? ('≥ ¥' + minP) : ('¥ ' + (minP || '不限') + ' – ' + (maxP || '不限')));
     $('#summaryKeyword').text('关键词「' + keyword + '」');
     $('#summaryFilter').text(filters.length ? ('排除「' + filters.join(' / ') + '」') : '无过滤词');
     $('#summaryPrice').text(priceText);
+    syncFilterPresetState();
     $('#summaryThreshold').text('评论 ≥' + comment + ' · 值率 ≥' + worthy + '%');
     $('#summaryFreq').text('每 ' + tickValue + ' ' + tickUnit);
     $('#summaryLimit').text('每次最多 ' + limit + ' 条');
@@ -1898,14 +1933,20 @@ layui.use(function(){
     var rule = currentRuleFromEditor();
     var keyword = firstWord(rule) || item.keyword || '';
     var worthy = item.worthy || '0';
-    var price = item.price || '-';
-    var needW = toInt(rule.lowWorthyNum);
+    var priceMain = splitPriceText(item.price || '-').main || '-';
     var parts = [];
-    if (keyword) { parts.push('关键词「' + keyword + '」'); }
-    parts.push('值率 ' + worthy + '% ≥' + needW + '%');
-    parts.push('价 ' + String(price).replace(/\s+/g, ''));
-    parts.push('未命中过滤词');
+    if (keyword) { parts.push(keyword); }
+    parts.push('值率 ' + worthy + '%');
+    parts.push('¥' + priceMain);
     return parts.join(' · ');
+  }
+
+  function syncFilterPresetState() {
+    var words = getFilterWordsFromEditor();
+    $('#filterPresets .preset-chip').each(function(){
+      var w = $(this).data('filter-word');
+      $(this).toggleClass('is-on', words.indexOf(w) !== -1);
+    });
   }
 
   function listToText(list) {
