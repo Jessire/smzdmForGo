@@ -273,9 +273,18 @@ func SearchGoods(keyword string, rule file.KeywordRule, limit int) []Product {
 		return []Product{}
 	}
 
-	// SMZDM list API only supports plain keyword search (not regex).
+	// SMZDM list API is plain keyword search (not the website ranking).
+	// Official web results often surface mid-ranked deals (e.g. 今日必买) that
+	// sit past the first 1–2 pages of /v1/list; with comment/worthy filters most
+	// early rows are discarded, so we must scan deeper to fill the preview.
+	// Each page is 100 rows → 8 pages ≈ 800 candidates max.
+	maxPages := 8
+	if limit > 40 {
+		maxPages = 12
+	}
+
 	results := make([]Product, 0, limit)
-	for page := 0; page < 2 && len(results) < limit; page++ {
+	for page := 0; page < maxPages && len(results) < limit; page++ {
 		rows := GetGoods(page, keyword).Data.Rows
 		if len(rows) == 0 {
 			break
