@@ -386,11 +386,25 @@
       word-break:break-word;
       flex-shrink:0;
     }
+    /* Not pushable: full greyscale like disabled rule cards */
+    .product-card.is-not-pushable{
+      border-color:color-mix(in srgb,var(--line) 58%,transparent);
+      background:color-mix(in srgb,var(--soft) 84%,var(--surface));
+    }
+    .product-card.is-not-pushable .product-media,
+    .product-card.is-not-pushable .product-info{
+      filter:grayscale(1) saturate(.12);
+      opacity:.52;
+    }
     .product-card .hit-reason.is-blocked{
-      color:#b42318;background:#fef3f2;border-color:#fecdca;
+      color:#64748b;background:#f1f5f9;border-color:#dbe3ee;
+    }
+    body.zero-redesign.trellis-ui[data-theme=dark] .product-card.is-not-pushable{
+      background:color-mix(in srgb,var(--soft) 70%,var(--surface));
+      border-color:color-mix(in srgb,var(--line) 70%,transparent);
     }
     body.zero-redesign.trellis-ui[data-theme=dark] .product-card .hit-reason.is-blocked{
-      color:#fca5a5;background:#3f1d1d;border-color:#7f1d1d;
+      color:#94a3b8;background:#1e293b;border-color:#334155;
     }
     /* Filter tokens: allow multi-line, no hard 27px clip */
     .rule-summary-field .filter-token-box{
@@ -2303,6 +2317,9 @@ layui.use(function(){
     var pushState = item.pushState || 'ok';
     var blocked = pushState !== 'ok';
     var card = $('<article class="product-card"></article>');
+    if (blocked) {
+      card.addClass('is-not-pushable').attr('title', pushSkipTitle(pushState));
+    }
     var image = $('<img loading="lazy" decoding="async">');
     // Always square frame — product images vary but card layout must not.
     var media = $('<div class="product-media media-square"></div>').append(image);
@@ -2323,7 +2340,7 @@ layui.use(function(){
     priceHtml += '</div>';
     info.append(priceHtml);
     info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
-    // Green hit bar = pushable; red = not pushable (reason on hover).
+    // Green hit bar = pushable; full greyscale card + muted bar = not pushable.
     var hit = $('<div class="hit-reason' + (blocked ? ' is-blocked' : '') + '"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
     if (blocked) {
       hit.attr('title', pushSkipTitle(pushState));
