@@ -96,13 +96,41 @@
     .filtered-panel.is-open .filtered-body{display:flex}
     .filtered-item{display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:var(--muted);padding:6px 8px;border-radius:7px;background:color-mix(in srgb,var(--soft) 60%,var(--surface))}
     .filtered-item .why{color:#d97706;white-space:nowrap}
-    /* Telegram compact card + elegant modal editor */
-    .notification-shell{align-self:start;max-height:100%;overflow:auto}
-    .notification-shell .notify-collapse-body{display:none!important}
+    /* Telegram: compact card + inline expand (no full-screen modal) */
+    .notification-shell{
+      align-self:stretch;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
     .tg-setup-steps{margin-top:12px;text-align:left;background:color-mix(in srgb,var(--soft) 78%,var(--surface));border-radius:10px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
     .tg-setup-steps .steps-title{font-size:12px;font-weight:850;margin-bottom:6px;color:var(--muted)}
     .tg-setup-steps .step{display:flex;gap:8px;font-size:12px;font-weight:700;color:var(--faint);padding:4px 0}
     .tg-setup-steps .step-num{width:16px;height:16px;border-radius:50%;background:color-mix(in srgb,var(--line) 70%,var(--surface));color:var(--muted);display:grid;place-items:center;font-size:10px;font-weight:900;flex:0 0 16px;margin-top:1px}
+    .notification-shell.is-expanded .tg-setup-steps{display:none}
+    .tg-inline-editor{
+      display:none;
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+      min-height:0;
+      overflow:auto;
+      max-height:min(42vh,360px);
+    }
+    .notification-shell.is-expanded .tg-inline-editor{display:block}
+    .tg-inline-editor .notify-grid{display:grid;grid-template-columns:1fr;gap:8px}
+    .tg-inline-editor .notify-grid .field{
+      grid-column:span 1!important;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:color-mix(in srgb,var(--soft) 70%,var(--surface));
+    }
+    .tg-inline-editor .tg-enable-row{margin-bottom:10px}
+    .tg-inline-editor .notify-save-row{display:flex;justify-content:flex-end;gap:8px;margin-top:12px;position:sticky;bottom:0;padding-top:8px;background:linear-gradient(180deg,transparent,var(--surface) 30%)}
+    .tg-inline-editor .notify-save-row .btn{min-width:96px;height:36px;border-radius:9px}
+    #editNotifyConfig.is-open{background:color-mix(in srgb,var(--blue) 12%,var(--surface));border-color:color-mix(in srgb,var(--blue) 30%,var(--line))}
     .push-legend{margin-top:10px;display:flex;flex-direction:column;gap:6px}
     .push-legend-item{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--faint)}
     .push-legend .dot{width:8px;height:8px;border-radius:50%}
@@ -111,19 +139,8 @@
     .push-legend .dot.skip{background:#8b97a8}
     .push-legend .dot.wait{background:#d97706}
     .editor-actions #saveDraftConfig{border-radius:9px}
-    .tg-config-modal{position:fixed;inset:0;z-index:1200;display:none;place-items:center;padding:20px;background:rgba(15,23,42,.48);backdrop-filter:blur(6px)}
-    .tg-config-modal.is-open{display:grid}
-    .tg-config-dialog{width:min(440px,100%);max-height:min(82vh,680px);overflow:auto;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:0 24px 64px rgba(15,23,42,.28);padding:16px 16px 14px}
-    .tg-config-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
-    .tg-config-dialog-head h3{margin:0;font-size:16px;font-weight:900;color:var(--text)}
-    .tg-config-dialog-head p{margin:4px 0 0;font-size:12px;font-weight:700;color:var(--muted)}
-    .tg-config-close{width:32px;height:32px;border:0;border-radius:8px;background:color-mix(in srgb,var(--soft) 80%,var(--surface));color:var(--muted);cursor:pointer;font-size:18px;line-height:1}
-    .tg-config-close:hover{color:var(--text);background:color-mix(in srgb,var(--line) 50%,var(--surface))}
-    .tg-config-dialog .notify-grid{display:grid;grid-template-columns:1fr;gap:8px}
-    .tg-config-dialog .notify-grid .field{grid-column:span 1!important;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--soft) 70%,var(--surface))}
-    .tg-config-dialog .tg-enable-row{margin-bottom:10px}
-    .tg-config-dialog .notify-save-row{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
-    .tg-config-dialog .notify-save-row .btn{min-width:108px;height:36px;border-radius:9px}
+    /* Hide leftover modal shell if present */
+    .tg-config-modal{display:none!important}
     /* Dark mode polish */
     body.zero-redesign.trellis-ui[data-theme=dark] .channel-alert{background:linear-gradient(90deg,#3b2a1a,#2f2618);border-color:#6d4a22}
     body.zero-redesign.trellis-ui[data-theme=dark] .channel-alert .alert-title{color:#fdba74}
@@ -137,9 +154,8 @@
     body.zero-redesign.trellis-ui[data-theme=dark] .chip-filter.active,body.zero-redesign.trellis-ui[data-theme=dark] .preset-chip.active{background:color-mix(in srgb,var(--blue) 16%,var(--surface));color:var(--blue)}
     body.zero-redesign.trellis-ui[data-theme=dark] .rule-kpi-card.is-active{background:color-mix(in srgb,var(--blue) 12%,var(--surface))}
     body.zero-redesign.trellis-ui[data-theme=dark] .rule-kpi-card.is-warn{background:color-mix(in srgb,#b45309 14%,var(--surface));border-color:#6d4a22}
-    body.zero-redesign.trellis-ui[data-theme=dark] .tg-config-modal{background:rgba(0,0,0,.55)}
-    body.zero-redesign.trellis-ui[data-theme=dark] .tg-config-dialog{box-shadow:0 24px 64px rgba(0,0,0,.55)}
     body.zero-redesign.trellis-ui[data-theme=dark] .editor-panel .editor-actions #saveDraftConfig{background:var(--surface);color:var(--muted);border-color:var(--line)}
+    body.zero-redesign.trellis-ui[data-theme=dark] .tg-inline-editor .notify-save-row{background:linear-gradient(180deg,transparent,var(--surface) 30%)}
 
     /* === Layout repair: align columns, full preview, no clipped fields === */
     body.zero-redesign.trellis-ui .app-shell{
@@ -161,9 +177,28 @@
     }
     .editor-panel{
       flex:0 1 auto;
-      max-height:min(52vh,560px);
-      overflow:auto;
+      max-height:min(58vh,620px);
       min-height:0;
+      overflow:hidden!important; /* body scrolls; sticky actions stay visible */
+      display:flex!important;
+      flex-direction:column;
+      padding-bottom:12px!important;
+    }
+    .editor-panel-scroll{
+      flex:1 1 auto;
+      min-height:0;
+      overflow:auto;
+      padding-right:2px;
+    }
+    .editor-panel .editor-actions,
+    .editor-panel .bottom-bar.editor-actions{
+      flex:0 0 auto!important;
+      margin-top:10px!important;
+      padding-top:8px;
+      border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);
+      background:inherit;
+      position:relative;
+      z-index:2;
     }
     .preview-panel{
       flex:1 1 auto;
@@ -172,6 +207,17 @@
       grid-template-rows:auto minmax(0,1fr) auto;
       overflow:hidden;
     }
+    /* Selected card: hover must NOT kill the blue border line */
+    .rule-card:hover{border-color:var(--line2)}
+    .rule-card.active,
+    .rule-card.active:hover,
+    .rule-card.active:focus,
+    .rule-card.active:focus-visible{
+      border:1px solid var(--blue)!important;
+      box-shadow:0 0 0 1px color-mix(in srgb,var(--blue) 18%,transparent)!important;
+      outline:none;
+    }
+    .rule-card{transition:background .16s ease,box-shadow .16s ease,transform .16s ease}
     .inspector-column{
       display:flex!important;
       flex-direction:column;
@@ -361,6 +407,7 @@
 
   <main class="workbench">
     <section class="editor-panel studio-panel" aria-label="规则详情">
+      <div class="editor-panel-scroll">
       <div class="channel-alert" id="channelAlert" role="status">
         <div class="alert-left">
           <div class="alert-icon" aria-hidden="true">!</div>
@@ -460,6 +507,7 @@
       </div>
       <div class="rule-search-insight" id="ruleSearchInsight"><strong>本次搜索</strong><span id="ruleSearchSummary">等待搜索</span><span id="previewCacheMeta" style="margin-left:auto;opacity:.75;font-size:12px"></span></div>
       <input id="enabledInput" type="checkbox" hidden>
+      </div>
 
       <div class="bottom-bar editor-actions">
         <button class="btn action-button" id="saveDraftConfig" type="button" aria-label="仅保存草稿" title="仅保存草稿（不强制启用）">
@@ -544,6 +592,49 @@
         <div class="step"><span class="step-num">2</span>获取 Chat ID</div>
         <div class="step"><span class="step-num">3</span>测试发送 → 开启自动推送</div>
       </div>
+      <div class="tg-inline-editor" id="notifyDetails">
+        <div class="tg-enable-row">
+          <strong>启用 Telegram 推送</strong>
+          <label class="notify-enabled-toggle" title="Telegram 启用" aria-label="Telegram 启用">
+            <input id="telegramEnabled" type="checkbox">
+            <span class="toggle-shell" aria-hidden="true"><span class="toggle-knob"></span></span>
+            <span class="sr-only">Telegram 启用</span>
+          </label>
+        </div>
+        <div class="notify-grid">
+          <div class="field">
+            <label for="telegramBotToken"><span>Bot Token</span></label>
+            <input id="telegramBotToken" type="password" autocomplete="off" placeholder="123456:ABC-DEF...">
+          </div>
+          <div class="field">
+            <label for="telegramChatId"><span>Chat ID</span></label>
+            <input id="telegramChatId" type="text" autocomplete="off" placeholder="例如 123456789">
+          </div>
+          <div class="field">
+            <label for="telegramParseMode"><span>消息格式</span></label>
+            <select id="telegramParseMode">
+              <option value="HTML">HTML</option>
+              <option value="">纯文本</option>
+            </select>
+          </div>
+          <div class="field setting-field">
+            <label><span>链接预览</span></label>
+            <div class="switch-row setting-row">
+              <span class="setting-copy"><strong>隐藏网页卡片</strong><small>只发送文本与链接</small></span>
+              <label class="switch" title="禁用网页预览">
+                <input id="telegramDisablePreview" type="checkbox">
+                <span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="notify-save-row">
+          <button class="btn" id="cancelTgConfig" type="button">收起</button>
+          <button class="btn primary" id="saveNotifyConfig" type="button">
+            <span>保存配置</span>
+          </button>
+        </div>
+      </div>
     </section>
 
     <section class="push-log-card inspector-card" aria-label="推送记录">
@@ -565,63 +656,6 @@
       </div>
     </section>
   </aside>
-</div>
-
-<!-- Telegram config modal: keeps side panel compact -->
-<div class="tg-config-modal" id="tgConfigModal" role="dialog" aria-modal="true" aria-labelledby="tgConfigTitle" hidden>
-  <div class="tg-config-dialog" role="document">
-    <div class="tg-config-dialog-head">
-      <div>
-        <h3 id="tgConfigTitle">编辑 Telegram 配置</h3>
-        <p>填写后可测试发送；侧栏保持简洁，表单在此完成</p>
-      </div>
-      <button type="button" class="tg-config-close" id="closeTgConfig" aria-label="关闭">×</button>
-    </div>
-    <div class="notify-collapse-body" id="notifyDetails">
-      <div class="tg-enable-row">
-        <strong>启用 Telegram 推送</strong>
-        <label class="notify-enabled-toggle" title="Telegram 启用" aria-label="Telegram 启用">
-          <input id="telegramEnabled" type="checkbox">
-          <span class="toggle-shell" aria-hidden="true"><span class="toggle-knob"></span></span>
-          <span class="sr-only">Telegram 启用</span>
-        </label>
-      </div>
-      <div class="notify-grid">
-        <div class="field">
-          <label for="telegramBotToken"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 7a4 4 0 1 0-4 4"/><path d="M11 11l9 9"/><path d="M16 16l-2 2"/><path d="M19 13l-2 2"/></svg></span><span>Bot Token</span></label>
-          <input id="telegramBotToken" type="password" autocomplete="off" placeholder="123456:ABC-DEF...">
-        </div>
-        <div class="field">
-          <label for="telegramChatId"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v14H8l-4 4V4Z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg></span><span>Chat ID</span></label>
-          <input id="telegramChatId" type="text" autocomplete="off" placeholder="例如 123456789">
-        </div>
-        <div class="field">
-          <label for="telegramParseMode"><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h13"/></svg></span><span>消息格式</span></label>
-          <select id="telegramParseMode">
-            <option value="HTML">HTML</option>
-            <option value="">纯文本</option>
-          </select>
-        </div>
-        <div class="field setting-field">
-          <label><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2a5 5 0 0 0 7.1 7.1l1.1-1.1"/></svg></span><span>链接预览</span></label>
-          <div class="switch-row setting-row">
-            <span class="setting-copy"><strong>隐藏网页卡片</strong><small>只发送文本与链接</small></span>
-            <label class="switch" title="禁用网页预览">
-              <input id="telegramDisablePreview" type="checkbox">
-              <span></span>
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="notify-save-row">
-        <button class="btn" id="cancelTgConfig" type="button">取消</button>
-        <button class="btn primary" id="saveNotifyConfig" type="button">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
-          <span>保存配置</span>
-        </button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.js"></script>
@@ -814,31 +848,40 @@ layui.use(function(){
   $('#searchRule').on('click', searchSelectedRule);
   $('#testTelegram').on('click', testTelegram);
   $('#reloadPushLogs').on('click', loadPushLogs);
-  function openTelegramConfig(){
-    var modal = $('#tgConfigModal');
-    modal.addClass('is-open').prop('hidden', false);
-    $('#editNotifyConfig').attr('aria-expanded', 'true');
-    setTimeout(function(){
-      try { document.getElementById('telegramBotToken').focus(); } catch (err) {}
-    }, 30);
+  function openTelegramConfig(forceOpen){
+    var shell = $('.notification-shell');
+    var expand = forceOpen === true ? true : !shell.hasClass('is-expanded');
+    shell.toggleClass('is-expanded', expand);
+    $('#editNotifyConfig')
+      .toggleClass('is-open', expand)
+      .attr('aria-expanded', expand ? 'true' : 'false');
+    $('#editNotifyConfig span').last().text(expand ? '收起配置' : '编辑配置');
+    if (expand) {
+      try {
+        document.querySelector('.notification-shell').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        document.getElementById('telegramBotToken').focus();
+      } catch (err) {}
+    }
   }
   function closeTelegramConfig(){
-    $('#tgConfigModal').removeClass('is-open').prop('hidden', true);
-    $('#editNotifyConfig').attr('aria-expanded', 'false');
+    $('.notification-shell').removeClass('is-expanded');
+    $('#editNotifyConfig').removeClass('is-open').attr('aria-expanded', 'false');
+    $('#editNotifyConfig span').last().text('编辑配置');
   }
-  $('#goConfigureTelegram, #editNotifyConfig').on('click', function(e){
+  $('#goConfigureTelegram').on('click', function(e){
     e.preventDefault();
-    openTelegramConfig();
+    openTelegramConfig(true);
   });
-  $('#closeTgConfig, #cancelTgConfig').on('click', function(e){
+  $('#editNotifyConfig').on('click', function(e){
+    e.preventDefault();
+    openTelegramConfig(false);
+  });
+  $('#cancelTgConfig').on('click', function(e){
     e.preventDefault();
     closeTelegramConfig();
   });
-  $('#tgConfigModal').on('click', function(e){
-    if (e.target === this) { closeTelegramConfig(); }
-  });
-  $(document).on('keydown.tgModal', function(e){
-    if (e.key === 'Escape' && $('#tgConfigModal').hasClass('is-open')) {
+  $(document).on('keydown.tgInline', function(e){
+    if (e.key === 'Escape' && $('.notification-shell').hasClass('is-expanded')) {
       closeTelegramConfig();
     }
   });
