@@ -210,17 +210,29 @@
       grid-template-rows:auto minmax(0,1fr)!important;
       overflow:hidden!important;
     }
-    .advanced-toggle{display:none!important}
-    .advanced-rule-fields,
-    .advanced-rule-fields.is-open{
-      display:contents!important; /* flow into parent rule-summary-grid as same row */
+    .advanced-toggle{
+      display:inline-flex!important;align-items:center;gap:4px;margin:8px 0 0;
+      border:0;background:transparent;color:var(--blue);font-size:12px;font-weight:800;cursor:pointer;padding:0;
     }
-    .rule-summary-grid{
+    .advanced-rule-fields{display:none!important;margin-top:8px}
+    .advanced-rule-fields.is-open{
       display:grid!important;
-      grid-template-columns:repeat(3,minmax(0,1fr))!important;
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
       gap:9px!important;
     }
-    .rule-summary-grid .rule-summary-field{min-height:72px}
+    /* Primary row: keyword / filter / price / threshold */
+    .rule-summary-grid{
+      display:grid!important;
+      grid-template-columns:repeat(4,minmax(0,1fr))!important;
+      gap:9px!important;
+    }
+    .rule-summary-grid .rule-summary-field{min-height:72px;min-width:0}
+    @media (max-width:1100px){
+      .rule-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    }
+    @media (max-width:620px){
+      .rule-summary-grid,.advanced-rule-fields.is-open{grid-template-columns:1fr!important}
+    }
     .preset-chip.is-on{border-color:color-mix(in srgb,var(--blue) 40%,var(--line));background:color-mix(in srgb,var(--blue) 12%,var(--surface));color:var(--blue)}
     .preset-chip.is-on::after{content:" ✓";font-size:10px}
     .price-summary-control input:placeholder-shown{color:var(--faint);font-weight:700}
@@ -551,6 +563,9 @@
             <button type="button" class="preset-chip" data-threshold="strict">严格</button>
           </div>
         </div>
+      </div>
+      <button type="button" class="advanced-toggle" id="toggleAdvancedRule" aria-expanded="false">高级设置 · 频率与推送上限 ▾</button>
+      <div class="advanced-rule-fields" id="advancedRuleFields">
         <div class="rule-summary-field">
           <label for="tickValueInput">扫描频率</label>
           <div class="summary-inline frequency-summary-control">
@@ -1003,6 +1018,12 @@ layui.use(function(){
   });
   commonFilterWords = readCommonFilters();
   renderCommonFilterChips();
+  $('#toggleAdvancedRule').on('click', function(){
+    var open = !$('#advancedRuleFields').hasClass('is-open');
+    $('#advancedRuleFields').toggleClass('is-open', open);
+    $(this).attr('aria-expanded', open ? 'true' : 'false')
+      .text(open ? '高级设置 · 频率与推送上限 ▴' : '高级设置 · 频率与推送上限 ▾');
+  });
   $('#filterPresets').on('click', '.preset-chip', function(){
     var word = $(this).data('filter-word');
     if (!word) { return; }
