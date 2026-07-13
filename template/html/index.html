@@ -172,21 +172,39 @@
       display:flex!important;
       flex-direction:column;
       grid-area:main;
-      gap:12px;
+      gap:10px;
       min-width:0;
       min-height:0;
-      overflow:hidden;
+      overflow:hidden; /* only preview list scrolls */
     }
+    /* Editor: natural height, NO internal scroll */
     .editor-panel{
-      flex:0 1 auto;
-      max-height:min(42vh,460px);
+      flex:0 0 auto!important;
+      max-height:none!important;
       min-height:0;
-      overflow:hidden!important; /* body scrolls; sticky actions stay visible */
-      display:flex!important;
-      flex-direction:column;
+      overflow:visible!important;
+      display:block!important;
       padding-bottom:12px!important;
     }
-    .preview-panel{min-height:280px!important;flex:1 1 55%!important}
+    .editor-panel-scroll{
+      overflow:visible!important;
+      max-height:none!important;
+      min-height:0;
+      padding-right:0;
+    }
+    .editor-panel .editor-actions,
+    .editor-panel .bottom-bar.editor-actions{
+      margin-top:10px!important;
+      padding-top:8px;
+      border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);
+    }
+    .preview-panel{
+      flex:1 1 auto!important;
+      min-height:0!important;
+      display:grid!important;
+      grid-template-rows:auto minmax(0,1fr)!important;
+      overflow:hidden!important;
+    }
     .advanced-toggle{
       display:inline-flex;align-items:center;gap:4px;margin:8px 0 0;
       border:0;background:transparent;color:var(--blue);font-size:12px;font-weight:800;cursor:pointer;padding:0;
@@ -196,30 +214,50 @@
     .preset-chip.is-on{border-color:color-mix(in srgb,var(--blue) 40%,var(--line));background:color-mix(in srgb,var(--blue) 12%,var(--surface));color:var(--blue)}
     .preset-chip.is-on::after{content:" ✓";font-size:10px}
     .price-summary-control input:placeholder-shown{color:var(--faint);font-weight:700}
-    .filtered-panel{display:none!important}
-    .editor-panel-scroll{
-      flex:1 1 auto;
-      min-height:0;
-      overflow:auto;
-      padding-right:2px;
+    .filtered-panel,.rule-search-insight,#channelAlert{display:none!important}
+    /* Topbar channel alert chip */
+    .top-channel-alert{
+      display:none;align-items:center;gap:8px;max-width:min(520px,42vw);
+      min-height:32px;padding:4px 8px 4px 10px;border-radius:999px;
+      border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;
+      font-size:12px;font-weight:750;line-height:1.25;white-space:nowrap;overflow:hidden;
     }
-    .editor-panel .editor-actions,
-    .editor-panel .bottom-bar.editor-actions{
-      flex:0 0 auto!important;
-      margin-top:10px!important;
-      padding-top:8px;
-      border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);
-      background:inherit;
-      position:relative;
-      z-index:2;
+    .top-channel-alert.is-visible{display:inline-flex}
+    .top-channel-alert b{font-weight:850}
+    .top-channel-alert button{
+      flex:0 0 auto;border:0;border-radius:999px;background:#ea580c;color:#fff;
+      font-size:11px;font-weight:800;padding:4px 10px;cursor:pointer;height:24px;
     }
-    .preview-panel{
-      flex:1 1 auto;
-      min-height:220px;
-      display:grid!important;
-      grid-template-rows:auto minmax(0,1fr) auto;
-      overflow:hidden;
+    .top-channel-alert .top-alert-text{overflow:hidden;text-overflow:ellipsis}
+    body.zero-redesign.trellis-ui[data-theme=dark] .top-channel-alert{background:#3b2a1a;border-color:#6d4a22;color:#fdba74}
+    body.zero-redesign.trellis-ui[data-theme=dark] .top-channel-alert button{background:#c2410c}
+    .app-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .top-status{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+    .top-brand{min-width:0;flex:0 1 auto}
+    .top-channel-alert{flex:1 1 auto;justify-content:center}
+    /* Common filters */
+    .common-filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+    .common-filters .common-label{font-size:11px;font-weight:750;color:var(--faint);margin-right:2px}
+    .filter-token .pin-common{
+      border:0;background:transparent;color:var(--faint);cursor:pointer;padding:0 2px;font-size:11px;line-height:1;
     }
+    .filter-token .pin-common:hover,.filter-token .pin-common.is-pinned{color:var(--blue)}
+    /* Dense preview for many results */
+    #previewCards.product-list.is-dense{
+      gap:8px!important;
+    }
+    #previewCards.product-list.is-dense .product-card{
+      padding:8px!important;
+      gap:8px!important;
+      grid-template-columns:64px minmax(0,1fr)!important;
+    }
+    #previewCards.product-list.is-dense .product-media{
+      width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important;
+    }
+    #previewCards.product-list.is-dense .product-title{font-size:13px!important;-webkit-line-clamp:2}
+    #previewCards.product-list.is-dense .product-price-row{margin-top:4px;font-size:14px}
+    #previewCards.product-list.is-dense .product-meta{margin-top:4px;gap:8px}
+    #previewCards.product-list.is-dense .hit-reason{margin-top:4px;padding:3px 6px;font-size:10px;-webkit-line-clamp:1!important}
     /* Hover: no translateY lift — lift was clipping top border under siblings/overflow */
     .rule-card,
     .rule-card:hover,
@@ -383,6 +421,10 @@
       <strong>什么值得买商品提醒</strong>
       <span id="topRuleStatus">等待配置</span>
     </div>
+    <div class="top-channel-alert" id="channelAlert" role="status">
+      <span class="top-alert-text" id="channelAlertDesc">配置 Telegram 后才会推送</span>
+      <button type="button" id="goConfigureTelegram">去配置</button>
+    </div>
     <div class="top-status">
       <button class="top-pill top-telegram-toggle off" id="topTelegramToggle" type="button" aria-label="Telegram 未启用" title="Telegram 未启用" aria-pressed="false">
         <span class="tg-top-glyph" aria-hidden="true">
@@ -437,16 +479,6 @@
   <main class="workbench">
     <section class="editor-panel studio-panel" aria-label="规则详情">
       <div class="editor-panel-scroll">
-      <div class="channel-alert" id="channelAlert" role="status">
-        <div class="alert-left">
-          <div class="alert-icon" aria-hidden="true">!</div>
-          <div>
-            <div class="alert-title">规则已就绪，配置 Telegram 后才会推送</div>
-            <div class="alert-desc" id="channelAlertDesc">通道未配置，自动推送处于暂停状态。</div>
-          </div>
-        </div>
-        <button class="btn btn-warn" id="goConfigureTelegram" type="button">去配置通道</button>
-      </div>
       <div class="rule-kpi-grid" aria-label="规则统计">
         <div class="rule-kpi-card" data-kpi="scanned"><span class="rule-kpi-label">全部规则扫描</span><strong class="rule-kpi-value" id="dashboardScanned">0</strong><div class="rule-kpi-hint">已启用规则数</div></div>
         <div class="rule-kpi-card" data-kpi="matched"><span class="rule-kpi-label">符合门槛商品</span><strong class="rule-kpi-value" id="dashboardMatched">0</strong><div class="rule-kpi-hint">最近一次预览</div></div>
@@ -480,11 +512,9 @@
           <div id="filterTokenBox" class="filter-token-box">
             <input id="filterInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加，支持粘贴">
           </div>
-          <div class="preset-row" id="filterPresets">
-            <button type="button" class="preset-chip" data-filter-word="临期">临期</button>
-            <button type="button" class="preset-chip" data-filter-word="过期">过期</button>
-            <button type="button" class="preset-chip" data-filter-word="售罄">售罄</button>
-            <button type="button" class="preset-chip" data-filter-word="瑕疵">瑕疵</button>
+          <div class="common-filters" id="commonFiltersRow">
+            <span class="common-label">常用</span>
+            <div class="preset-row" id="filterPresets"></div>
           </div>
         </div>
         <div class="rule-summary-field">
@@ -537,8 +567,9 @@
           <div class="field-hint">超出上限的命中将标记为「跳过」</div>
         </div>
       </div>
-      <div class="rule-search-insight" id="ruleSearchInsight"><strong>本次搜索</strong><span id="ruleSearchSummary">等待搜索</span><span id="previewCacheMeta" style="margin-left:auto;opacity:.75;font-size:12px"></span></div>
       <input id="enabledInput" type="checkbox" hidden>
+      <span id="ruleSearchSummary" class="sr-only">等待搜索</span>
+      <span id="previewCacheMeta" class="sr-only"></span>
       </div>
 
       <div class="bottom-bar editor-actions">
@@ -709,6 +740,7 @@ var productConfig = {
 var selectedRuleIndex = -1;
 var previewOpenUrl = '';
 var filterEditorWords = [];
+var commonFilterWords = ['临期', '过期', '售罄', '瑕疵'];
 var telegramHealthTested = false;
 var dashboardStats = { scanned: 0, matched: 0, pushed: 0, failed: 0 };
 var previewPlaceholder = placeholderImage('商');
@@ -962,6 +994,8 @@ layui.use(function(){
     ruleListQuery = ($(this).val() || '').trim().toLowerCase();
     renderRules();
   });
+  commonFilterWords = readCommonFilters();
+  renderCommonFilterChips();
   $('#filterPresets').on('click', '.preset-chip', function(){
     var word = $(this).data('filter-word');
     if (!word) { return; }
@@ -978,6 +1012,13 @@ layui.use(function(){
     syncFilterPresetState();
     markConfigDirty();
     renderRules();
+  });
+  $('#filterPresets').on('contextmenu', '.preset-chip', function(e){
+    e.preventDefault();
+    var word = $(this).data('filter-word');
+    if (!word) { return; }
+    removeCommonFilter(word);
+    layer.msg('已从常用过滤词移除「' + word + '」');
   });
   $('#toggleAdvancedRule').on('click', function(){
     var open = !$('#advancedRuleFields').hasClass('is-open');
@@ -1109,6 +1150,22 @@ layui.use(function(){
     filterEditorWords.forEach(function(word, index){
       var chip = $('<span class="filter-token"></span>');
       chip.append('<span title="' + escapeAttr(word) + '">' + escapeHtml(word) + '</span>');
+      var pinned = commonFilterWords.indexOf(word) !== -1;
+      var pin = $('<button type="button" class="pin-common' + (pinned ? ' is-pinned' : '') + '" aria-label="添加到常用过滤词" title="' + (pinned ? '已在常用，右键可从常用移除' : '添加到常用过滤词') + '">☆</button>');
+      if (pinned) { pin.text('★'); }
+      pin.on('mousedown', function(e){ e.preventDefault(); });
+      pin.on('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if (commonFilterWords.indexOf(word) === -1) {
+          addCommonFilter(word);
+          layer.msg('已加入常用过滤词「' + word + '」');
+        } else {
+          removeCommonFilter(word);
+          layer.msg('已从常用过滤词移除「' + word + '」');
+        }
+        renderFilterTokens();
+      });
       var remove = $('<button type="button" aria-label="删除过滤词 ' + escapeAttr(word) + '" title="删除"></button>');
       remove.html(iconSvg('x'));
       remove.on('mousedown', function(e){ e.preventDefault(); });
@@ -1118,9 +1175,60 @@ layui.use(function(){
         removeFilterWord(index);
         input.trigger('focus');
       });
+      chip.append(pin);
       chip.append(remove);
       input.before(chip);
     });
+  }
+
+  function readCommonFilters() {
+    var fallback = ['临期', '过期', '售罄', '瑕疵'];
+    try {
+      var raw = localStorage.getItem('smzdmCommonFilters');
+      if (!raw) { return fallback.slice(); }
+      var list = JSON.parse(raw);
+      if (!Array.isArray(list) || !list.length) { return fallback.slice(); }
+      return list.map(function(w){ return String(w || '').trim(); }).filter(function(w, i, arr){ return w && arr.indexOf(w) === i; });
+    } catch (e) {
+      return fallback.slice();
+    }
+  }
+
+  function saveCommonFilters() {
+    try {
+      localStorage.setItem('smzdmCommonFilters', JSON.stringify(commonFilterWords));
+    } catch (e) {}
+  }
+
+  function addCommonFilter(word) {
+    word = String(word || '').trim();
+    if (!word) { return; }
+    if (commonFilterWords.indexOf(word) === -1) {
+      commonFilterWords.push(word);
+      saveCommonFilters();
+      renderCommonFilterChips();
+      syncFilterPresetState();
+    }
+  }
+
+  function removeCommonFilter(word) {
+    commonFilterWords = commonFilterWords.filter(function(w){ return w !== word; });
+    if (!commonFilterWords.length) {
+      commonFilterWords = ['临期', '过期', '售罄', '瑕疵'];
+    }
+    saveCommonFilters();
+    renderCommonFilterChips();
+    syncFilterPresetState();
+  }
+
+  function renderCommonFilterChips() {
+    var box = $('#filterPresets');
+    if (!box.length) { return; }
+    box.empty();
+    commonFilterWords.forEach(function(word){
+      box.append($('<button type="button" class="preset-chip"></button>').attr('data-filter-word', word).text(word));
+    });
+    syncFilterPresetState();
   }
 
   function saveProductConfig(e) {
@@ -1447,8 +1555,9 @@ layui.use(function(){
     var body = $('#previewCards');
     body.empty();
     body.toggleClass('is-scrollable', items.length > 6);
+    body.toggleClass('is-dense', items.length >= 8);
     items.forEach(function(item){
-      body.append(productCard(item));
+      body.append(productCard(item, items.length >= 8));
     });
   }
 
@@ -1844,9 +1953,10 @@ layui.use(function(){
     $('#channelAlert').toggleClass('is-visible', show);
     $('#channelAlertDesc').text(
       show
-        ? ('当前有 ' + enabledRules + ' 条启用规则，通道未配置，自动推送处于暂停状态。')
+        ? ('未配置 Telegram · ' + enabledRules + ' 条规则待推送')
         : ''
     );
+    $('#channelAlert').attr('title', show ? ('当前有 ' + enabledRules + ' 条启用规则，配置 Telegram 后才会推送') : '');
     $('#tgSetupSteps').toggle(!tg.configured);
   }
 
@@ -1948,6 +2058,8 @@ layui.use(function(){
       $(this).toggleClass('is-on', words.indexOf(w) !== -1);
     });
   }
+
+
 
   function listToText(list) {
     return (list || []).join('\n');
@@ -2058,7 +2170,7 @@ layui.use(function(){
     $('#previewCards').removeClass('is-scrollable').html('<div class="empty-state">' + emptyStateSvg() + '<strong>' + escapeHtml(title) + '</strong><p>' + escapeHtml(message) + '</p></div>');
   }
 
-  function productCard(item) {
+  function productCard(item, dense) {
     item = item || {};
     var card = $('<article class="product-card"></article>');
     var image = $('<img loading="lazy" decoding="async">');
@@ -2077,13 +2189,15 @@ layui.use(function(){
     info.append('<a class="product-title" target="_blank" rel="noopener" href="' + escapeAttr(item.url || '#') + '">' + escapeHtml(item.title || '未命名商品') + '</a>');
     var priceParts = splitPriceText(item.price || '-');
     var priceHtml = '<div class="product-price-row"><span class="price-currency">￥</span><span class="price-main">' + escapeHtml(priceParts.main) + '</span>';
-    if (priceParts.condition) {
+    if (priceParts.condition && !dense) {
       priceHtml += '<span class="price-condition">' + escapeHtml(priceParts.condition) + '</span>';
     }
     priceHtml += '</div>';
     info.append(priceHtml);
     info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
-    info.append('<div class="hit-reason"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
+    if (!dense) {
+      info.append('<div class="hit-reason"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
+    }
     card.append(media);
     card.append(info);
     return card;
