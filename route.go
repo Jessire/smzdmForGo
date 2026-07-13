@@ -162,10 +162,11 @@ func ProductConfigHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		setCurrentConfig(next)
+		// Wake scheduler: immediate scan+push, then re-arm the interval timer.
 		notifyProductScheduleChanged()
 		writeJSON(w, http.StatusOK, map[string]interface{}{
 			"code": "0",
-			"msg":  "保存成功",
+			"msg":  "保存成功，已触发立即扫描推送",
 			"data": productConfigFromConfig(next),
 		})
 	default:

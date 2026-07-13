@@ -48,21 +48,29 @@ func cronForProduct() {
 		case <-timer.C:
 			requestSmzdm()
 		case <-productScheduleChanged:
+			// Config saved: cancel the pending wait, scan+push once now, then restart the interval.
 			if !timer.Stop() {
 				select {
 				case <-timer.C:
 				default:
 				}
 			}
+			requestSmzdm()
 		}
 	}
 }
 
+var productScanMu sync.Mutex
+
 // 推送商品任务
 func requestSmzdm() {
+	productScanMu.Lock()
+	defer productScanMu.Unlock()
+
 	// 搜索商品
 	satisfyGoodsList, _ := smzdm.GetSatisfiedGoods(currentConfig())
 	if len(satisfyGoodsList) == 0 {
+		log.Printf("商品扫描完成：无新命中，跳过推送")
 		return
 	}
 	// 推送商品
