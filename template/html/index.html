@@ -527,7 +527,8 @@
       <div class="rule-summary-grid">
         <div class="rule-summary-field">
           <label for="keywordInput">关键词</label>
-          <input id="keywordInput" type="text" autocomplete="off">
+          <input id="keywordInput" type="text" autocomplete="off" placeholder="支持正则，如 显示器|屏幕">
+          <div class="field-hint">匹配标题；可用正则（如 显示器|屏幕）</div>
         </div>
         <div class="rule-summary-field">
           <label for="filterInput">过滤词</label>
@@ -1147,6 +1148,8 @@ layui.use(function(){
     renderFilterTokens();
     syncFilterPresetState();
     syncEditorToRule();
+    updateRuleSummaryStrip();
+    markConfigDirty();
     renderRules();
   }
 
@@ -1156,6 +1159,8 @@ layui.use(function(){
     renderFilterTokens();
     syncFilterPresetState();
     syncEditorToRule();
+    updateRuleSummaryStrip();
+    markConfigDirty();
     renderRules();
   }
 

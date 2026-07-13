@@ -273,14 +273,40 @@ func SearchGoods(keyword string, rule file.KeywordRule, limit int) []Product {
 		return []Product{}
 	}
 
+	// Ensure local keyword/regex filtering works even when caller only passed keyword.
+	if len(rule.Words) == 0 {
+		rule.Words = []string{keyword}
+	}
+
+	seeds := searchSeeds(keyword)
+	if len(seeds) == 0 {
+		seeds = []string{keyword}
+	}
+	if len(seeds) > 3 {
+		seeds = seeds[:3]
+	}
+
 	results := make([]Product, 0, limit)
-	for page := 0; page < 2 && len(results) < limit; page++ {
-		rows := GetGoods(page, keyword).Data.Rows
-		if len(rows) == 0 {
+	seen := map[string]bool{}
+	for _, seed := range seeds {
+		if len(results) >= limit {
 			break
 		}
-		for _, item := range rows {
-			if searchProductMatches(item, rule) {
+		for page := 0; page < 2 && len(results) < limit; page++ {
+			rows := GetGoods(page, seed).Data.Rows
+			if len(rows) == 0 {
+				break
+			}
+			for _, item := range rows {
+				if item.ArticleId != "" && seen[item.ArticleId] {
+					continue
+				}
+				if !searchProductMatches(item, rule) {
+					continue
+				}
+				if item.ArticleId != "" {
+					seen[item.ArticleId] = true
+				}
 				results = append(results, item)
 				if len(results) >= limit {
 					break
@@ -364,6 +390,10 @@ func matchesPersonalRules(good Product) bool {
 }
 
 func searchProductMatches(good Product, rule file.KeywordRule) bool {
+	// Re-check keyword/regex locally: SMZDM API only accepts plain search seeds.
+	if len(rule.Words) > 0 && !containsAnyWord(good, rule.Words) {
+		return false
+	}
 	if containsAnyWord(good, rule.FilterWords) {
 		return false
 	}
@@ -420,13 +450,104 @@ func containsAnyWord(good Product, words []string) bool {
 }
 
 func containsWord(good Product, word string) bool {
-	word = strings.TrimSpace(strings.ToLower(word))
+	word = strings.TrimSpace(word)
 	if word == "" {
 		return false
 	}
-	return strings.Contains(strings.ToLower(good.ArticleTitle), word) ||
-		strings.Contains(strings.ToLower(good.ArticlePrice), word) ||
-		strings.Contains(strings.ToLower(good.Referral), word)
+
+	// Keywords/filters support regex (case-insensitive). Invalid patterns fall back to literal contains.
+	if re, err := regexp.Compile("(?i)" + word); err == nil {
+		return re.MatchString(good.ArticleTitle) ||
+			re.MatchString(good.ArticlePrice) ||
+			re.MatchString(good.Referral)
+	}
+
+	lw := strings.ToLower(word)
+	return strings.Contains(strings.ToLower(good.ArticleTitle), lw) ||
+		strings.Contains(strings.ToLower(good.ArticlePrice), lw) ||
+		strings.Contains(strings.ToLower(good.Referral), lw)
+}
+
+// regexMetaPattern detects characters that change plain-text matching when used as regex.
+var regexMetaPattern = regexp.MustCompile(`[.\\+*?()|\[\]{}^$]`)
+
+// literalSeedPattern extracts a plain search seed for SMZDM API from a regex/keyword.
+var literalSeedPattern = regexp.MustCompile(`[\p{L}\p{N}]+`)
+
+func hasRegexMeta(s string) bool {
+	return regexMetaPattern.MatchString(s)
+}
+
+// searchSeeds returns plain keywords suitable for SMZDM API search.
+// For "显示器|屏幕" → ["显示器", "屏幕"]; for plain text → [keyword].
+func searchSeeds(keyword string) []string {
+	keyword = strings.TrimSpace(keyword)
+	if keyword == "" {
+		return nil
+	}
+	if !hasRegexMeta(keyword) {
+		return []string{keyword}
+	}
+
+	parts := splitRegexAlternatives(keyword)
+	seen := map[string]bool{}
+	seeds := make([]string, 0, len(parts))
+	for _, part := range parts {
+		seed := extractLiteralSeed(part)
+		if seed == "" || seen[seed] {
+			continue
+		}
+		seen[seed] = true
+		seeds = append(seeds, seed)
+	}
+	if len(seeds) == 0 {
+		if seed := extractLiteralSeed(keyword); seed != "" {
+			return []string{seed}
+		}
+		return []string{keyword}
+	}
+	return seeds
+}
+
+func extractLiteralSeed(s string) string {
+	matches := literalSeedPattern.FindAllString(s, -1)
+	if len(matches) == 0 {
+		return ""
+	}
+	best := matches[0]
+	bestLen := len([]rune(best))
+	for _, m := range matches[1:] {
+		n := len([]rune(m))
+		if n > bestLen {
+			best = m
+			bestLen = n
+		}
+	}
+	return best
+}
+
+// splitRegexAlternatives splits on top-level | (outside parentheses).
+func splitRegexAlternatives(s string) []string {
+	var parts []string
+	depth := 0
+	start := 0
+	for i, r := range s {
+		switch r {
+		case '(':
+			depth++
+		case ')':
+			if depth > 0 {
+				depth--
+			}
+		case '|':
+			if depth == 0 {
+				parts = append(parts, strings.TrimSpace(s[start:i]))
+				start = i + len("|")
+			}
+		}
+	}
+	parts = append(parts, strings.TrimSpace(s[start:]))
+	return parts
 }
 
 var numberPattern = regexp.MustCompile(`\d+(?:,\d{3})*(?:\.\d+)?`)
