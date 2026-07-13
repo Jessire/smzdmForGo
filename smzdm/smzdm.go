@@ -273,41 +273,15 @@ func SearchGoods(keyword string, rule file.KeywordRule, limit int) []Product {
 		return []Product{}
 	}
 
-	// Ensure local keyword/regex filtering works even when caller only passed keyword.
-	if len(rule.Words) == 0 {
-		rule.Words = []string{keyword}
-	}
-
-	seeds := searchSeeds(keyword)
-	if len(seeds) == 0 {
-		seeds = []string{keyword}
-	}
-	// Cap API fan-out; longer seeds are already sorted first.
-	if len(seeds) > 5 {
-		seeds = seeds[:5]
-	}
-
+	// SMZDM list API only supports plain keyword search (not regex).
 	results := make([]Product, 0, limit)
-	seen := map[string]bool{}
-	for _, seed := range seeds {
-		if len(results) >= limit {
+	for page := 0; page < 2 && len(results) < limit; page++ {
+		rows := GetGoods(page, keyword).Data.Rows
+		if len(rows) == 0 {
 			break
 		}
-		for page := 0; page < 2 && len(results) < limit; page++ {
-			rows := GetGoods(page, seed).Data.Rows
-			if len(rows) == 0 {
-				break
-			}
-			for _, item := range rows {
-				if item.ArticleId != "" && seen[item.ArticleId] {
-					continue
-				}
-				if !searchProductMatches(item, rule) {
-					continue
-				}
-				if item.ArticleId != "" {
-					seen[item.ArticleId] = true
-				}
+		for _, item := range rows {
+			if searchProductMatches(item, rule) {
 				results = append(results, item)
 				if len(results) >= limit {
 					break
@@ -391,10 +365,6 @@ func matchesPersonalRules(good Product) bool {
 }
 
 func searchProductMatches(good Product, rule file.KeywordRule) bool {
-	// Re-check keyword/regex locally: SMZDM API only accepts plain search seeds.
-	if len(rule.Words) > 0 && !containsAnyWord(good, rule.Words) {
-		return false
-	}
 	if containsAnyWord(good, rule.FilterWords) {
 		return false
 	}
@@ -451,167 +421,13 @@ func containsAnyWord(good Product, words []string) bool {
 }
 
 func containsWord(good Product, word string) bool {
-	word = strings.TrimSpace(word)
+	word = strings.TrimSpace(strings.ToLower(word))
 	if word == "" {
 		return false
 	}
-
-	// Keywords/filters support regex (case-insensitive). Invalid patterns fall back to literal contains.
-	if re, err := regexp.Compile("(?i)" + word); err == nil {
-		return re.MatchString(good.ArticleTitle) ||
-			re.MatchString(good.ArticlePrice) ||
-			re.MatchString(good.Referral)
-	}
-
-	lw := strings.ToLower(word)
-	return strings.Contains(strings.ToLower(good.ArticleTitle), lw) ||
-		strings.Contains(strings.ToLower(good.ArticlePrice), lw) ||
-		strings.Contains(strings.ToLower(good.Referral), lw)
-}
-
-// regexMetaPattern detects characters that change plain-text matching when used as regex.
-var regexMetaPattern = regexp.MustCompile(`[.\\+*?()|\[\]{}^$]`)
-
-// literalSeedPattern extracts a plain search seed for SMZDM API from a regex/keyword.
-var literalSeedPattern = regexp.MustCompile(`[\p{L}\p{N}]+`)
-
-// simpleGroupPattern matches one non-nested (a|b|c) group for seed expansion.
-var simpleGroupPattern = regexp.MustCompile(`\(([^()]+)\)`)
-
-func hasRegexMeta(s string) bool {
-	return regexMetaPattern.MatchString(s)
-}
-
-// searchSeeds returns plain keywords suitable for SMZDM API search.
-// Examples:
-//
-//	显示器            → [显示器]
-//	显示器|屏幕       → [显示器, 屏幕]
-//	(香|大)米         → [香米, 大米]
-//	(4K|8K).{0,6}显示器 → [显示器]
-func searchSeeds(keyword string) []string {
-	keyword = strings.TrimSpace(keyword)
-	if keyword == "" {
-		return nil
-	}
-	if !hasRegexMeta(keyword) {
-		return []string{keyword}
-	}
-
-	seen := map[string]bool{}
-	seeds := make([]string, 0, 4)
-	add := func(s string) {
-		s = strings.TrimSpace(s)
-		if s == "" || seen[s] {
-			return
-		}
-		if hasRegexMeta(s) {
-			s = extractLiteralSeed(s)
-			if s == "" || seen[s] {
-				return
-			}
-		}
-		seen[s] = true
-		seeds = append(seeds, s)
-	}
-
-	for _, part := range splitRegexAlternatives(keyword) {
-		for _, expanded := range expandSimpleGroups(part) {
-			add(expanded)
-		}
-	}
-
-	// Prefer longer seeds first (better SMZDM recall than single characters).
-	sort.SliceStable(seeds, func(i, j int) bool {
-		return len([]rune(seeds[i])) > len([]rune(seeds[j]))
-	})
-
-	if len(seeds) == 0 {
-		if seed := extractLiteralSeed(keyword); seed != "" {
-			return []string{seed}
-		}
-		return []string{keyword}
-	}
-	return seeds
-}
-
-// expandSimpleGroups expands non-nested (a|b) groups into concrete strings.
-// "(香|大)米" → ["香米", "大米"]. Nested/complex patterns are left as-is for literal extraction.
-func expandSimpleGroups(s string) []string {
-	s = strings.TrimSpace(s)
-	if s == "" {
-		return nil
-	}
-
-	loc := simpleGroupPattern.FindStringSubmatchIndex(s)
-	if loc == nil {
-		return []string{s}
-	}
-
-	before := s[:loc[0]]
-	inside := s[loc[2]:loc[3]]
-	after := s[loc[1]:]
-
-	// Only expand pure alternations of literals (no nested groups / character classes).
-	if strings.ContainsAny(inside, "()[]{}\\.+*?^$") {
-		return []string{s}
-	}
-
-	alts := strings.Split(inside, "|")
-	out := make([]string, 0, len(alts))
-	for _, alt := range alts {
-		alt = strings.TrimSpace(alt)
-		if alt == "" {
-			continue
-		}
-		combined := before + alt + after
-		out = append(out, expandSimpleGroups(combined)...)
-	}
-	if len(out) == 0 {
-		return []string{s}
-	}
-	return out
-}
-
-func extractLiteralSeed(s string) string {
-	matches := literalSeedPattern.FindAllString(s, -1)
-	if len(matches) == 0 {
-		return ""
-	}
-	best := matches[0]
-	bestLen := len([]rune(best))
-	for _, m := range matches[1:] {
-		n := len([]rune(m))
-		if n > bestLen {
-			best = m
-			bestLen = n
-		}
-	}
-	return best
-}
-
-// splitRegexAlternatives splits on top-level | (outside parentheses).
-func splitRegexAlternatives(s string) []string {
-	var parts []string
-	depth := 0
-	start := 0
-	for i, r := range s {
-		switch r {
-		case '(':
-			depth++
-		case ')':
-			if depth > 0 {
-				depth--
-			}
-		case '|':
-			if depth == 0 {
-				parts = append(parts, strings.TrimSpace(s[start:i]))
-				start = i + len("|")
-			}
-		}
-	}
-	parts = append(parts, strings.TrimSpace(s[start:]))
-	return parts
+	return strings.Contains(strings.ToLower(good.ArticleTitle), word) ||
+		strings.Contains(strings.ToLower(good.ArticlePrice), word) ||
+		strings.Contains(strings.ToLower(good.Referral), word)
 }
 
 var numberPattern = regexp.MustCompile(`\d+(?:,\d{3})*(?:\.\d+)?`)
