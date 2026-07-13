@@ -133,9 +133,14 @@
     .tg-inline-editor .notify-save-row{display:flex;justify-content:flex-end;gap:8px;margin-top:12px;position:sticky;bottom:0;padding-top:8px;background:linear-gradient(180deg,transparent,var(--surface) 30%)}
     .tg-inline-editor .notify-save-row .btn{min-width:96px;height:36px;border-radius:9px}
     #editNotifyConfig.is-open{background:color-mix(in srgb,var(--blue) 12%,var(--surface));border-color:color-mix(in srgb,var(--blue) 30%,var(--line))}
-    .push-legend{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+    .push-legend{
+      margin-top:10px;
+      display:grid!important;
+      grid-template-columns:1fr 1fr!important;
+      gap:6px 12px!important;
+    }
     .push-legend-item{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--faint)}
-    .push-legend .dot{width:8px;height:8px;border-radius:50%}
+    .push-legend .dot{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
     .push-legend .dot.ok{background:#059669}
     .push-legend .dot.fail{background:#dc2626}
     .push-legend .dot.skip{background:#8b97a8}
@@ -205,12 +210,17 @@
       grid-template-rows:auto minmax(0,1fr)!important;
       overflow:hidden!important;
     }
-    .advanced-toggle{
-      display:inline-flex;align-items:center;gap:4px;margin:8px 0 0;
-      border:0;background:transparent;color:var(--blue);font-size:12px;font-weight:800;cursor:pointer;padding:0;
+    .advanced-toggle{display:none!important}
+    .advanced-rule-fields,
+    .advanced-rule-fields.is-open{
+      display:contents!important; /* flow into parent rule-summary-grid as same row */
     }
-    .advanced-rule-fields{display:none;margin-top:8px}
-    .advanced-rule-fields.is-open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .rule-summary-grid{
+      display:grid!important;
+      grid-template-columns:repeat(3,minmax(0,1fr))!important;
+      gap:9px!important;
+    }
+    .rule-summary-grid .rule-summary-field{min-height:72px}
     .preset-chip.is-on{border-color:color-mix(in srgb,var(--blue) 40%,var(--line));background:color-mix(in srgb,var(--blue) 12%,var(--surface));color:var(--blue)}
     .preset-chip.is-on::after{content:" ✓";font-size:10px}
     .price-summary-control input:placeholder-shown{color:var(--faint);font-weight:700}
@@ -541,9 +551,6 @@
             <button type="button" class="preset-chip" data-threshold="strict">严格</button>
           </div>
         </div>
-      </div>
-      <button type="button" class="advanced-toggle" id="toggleAdvancedRule" aria-expanded="false">高级设置 · 频率与推送上限 ▾</button>
-      <div class="advanced-rule-fields" id="advancedRuleFields">
         <div class="rule-summary-field">
           <label for="tickValueInput">扫描频率</label>
           <div class="summary-inline frequency-summary-control">
@@ -1020,12 +1027,7 @@ layui.use(function(){
     removeCommonFilter(word);
     layer.msg('已从常用过滤词移除「' + word + '」');
   });
-  $('#toggleAdvancedRule').on('click', function(){
-    var open = !$('#advancedRuleFields').hasClass('is-open');
-    $('#advancedRuleFields').toggleClass('is-open', open);
-    $(this).attr('aria-expanded', open ? 'true' : 'false')
-      .text(open ? '高级设置 · 频率与推送上限 ▴' : '高级设置 · 频率与推送上限 ▾');
-  });
+
   $('#thresholdPresets').on('click', '.preset-chip', function(){
     var kind = $(this).data('threshold');
     var map = { loose: { c: 0, w: 0 }, medium: { c: 1, w: 5 }, strict: { c: 10, w: 20 } };
