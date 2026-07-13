@@ -386,17 +386,10 @@
       word-break:break-word;
       flex-shrink:0;
     }
-    .product-card{position:relative}
-    .product-card.is-not-pushable{opacity:.72}
-    .product-card .push-skip-mark{
-      position:absolute;top:8px;right:8px;z-index:2;
-      width:22px;height:22px;border-radius:999px;
-      display:inline-grid;place-items:center;
-      font-size:13px;font-weight:900;line-height:1;
-      color:#b42318;background:#fef3f2;border:1px solid #fecdca;
-      pointer-events:none;
+    .product-card .hit-reason.is-blocked{
+      color:#b42318;background:#fef3f2;border-color:#fecdca;
     }
-    body.zero-redesign.trellis-ui[data-theme=dark] .product-card .push-skip-mark{
+    body.zero-redesign.trellis-ui[data-theme=dark] .product-card .hit-reason.is-blocked{
       color:#fca5a5;background:#3f1d1d;border-color:#7f1d1d;
     }
     /* Filter tokens: allow multi-line, no hard 27px clip */
@@ -2308,12 +2301,8 @@ layui.use(function(){
   function productCard(item) {
     item = item || {};
     var pushState = item.pushState || 'ok';
+    var blocked = pushState !== 'ok';
     var card = $('<article class="product-card"></article>');
-    if (pushState !== 'ok') {
-      card.addClass('is-not-pushable');
-      // Default = pushable (no badge). Not pushable = simple × with reason on hover.
-      card.append($('<span class="push-skip-mark" aria-label="不可推送">×</span>').attr('title', pushSkipTitle(pushState)));
-    }
     var image = $('<img loading="lazy" decoding="async">');
     // Always square frame — product images vary but card layout must not.
     var media = $('<div class="product-media media-square"></div>').append(image);
@@ -2334,7 +2323,12 @@ layui.use(function(){
     priceHtml += '</div>';
     info.append(priceHtml);
     info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
-    info.append('<div class="hit-reason"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
+    // Green hit bar = pushable; red = not pushable (reason on hover).
+    var hit = $('<div class="hit-reason' + (blocked ? ' is-blocked' : '') + '"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
+    if (blocked) {
+      hit.attr('title', pushSkipTitle(pushState));
+    }
+    info.append(hit);
     card.append(media);
     card.append(info);
     return card;
