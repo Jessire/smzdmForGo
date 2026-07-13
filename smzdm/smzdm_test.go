@@ -140,17 +140,59 @@ func TestSearchSeeds(t *testing.T) {
 		t.Fatalf("plain seed = %#v, want [显示器]", got)
 	}
 	got := searchSeeds("显示器|屏幕")
-	if len(got) != 2 || got[0] != "显示器" || got[1] != "屏幕" {
+	if len(got) != 2 || !seedSetEqual(got, []string{"显示器", "屏幕"}) {
 		t.Fatalf("OR seeds = %#v, want [显示器 屏幕]", got)
+	}
+	got = searchSeeds(`(香|大)米`)
+	if !seedSetEqual(got, []string{"香米", "大米"}) {
+		t.Fatalf("group expand seeds = %#v, want [香米 大米]", got)
+	}
+	if !containsWord(Product{ArticleTitle: "东北大米 5kg"}, `(香|大)米`) {
+		t.Fatal("expected (香|大)米 to match 大米")
+	}
+	if !containsWord(Product{ArticleTitle: "泰国香米"}, `(香|大)米`) {
+		t.Fatal("expected (香|大)米 to match 香米")
+	}
+	if containsWord(Product{ArticleTitle: "小米手机"}, `(香|大)米`) {
+		t.Fatal("expected (香|大)米 not to match 小米 alone")
 	}
 	got = searchSeeds(`(4K|8K).{0,6}显示器`)
 	if len(got) == 0 || got[0] == "" {
 		t.Fatalf("complex seed empty: %#v", got)
 	}
-	// Longest literal should be preferred from first alternative group content
+	// Complex meta collapses to longest literal seed.
+	if !seedSetEqual(got, []string{"显示器"}) && got[0] != "显示器" {
+		// at least one seed should be 显示器
+		found := false
+		for _, s := range got {
+			if s == "显示器" {
+				found = true
+			}
+		}
+		if !found {
+			t.Fatalf("complex seed = %#v, want to include 显示器", got)
+		}
+	}
 	if !containsWord(Product{ArticleTitle: "4K 显示器"}, `(4K|8K).{0,6}显示器`) {
 		t.Fatal("expected complex regex to match title")
 	}
+}
+
+func seedSetEqual(got, want []string) bool {
+	if len(got) != len(want) {
+		return false
+	}
+	m := map[string]int{}
+	for _, s := range got {
+		m[s]++
+	}
+	for _, s := range want {
+		if m[s] == 0 {
+			return false
+		}
+		m[s]--
+	}
+	return true
 }
 
 func TestSearchProductMatchesKeyword(t *testing.T) {

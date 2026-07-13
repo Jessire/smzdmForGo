@@ -282,8 +282,9 @@ func SearchGoods(keyword string, rule file.KeywordRule, limit int) []Product {
 	if len(seeds) == 0 {
 		seeds = []string{keyword}
 	}
-	if len(seeds) > 3 {
-		seeds = seeds[:3]
+	// Cap API fan-out; longer seeds are already sorted first.
+	if len(seeds) > 5 {
+		seeds = seeds[:5]
 	}
 
 	results := make([]Product, 0, limit)
@@ -474,12 +475,20 @@ var regexMetaPattern = regexp.MustCompile(`[.\\+*?()|\[\]{}^$]`)
 // literalSeedPattern extracts a plain search seed for SMZDM API from a regex/keyword.
 var literalSeedPattern = regexp.MustCompile(`[\p{L}\p{N}]+`)
 
+// simpleGroupPattern matches one non-nested (a|b|c) group for seed expansion.
+var simpleGroupPattern = regexp.MustCompile(`\(([^()]+)\)`)
+
 func hasRegexMeta(s string) bool {
 	return regexMetaPattern.MatchString(s)
 }
 
 // searchSeeds returns plain keywords suitable for SMZDM API search.
-// For "显示器|屏幕" → ["显示器", "屏幕"]; for plain text → [keyword].
+// Examples:
+//
+//	显示器            → [显示器]
+//	显示器|屏幕       → [显示器, 屏幕]
+//	(香|大)米         → [香米, 大米]
+//	(4K|8K).{0,6}显示器 → [显示器]
 func searchSeeds(keyword string) []string {
 	keyword = strings.TrimSpace(keyword)
 	if keyword == "" {
@@ -489,17 +498,34 @@ func searchSeeds(keyword string) []string {
 		return []string{keyword}
 	}
 
-	parts := splitRegexAlternatives(keyword)
 	seen := map[string]bool{}
-	seeds := make([]string, 0, len(parts))
-	for _, part := range parts {
-		seed := extractLiteralSeed(part)
-		if seed == "" || seen[seed] {
-			continue
+	seeds := make([]string, 0, 4)
+	add := func(s string) {
+		s = strings.TrimSpace(s)
+		if s == "" || seen[s] {
+			return
 		}
-		seen[seed] = true
-		seeds = append(seeds, seed)
+		if hasRegexMeta(s) {
+			s = extractLiteralSeed(s)
+			if s == "" || seen[s] {
+				return
+			}
+		}
+		seen[s] = true
+		seeds = append(seeds, s)
 	}
+
+	for _, part := range splitRegexAlternatives(keyword) {
+		for _, expanded := range expandSimpleGroups(part) {
+			add(expanded)
+		}
+	}
+
+	// Prefer longer seeds first (better SMZDM recall than single characters).
+	sort.SliceStable(seeds, func(i, j int) bool {
+		return len([]rune(seeds[i])) > len([]rune(seeds[j]))
+	})
+
 	if len(seeds) == 0 {
 		if seed := extractLiteralSeed(keyword); seed != "" {
 			return []string{seed}
@@ -507,6 +533,44 @@ func searchSeeds(keyword string) []string {
 		return []string{keyword}
 	}
 	return seeds
+}
+
+// expandSimpleGroups expands non-nested (a|b) groups into concrete strings.
+// "(香|大)米" → ["香米", "大米"]. Nested/complex patterns are left as-is for literal extraction.
+func expandSimpleGroups(s string) []string {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return nil
+	}
+
+	loc := simpleGroupPattern.FindStringSubmatchIndex(s)
+	if loc == nil {
+		return []string{s}
+	}
+
+	before := s[:loc[0]]
+	inside := s[loc[2]:loc[3]]
+	after := s[loc[1]:]
+
+	// Only expand pure alternations of literals (no nested groups / character classes).
+	if strings.ContainsAny(inside, "()[]{}\\.+*?^$") {
+		return []string{s}
+	}
+
+	alts := strings.Split(inside, "|")
+	out := make([]string, 0, len(alts))
+	for _, alt := range alts {
+		alt = strings.TrimSpace(alt)
+		if alt == "" {
+			continue
+		}
+		combined := before + alt + after
+		out = append(out, expandSimpleGroups(combined)...)
+	}
+	if len(out) == 0 {
+		return []string{s}
+	}
+	return out
 }
 
 func extractLiteralSeed(s string) string {
