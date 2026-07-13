@@ -72,10 +72,15 @@ func requestSmzdm() {
 	if len(satisfyGoodsList) == 0 {
 		log.Printf("商品扫描完成：无新命中，跳过推送")
 		// Surface to UI so "save but no Telegram" is explainable.
+		age := currentConfig().MaxArticleAgeDays
+		reason := "没有新命中（可能已推送过或未过门槛）"
+		if age > 0 {
+			reason = fmt.Sprintf("没有新命中（可能已推送过、超过近%d天或未过门槛）", age)
+		}
 		push.AddLog(push.LogEntry{
 			Title:  "扫描完成 · 无新推送",
 			Status: "skip",
-			Reason: "没有新命中（预览里的商品可能已推送过，或太旧/未过门槛）",
+			Reason: reason,
 		})
 		return
 	}

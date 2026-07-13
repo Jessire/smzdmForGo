@@ -560,7 +560,6 @@
         <div class="rule-summary-field">
           <label for="keywordInput">关键词</label>
           <input id="keywordInput" type="text" autocomplete="off" placeholder="如：大米、显示器">
-          <div class="field-hint">什么值得买普通关键词搜索（不支持正则）</div>
         </div>
         <div class="rule-summary-field">
           <label for="filterInput">过滤词</label>
@@ -579,7 +578,6 @@
             <span class="sep">–</span>
             <input id="maxPriceInput" type="number" min="0" step="0.01" placeholder="不限" aria-label="最高价格">
           </div>
-          <div class="field-hint">未填最低 = 不限；需满足 最低 ≤ 最高</div>
         </div>
         <div class="rule-summary-field">
           <label>命中门槛</label>
@@ -610,7 +608,6 @@
               <option value="1">秒</option>
             </select>
           </div>
-          <div class="field-hint" id="tickHint">预计每日请求次数 —</div>
         </div>
         <div class="rule-summary-field">
           <label for="satisfyNumInput">推送上限</label>
@@ -619,7 +616,15 @@
             <input id="satisfyNumInput" type="number" min="1">
             <span>条</span>
           </div>
-          <div class="field-hint">超出则自动拆成多条 Telegram 消息发送</div>
+        </div>
+        <div class="rule-summary-field">
+          <label for="maxArticleAgeDaysInput">文章时效</label>
+          <div class="summary-inline push-limit-control">
+            <span>只推送近</span>
+            <input id="maxArticleAgeDaysInput" type="number" min="0" step="1" aria-label="文章时效天数">
+            <span>天</span>
+          </div>
+          <div class="field-hint">0 = 不限天数</div>
         </div>
       </div>
       <input id="enabledInput" type="checkbox" hidden>
@@ -788,6 +793,7 @@ var productConfig = {
   maxPrice: 0,
   satisfyNum: 5,
   tickTime: 10800,
+  maxArticleAgeDays: 7,
   cron: '0 10 10 ? * *',
   telegram: { enabled: false, botToken: '', chatId: '', parseMode: 'HTML', disableWebPagePreview: false },
   keywordRules: []
@@ -1021,7 +1027,7 @@ layui.use(function(){
     }
   });
   bindFilterTokenEditor();
-  $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput').on('input change', function(){
+  $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput, #maxArticleAgeDaysInput').on('input change', function(){
     syncEditorToRule();
     updateSwitchLabels();
     updateCurrentRuleOverview('需验证', true);
@@ -1448,10 +1454,10 @@ layui.use(function(){
       $('#enabledInput').prop('checked', false);
       fillTickEditor(productConfig.tickTime || 10800);
       $('#satisfyNumInput').val(productConfig.satisfyNum || 5);
+      $('#maxArticleAgeDaysInput').val(readMaxArticleAgeDays());
       updateCurrentRuleOverview('待搜索', true);
       updateSwitchLabels();
       updateRuleSummaryStrip();
-      updateTickHint();
       updateChannelAlert();
       return;
     }
@@ -1465,11 +1471,11 @@ layui.use(function(){
     $('#enabledInput').prop('checked', !!rule.enabled);
     fillTickEditor(productConfig.tickTime || 10800);
     $('#satisfyNumInput').val(productConfig.satisfyNum || 5);
+    $('#maxArticleAgeDaysInput').val(readMaxArticleAgeDays());
     syncThresholdPresetHighlight(rule.lowCommentNum, rule.lowWorthyNum);
     updateCurrentRuleOverview('待搜索', true);
     updateSwitchLabels();
     updateRuleSummaryStrip();
-    updateTickHint();
     updateChannelAlert();
   }
 
@@ -1486,11 +1492,23 @@ layui.use(function(){
     if (selectedRuleIndex < 0 || selectedRuleIndex >= productConfig.keywordRules.length) {
       productConfig.tickTime = readTickSeconds() || productConfig.tickTime || 10800;
       productConfig.satisfyNum = toInt($('#satisfyNumInput').val()) || productConfig.satisfyNum || 5;
+      productConfig.maxArticleAgeDays = readMaxArticleAgeDays();
       return;
     }
     productConfig.keywordRules[selectedRuleIndex] = currentRuleFromEditor();
     productConfig.tickTime = readTickSeconds() || 10800;
     productConfig.satisfyNum = toInt($('#satisfyNumInput').val()) || 5;
+    productConfig.maxArticleAgeDays = readMaxArticleAgeDays();
+  }
+
+  function readMaxArticleAgeDays() {
+    var raw = $('#maxArticleAgeDaysInput').val();
+    if (raw === '' || raw === null || typeof raw === 'undefined') {
+      return typeof productConfig.maxArticleAgeDays === 'number' ? productConfig.maxArticleAgeDays : 7;
+    }
+    var n = parseInt(raw, 10);
+    if (isNaN(n) || n < 0) { return 7; }
+    return n;
   }
 
   function currentRuleFromEditor() {
@@ -1596,7 +1614,9 @@ layui.use(function(){
       : '';
     $('#previewMeta').text((keyword || '') + ' · ' + items.length + ' 条结果' + metaExtra + ' · 按' + previewSortLabel($('#previewSort').val()) + '排序');
     updateCurrentRuleOverview('已自动搜索', false);
-    $('#ruleSearchSummary').text('共 ' + items.length + ' 条符合规则 · 其中 ' + pushable + ' 条可推送（其余已推送或超过约2天）');
+    var ageDays = readMaxArticleAgeDays();
+    var ageNote = ageDays > 0 ? ('或超过近' + ageDays + '天') : '';
+    $('#ruleSearchSummary').text('共 ' + items.length + ' 条符合规则 · 其中 ' + pushable + ' 条可推送' + (ageNote ? ('（其余已推送' + ageNote + '）') : '（其余已推送）'));
     $('#previewCacheMeta').text('预览缓存于 ' + cacheLabel);
     if (keyword) {
       ruleRuntime[keyword] = {
@@ -1970,6 +1990,9 @@ layui.use(function(){
       maxPrice: value.maxPrice || 0,
       satisfyNum: value.satisfyNum || 5,
       tickTime: value.tickTime || 10800,
+      maxArticleAgeDays: (typeof value.maxArticleAgeDays === 'number' && value.maxArticleAgeDays >= 0)
+        ? value.maxArticleAgeDays
+        : 7,
       cron: value.cron || '0 10 10 ? * *',
       telegram: {
         enabled: !!value.telegram.enabled,
@@ -2062,20 +2085,19 @@ layui.use(function(){
     var limit = toInt($('#satisfyNumInput').val()) || productConfig.satisfyNum || 5;
     var tickValue = toInt($('#tickValueInput').val()) || 1;
     var tickUnit = $('#tickUnitInput option:selected').text() || '小时';
+    var ageDays = readMaxArticleAgeDays();
     var priceText = (!minP && maxP) ? ('≤ ¥' + maxP) : ((minP && !maxP) ? ('≥ ¥' + minP) : ('¥ ' + (minP || '不限') + ' – ' + (maxP || '不限')));
     $('#summaryKeyword').text('关键词「' + keyword + '」');
     $('#summaryFilter').text(filters.length ? ('排除「' + filters.join(' / ') + '」') : '无过滤词');
     $('#summaryPrice').text(priceText);
     syncFilterPresetState();
     $('#summaryThreshold').text('评论 ≥' + comment + ' · 值率 ≥' + worthy + '%');
-    $('#summaryFreq').text('每 ' + tickValue + ' ' + tickUnit);
+    $('#summaryFreq').text('每 ' + tickValue + ' ' + tickUnit + (ageDays > 0 ? (' · 近' + ageDays + '天') : ' · 不限天数'));
     $('#summaryLimit').text('每条消息最多 ' + limit + ' 条');
   }
 
   function updateTickHint() {
-    var seconds = readTickSeconds() || 10800;
-    var perDay = seconds > 0 ? Math.max(1, Math.round(86400 / seconds)) : 0;
-    $('#tickHint').text('预计每日约 ' + perDay + ' 次请求');
+    // Kept for callers; daily estimate removed from UI as redundant.
   }
 
   function syncThresholdPresetHighlight(comment, worthy) {
@@ -2270,8 +2292,11 @@ layui.use(function(){
   }
 
   function pushStateLabel(state) {
+    var ageDays = readMaxArticleAgeDays();
     if (state === 'already_pushed') { return '已推送过 · 本次不会再推'; }
-    if (state === 'too_old') { return '超过约2天 · 后台不推'; }
+    if (state === 'too_old') {
+      return ageDays > 0 ? ('超过近' + ageDays + '天 · 后台不推') : '时效不符 · 后台不推';
+    }
     if (state === 'bad_date') { return '时间异常 · 后台不推'; }
     return '可推送';
   }
@@ -2364,7 +2389,10 @@ layui.use(function(){
     if (!date || isNaN(date.getTime())) {
       return text;
     }
-    return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+    // Month-day + time, no year (e.g. 07-11 22:51)
+    var md = String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+    var hm = String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+    return md + ' ' + hm;
   }
 
   function proxiedImageUrl(src) {

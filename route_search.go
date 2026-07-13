@@ -59,10 +59,11 @@ func ProductSearchHandler(w http.ResponseWriter, r *http.Request) {
 	rule := searchRuleFromRequest(req.Rule)
 	products := smzdm.SearchGoods(keyword, rule, req.Limit)
 	pushedMap := smzdm.LoadPushedMap()
+	maxAgeDays := smzdm.NormalizeMaxArticleAgeDays(currentConfig().MaxArticleAgeDays)
 	items := make([]productSearchProduct, 0, len(products))
 	pushable, already, tooOld := 0, 0, 0
 	for _, product := range products {
-		state := smzdm.PushSkipReason(product, pushedMap)
+		state := smzdm.PushSkipReason(product, pushedMap, maxAgeDays)
 		if state == "" {
 			state = "ok"
 			pushable++

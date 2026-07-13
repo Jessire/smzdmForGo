@@ -15,11 +15,12 @@ type productConfigRequest struct {
 	LowWorthyNum  int                        `json:"lowWorthyNum"`
 	MinPrice      float64                    `json:"minPrice"`
 	MaxPrice      float64                    `json:"maxPrice"`
-	SatisfyNum    int                        `json:"satisfyNum"`
-	TickTime      int                        `json:"tickTime"`
-	Cron          string                     `json:"cron"`
-	Telegram      telegramConfigRequest      `json:"telegram"`
-	KeywordRules  []keywordRuleConfigRequest `json:"keywordRules"`
+	SatisfyNum        int                        `json:"satisfyNum"`
+	TickTime          int                        `json:"tickTime"`
+	MaxArticleAgeDays int                        `json:"maxArticleAgeDays"`
+	Cron              string                     `json:"cron"`
+	Telegram          telegramConfigRequest      `json:"telegram"`
+	KeywordRules      []keywordRuleConfigRequest `json:"keywordRules"`
 }
 
 type telegramConfigRequest struct {
@@ -93,9 +94,10 @@ func productConfigFromConfig(conf file.Config) productConfigRequest {
 		LowWorthyNum:  conf.LowWorthyNum,
 		MinPrice:      conf.MinPrice,
 		MaxPrice:      conf.MaxPrice,
-		SatisfyNum:    conf.SatisfyNum,
-		TickTime:      conf.TickTime,
-		Cron:          conf.Cron,
+		SatisfyNum:        conf.SatisfyNum,
+		TickTime:          conf.TickTime,
+		MaxArticleAgeDays: conf.MaxArticleAgeDays,
+		Cron:              conf.Cron,
 		Telegram: telegramConfigRequest{
 			Enabled:               conf.Telegram.Enabled,
 			BotToken:              conf.Telegram.BotToken,
@@ -120,6 +122,12 @@ func (req productConfigRequest) applyTo(conf file.Config) file.Config {
 	conf.TickTime = req.TickTime
 	if conf.TickTime <= 0 {
 		conf.TickTime = 10800
+	}
+	// 0 = unlimited; negative/missing from old clients → default 7 days.
+	if req.MaxArticleAgeDays < 0 {
+		conf.MaxArticleAgeDays = 7
+	} else {
+		conf.MaxArticleAgeDays = req.MaxArticleAgeDays
 	}
 	conf.Cron = strings.TrimSpace(req.Cron)
 	if conf.Cron == "" {

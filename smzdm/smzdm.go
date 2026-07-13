@@ -221,7 +221,7 @@ func removeByFilterRules(good Product, pushedMap map[string]interface{}) bool {
 }
 
 func removePushedOrOld(good Product, pushedMap map[string]interface{}) bool {
-	return PushSkipReason(good, pushedMap) != ""
+	return PushSkipReason(good, pushedMap, globalConf.MaxArticleAgeDays) != ""
 }
 
 // LoadPushedMap loads the on-disk set of already-delivered article IDs.
@@ -229,17 +229,30 @@ func LoadPushedMap() map[string]interface{} {
 	return file.ReadPusedInfo(pushedPath)
 }
 
+// NormalizeMaxArticleAgeDays returns a safe age window.
+// 0 means no age limit; negative values fall back to default 7.
+func NormalizeMaxArticleAgeDays(days int) int {
+	if days < 0 {
+		return 7
+	}
+	return days
+}
+
 // PushSkipReason explains why a product would not be Telegram-pushed.
 // Empty string means eligible for push (subject to rule match already applied).
 // Values: already_pushed | too_old | bad_date
-func PushSkipReason(good Product, pushedMap map[string]interface{}) string {
+// maxAgeDays: 0 = do not filter by age; >0 = only keep articles within the last N days.
+func PushSkipReason(good Product, pushedMap map[string]interface{}, maxAgeDays int) string {
 	if good.ArticleId != "" {
 		if _, ok := pushedMap[good.ArticleId]; ok {
 			return "already_pushed"
 		}
 	}
 
-	// Only keep roughly last 2 days for background push (preview used to skip this).
+	maxAgeDays = NormalizeMaxArticleAgeDays(maxAgeDays)
+	if maxAgeDays == 0 {
+		return ""
+	}
 	if good.ArticleDate == "" {
 		return ""
 	}
@@ -248,7 +261,7 @@ func PushSkipReason(good Product, pushedMap map[string]interface{}) string {
 		return "bad_date"
 	}
 	arDate := time.Unix(dateInt64, 0)
-	if arDate.Before(time.Now().AddDate(0, 0, -2)) {
+	if arDate.Before(time.Now().AddDate(0, 0, -maxAgeDays)) {
 		return "too_old"
 	}
 	return ""

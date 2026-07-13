@@ -19,13 +19,15 @@ type Config struct {
 	MaxPrice      float64       `json:"maxPrice" yaml:"maxPrice" mapstructure:"maxPrice"`
 	MinPrice      float64       `json:"minPrice" yaml:"minPrice" mapstructure:"minPrice"`
 	LowWorthyNum  int           `json:"lowWorthyNum" yaml:"lowWorthyNum" mapstructure:"lowWorthyNum"`
-	SatisfyNum    int           `json:"satisfyNum" yaml:"satisfyNum" mapstructure:"satisfyNum"`
-	TickTime      int           `json:"tickTime" yaml:"tickTime" mapstructure:"tickTime"`
-	FilterWords   []string      `json:"filterWords" yaml:"filterWords" mapstructure:"filterWords"`
-	KeyWords      []string      `json:"keyWords" yaml:"keyWords" mapstructure:"keyWords"`
-	KeywordRules  []KeywordRule `json:"keywordRules" yaml:"keywordRules" mapstructure:"keywordRules"`
-	Telegram      Telegram      `json:"telegram" yaml:"telegram" mapstructure:"telegram"`
-	Cron          string        `json:"cron" yaml:"cron" mapstructure:"cron"`
+	SatisfyNum         int           `json:"satisfyNum" yaml:"satisfyNum" mapstructure:"satisfyNum"`
+	TickTime           int           `json:"tickTime" yaml:"tickTime" mapstructure:"tickTime"`
+	// MaxArticleAgeDays: only push articles newer than this many days. 0 = no age limit.
+	MaxArticleAgeDays  int           `json:"maxArticleAgeDays" yaml:"maxArticleAgeDays" mapstructure:"maxArticleAgeDays"`
+	FilterWords        []string      `json:"filterWords" yaml:"filterWords" mapstructure:"filterWords"`
+	KeyWords           []string      `json:"keyWords" yaml:"keyWords" mapstructure:"keyWords"`
+	KeywordRules       []KeywordRule `json:"keywordRules" yaml:"keywordRules" mapstructure:"keywordRules"`
+	Telegram           Telegram      `json:"telegram" yaml:"telegram" mapstructure:"telegram"`
+	Cron               string        `json:"cron" yaml:"cron" mapstructure:"cron"`
 }
 
 type KeywordRule struct {
