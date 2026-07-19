@@ -220,6 +220,17 @@
       grid-template-columns:repeat(3,minmax(0,1fr))!important;
       gap:9px!important;
     }
+    .discovery-field{display:grid;align-content:start;gap:7px}
+    .discovery-label{color:var(--text);font-size:13px;font-weight:800;line-height:1.1}
+    .discovery-field .setting-row{min-height:27px}
+    .discovery-field .switch{width:44px;height:26px;flex:0 0 44px}
+    .discovery-field .switch span:before{width:20px;height:20px;left:2px;top:2px}
+    .discovery-field .switch input:checked+span:before{transform:translateX(18px)}
+    .discovery-inline{gap:6px}
+    .discovery-inline label{color:var(--muted);font-size:12px;font-weight:780}
+    .discovery-inline select{height:27px;min-width:72px;padding:0 4px;border:1px solid color-mix(in srgb,var(--line) 72%,transparent);border-radius:6px;background:var(--surface);font-size:12px;font-weight:850}
+    .discovery-field>input[type=text]{width:100%;height:30px;padding:0 8px;border:1px solid color-mix(in srgb,var(--line) 72%,transparent);border-radius:7px;background:var(--surface);font-size:12px;font-weight:750}
+    .discovery-subtoggle{margin-top:1px;padding-top:7px;border-top:1px solid color-mix(in srgb,var(--line) 56%,transparent)}
     @media (max-width:1100px){
       .advanced-rule-fields.is-open{grid-template-columns:repeat(2,minmax(0,1fr))!important}
     }
@@ -637,6 +648,46 @@
           </div>
           <div class="field-hint">0 = 不限天数</div>
         </div>
+        <div class="rule-summary-field discovery-field">
+          <div class="setting-row">
+            <strong class="discovery-label">全站热门</strong>
+            <label class="switch" title="开启全站热门推送" aria-label="开启全站热门推送">
+              <input id="globalHotEnabled" type="checkbox">
+              <span></span>
+            </label>
+          </div>
+          <div class="summary-inline discovery-inline">
+            <label for="globalHotWindow">近</label>
+            <select id="globalHotWindow" aria-label="全站热门时间范围">
+              <option value="3">3 小时</option>
+              <option value="6">6 小时</option>
+              <option value="12">12 小时</option>
+            </select>
+            <label for="globalHotMinComment">评论</label>
+            <select id="globalHotMinComment" aria-label="全站热门最低评论数">
+              <option value="100">100+</option>
+              <option value="200">200+</option>
+            </select>
+          </div>
+          <label class="setting-row discovery-subtoggle">
+            <strong class="discovery-label">按商品规则二次筛选</strong>
+            <span class="switch" title="按现有关键词和过滤条件筛选" aria-label="按商品规则二次筛选">
+              <input id="globalHotApplyRules" type="checkbox">
+              <span></span>
+            </span>
+          </label>
+        </div>
+        <div class="rule-summary-field discovery-field">
+          <div class="setting-row">
+            <strong class="discovery-label">关注作者</strong>
+            <label class="switch" title="开启关注作者推送" aria-label="开启关注作者推送">
+              <input id="followAuthorsEnabled" type="checkbox">
+              <span></span>
+            </label>
+          </div>
+          <label class="sr-only" for="followedAuthorsInput">关注作者昵称</label>
+          <input id="followedAuthorsInput" type="text" autocomplete="off" placeholder="输入昵称, 多个用逗号分隔">
+        </div>
       </div>
       <input id="enabledInput" type="checkbox" hidden>
       <span id="ruleSearchSummary" class="sr-only">等待搜索</span>
@@ -807,6 +858,7 @@ var productConfig = {
   maxArticleAgeDays: 7,
   cron: '0 10 10 ? * *',
   telegram: { enabled: false, botToken: '', chatId: '', parseMode: 'HTML', disableWebPagePreview: false },
+  globalHot: { enabled: false, windowHours: 3, minCommentNum: 200, applyKeywordRules: true, followAuthorsEnabled: false, followedAuthors: [] },
   keywordRules: []
 };
 var selectedRuleIndex = -1;
@@ -1038,7 +1090,7 @@ layui.use(function(){
     }
   });
   bindFilterTokenEditor();
-  $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput, #maxArticleAgeDaysInput').on('input change', function(){
+  $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput, #maxArticleAgeDaysInput, #globalHotEnabled, #globalHotWindow, #globalHotMinComment, #globalHotApplyRules, #followAuthorsEnabled, #followedAuthorsInput').on('input change', function(){
     syncEditorToRule();
     updateSwitchLabels();
     updateCurrentRuleOverview('需验证', true);
@@ -1139,6 +1191,7 @@ layui.use(function(){
       success: function(res) {
         productConfig = normalizeConfig(res.data);
         fillNotifyForm();
+        fillGlobalHotForm();
         renderRules();
         renderSummary();
         selectRule(productConfig.keywordRules.length ? 0 : -1);
@@ -1327,6 +1380,7 @@ layui.use(function(){
       success: function(res) {
         productConfig = normalizeConfig(res.data);
         fillNotifyForm();
+        fillGlobalHotForm();
         renderRules();
         renderSummary();
         updateChannelAlert();
@@ -1500,6 +1554,7 @@ layui.use(function(){
   }
 
   function syncEditorToRule() {
+    readGlobalHotForm();
     if (selectedRuleIndex < 0 || selectedRuleIndex >= productConfig.keywordRules.length) {
       productConfig.tickTime = readTickSeconds() || productConfig.tickTime || 10800;
       productConfig.satisfyNum = toInt($('#satisfyNumInput').val()) || productConfig.satisfyNum || 5;
@@ -1510,6 +1565,29 @@ layui.use(function(){
     productConfig.tickTime = readTickSeconds() || 10800;
     productConfig.satisfyNum = toInt($('#satisfyNumInput').val()) || 5;
     productConfig.maxArticleAgeDays = readMaxArticleAgeDays();
+  }
+
+  function fillGlobalHotForm() {
+    var hot = normalizeGlobalHot(productConfig.globalHot);
+    productConfig.globalHot = hot;
+    $('#globalHotEnabled').prop('checked', hot.enabled);
+    $('#globalHotWindow').val(String(hot.windowHours));
+    $('#globalHotMinComment').val(String(hot.minCommentNum));
+    $('#globalHotApplyRules').prop('checked', hot.applyKeywordRules);
+    $('#followAuthorsEnabled').prop('checked', hot.followAuthorsEnabled);
+    $('#followedAuthorsInput').val(hot.followedAuthors.join(', '));
+  }
+
+  function readGlobalHotForm() {
+    if (!$('#globalHotEnabled').length) { return; }
+    productConfig.globalHot = normalizeGlobalHot({
+      enabled: $('#globalHotEnabled').is(':checked'),
+      windowHours: toInt($('#globalHotWindow').val()),
+      minCommentNum: toInt($('#globalHotMinComment').val()),
+      applyKeywordRules: $('#globalHotApplyRules').is(':checked'),
+      followAuthorsEnabled: $('#followAuthorsEnabled').is(':checked'),
+      followedAuthors: textToList($('#followedAuthorsInput').val())
+    });
   }
 
   function readMaxArticleAgeDays() {
@@ -2005,6 +2083,7 @@ layui.use(function(){
         ? value.maxArticleAgeDays
         : 7,
       cron: value.cron || '0 10 10 ? * *',
+      globalHot: normalizeGlobalHot(value.globalHot),
       telegram: {
         enabled: !!value.telegram.enabled,
         botToken: value.telegram.botToken || '',
@@ -2013,6 +2092,21 @@ layui.use(function(){
         disableWebPagePreview: !!value.telegram.disableWebPagePreview
       },
       keywordRules: rules
+    };
+  }
+
+  function normalizeGlobalHot(value) {
+    value = value || {};
+    var windowHours = [3, 6, 12].indexOf(toInt(value.windowHours)) >= 0 ? toInt(value.windowHours) : 3;
+    var minCommentValue = toInt(value.minCommentNum);
+    var minCommentNum = minCommentValue === 100 ? 100 : 200;
+    return {
+      enabled: !!value.enabled,
+      windowHours: windowHours,
+      minCommentNum: minCommentNum,
+      applyKeywordRules: value.applyKeywordRules !== false,
+      followAuthorsEnabled: !!value.followAuthorsEnabled,
+      followedAuthors: textToList(value.followedAuthors || [])
     };
   }
 

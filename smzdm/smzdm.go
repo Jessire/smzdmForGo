@@ -63,14 +63,15 @@ func GetSatisfiedGoods(conf file.Config) ([]Product, []Product) {
 
 	if len(conf.KeywordRules) > 0 {
 		satisfyGoodsList = getSatisfiedGoodsByKeywordRules(conf, pushedMap)
-	} else {
+	} else if !conf.GlobalHot.Enabled && !conf.GlobalHot.FollowAuthorsEnabled {
 		satisfyGoodsList = getSatisfiedGoodsFromFeed(pushedMap)
 	}
+	if conf.GlobalHot.Enabled || conf.GlobalHot.FollowAuthorsEnabled {
+		satisfyGoodsList = mergeProducts(satisfyGoodsList, getSatisfiedGoodsFromGlobalFeed(conf, pushedMap))
+	}
 
-	// 根据评论数排序
-	sort.SliceStable(satisfyGoodsList, func(a, b int) bool {
-		return parseMetric(satisfyGoodsList[a].ArticleComment) > parseMetric(satisfyGoodsList[b].ArticleComment)
-	})
+	// 根据评论数和发布时间排序
+	sortProductsByComment(satisfyGoodsList)
 
 	fmt.Println("结束爬取符合条件商品。。")
 
@@ -79,6 +80,135 @@ func GetSatisfiedGoods(conf file.Config) ([]Product, []Product) {
 
 	// Do NOT mark as pushed here — only after Telegram send succeeds (see MarkPushed).
 	return satisfyGoodsList, satisfyGoodsListBySelf
+}
+
+func getSatisfiedGoodsFromGlobalFeed(conf file.Config, pushedMap map[string]interface{}) []Product {
+	windowHours := conf.GlobalHot.WindowHours
+	if windowHours != 3 && windowHours != 6 && windowHours != 12 {
+		windowHours = 3
+	}
+	cutoff := time.Now().Add(-time.Duration(windowHours) * time.Hour)
+	rows := scanGlobalFeed(cutoff)
+	result := make([]Product, 0, len(rows))
+	for _, good := range rows {
+		if removePushedOrOld(good, pushedMap) {
+			continue
+		}
+		if !globalFeedProductMatches(good, conf) {
+			continue
+		}
+		result = append(result, good)
+	}
+	return result
+}
+
+func globalFeedProductMatches(good Product, conf file.Config) bool {
+	if conf.GlobalHot.FollowAuthorsEnabled && followedAuthorMatch(good.Referral, conf.GlobalHot.FollowedAuthors) {
+		return true
+	}
+	if !conf.GlobalHot.Enabled || parseMetric(good.ArticleComment) < globalHotCommentFloor(conf.GlobalHot.MinCommentNum) {
+		return false
+	}
+	if !conf.GlobalHot.ApplyKeywordRules || (len(conf.KeywordRules) == 0 && len(conf.KeyWords) == 0) {
+		return true
+	}
+	return matchesPersonalRules(good)
+}
+
+func globalHotCommentFloor(value int) int {
+	if value == 100 {
+		return 100
+	}
+	return 200
+}
+
+func scanGlobalFeed(cutoff time.Time) []Product {
+	const maxPages = 120
+	const emptyPageLimit = 2
+	var result []Product
+	emptyPages := 0
+	seen := map[string]bool{}
+	for page := 0; page < maxPages; page++ {
+		rows := GetGoods(page, "").Data.Rows
+		if len(rows) == 0 {
+			break
+		}
+		pageMatches := 0
+		for _, good := range rows {
+			if good.ArticleId == "" || seen[good.ArticleId] {
+				continue
+			}
+			publishedAt, ok := productPublishedAt(good)
+			if !ok || publishedAt.Before(cutoff) || publishedAt.After(time.Now().Add(2*time.Minute)) {
+				continue
+			}
+			seen[good.ArticleId] = true
+			result = append(result, good)
+			pageMatches++
+		}
+		if pageMatches == 0 {
+			emptyPages++
+			if emptyPages >= emptyPageLimit {
+				break
+			}
+		} else {
+			emptyPages = 0
+		}
+		time.Sleep(250 * time.Millisecond)
+	}
+	return result
+}
+
+func productPublishedAt(good Product) (time.Time, bool) {
+	dateInt64, err := strconv.ParseInt(strings.TrimSpace(good.ArticleDate), 10, 64)
+	if err != nil || dateInt64 <= 0 {
+		return time.Time{}, false
+	}
+	return time.Unix(dateInt64, 0), true
+}
+
+func followedAuthorMatch(author string, followed []string) bool {
+	author = strings.TrimSpace(strings.ToLower(author))
+	if author == "" {
+		return false
+	}
+	for _, candidate := range followed {
+		if author == strings.TrimSpace(strings.ToLower(candidate)) {
+			return true
+		}
+	}
+	return false
+}
+
+func mergeProducts(existing []Product, additional []Product) []Product {
+	seen := make(map[string]bool, len(existing)+len(additional))
+	merged := make([]Product, 0, len(existing)+len(additional))
+	for _, product := range append(existing, additional...) {
+		if product.ArticleId != "" && seen[product.ArticleId] {
+			continue
+		}
+		if product.ArticleId != "" {
+			seen[product.ArticleId] = true
+		}
+		merged = append(merged, product)
+	}
+	return merged
+}
+
+func sortProductsByComment(products []Product) {
+	sort.SliceStable(products, func(a, b int) bool {
+		commentA := parseMetric(products[a].ArticleComment)
+		commentB := parseMetric(products[b].ArticleComment)
+		if commentA != commentB {
+			return commentA > commentB
+		}
+		dateA, okA := productPublishedAt(products[a])
+		dateB, okB := productPublishedAt(products[b])
+		if okA && okB {
+			return dateA.After(dateB)
+		}
+		return okA && !okB
+	})
 }
 
 // MarkPushed records successfully delivered product IDs so they won't be re-sent.

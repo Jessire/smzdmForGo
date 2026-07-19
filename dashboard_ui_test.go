@@ -16,9 +16,12 @@ func TestDashboardSearchFeedbackPlacement(t *testing.T) {
 		"grid-auto-rows:112px",
 		".product-card{min-height:112px;height:112px}",
 		".rule-auto-state.is-searching:before",
-		"<strong>本次搜索</strong>",
 		"toggleClass('is-searching', state === '搜索中')",
 		"if (selector === '#searchRule')",
+		"id=\"globalHotEnabled\"",
+		"id=\"globalHotApplyRules\"",
+		"id=\"followAuthorsEnabled\"",
+		"function normalizeGlobalHot(value)",
 	}
 	for _, marker := range required {
 		if !strings.Contains(page, marker) {

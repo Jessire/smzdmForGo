@@ -15,19 +15,29 @@ import (
 
 // 配置文件
 type Config struct {
-	LowCommentNum int           `json:"lowCommentNum" yaml:"lowCommentNum" mapstructure:"lowCommentNum"`
-	MaxPrice      float64       `json:"maxPrice" yaml:"maxPrice" mapstructure:"maxPrice"`
-	MinPrice      float64       `json:"minPrice" yaml:"minPrice" mapstructure:"minPrice"`
-	LowWorthyNum  int           `json:"lowWorthyNum" yaml:"lowWorthyNum" mapstructure:"lowWorthyNum"`
-	SatisfyNum         int           `json:"satisfyNum" yaml:"satisfyNum" mapstructure:"satisfyNum"`
-	TickTime           int           `json:"tickTime" yaml:"tickTime" mapstructure:"tickTime"`
+	LowCommentNum int     `json:"lowCommentNum" yaml:"lowCommentNum" mapstructure:"lowCommentNum"`
+	MaxPrice      float64 `json:"maxPrice" yaml:"maxPrice" mapstructure:"maxPrice"`
+	MinPrice      float64 `json:"minPrice" yaml:"minPrice" mapstructure:"minPrice"`
+	LowWorthyNum  int     `json:"lowWorthyNum" yaml:"lowWorthyNum" mapstructure:"lowWorthyNum"`
+	SatisfyNum    int     `json:"satisfyNum" yaml:"satisfyNum" mapstructure:"satisfyNum"`
+	TickTime      int     `json:"tickTime" yaml:"tickTime" mapstructure:"tickTime"`
 	// MaxArticleAgeDays: only push articles newer than this many days. 0 = no age limit.
-	MaxArticleAgeDays  int           `json:"maxArticleAgeDays" yaml:"maxArticleAgeDays" mapstructure:"maxArticleAgeDays"`
-	FilterWords        []string      `json:"filterWords" yaml:"filterWords" mapstructure:"filterWords"`
-	KeyWords           []string      `json:"keyWords" yaml:"keyWords" mapstructure:"keyWords"`
-	KeywordRules       []KeywordRule `json:"keywordRules" yaml:"keywordRules" mapstructure:"keywordRules"`
-	Telegram           Telegram      `json:"telegram" yaml:"telegram" mapstructure:"telegram"`
-	Cron               string        `json:"cron" yaml:"cron" mapstructure:"cron"`
+	MaxArticleAgeDays int             `json:"maxArticleAgeDays" yaml:"maxArticleAgeDays" mapstructure:"maxArticleAgeDays"`
+	FilterWords       []string        `json:"filterWords" yaml:"filterWords" mapstructure:"filterWords"`
+	KeyWords          []string        `json:"keyWords" yaml:"keyWords" mapstructure:"keyWords"`
+	KeywordRules      []KeywordRule   `json:"keywordRules" yaml:"keywordRules" mapstructure:"keywordRules"`
+	GlobalHot         GlobalHotConfig `json:"globalHot" yaml:"globalHot" mapstructure:"globalHot"`
+	Telegram          Telegram        `json:"telegram" yaml:"telegram" mapstructure:"telegram"`
+	Cron              string          `json:"cron" yaml:"cron" mapstructure:"cron"`
+}
+
+type GlobalHotConfig struct {
+	Enabled              bool     `json:"enabled" yaml:"enabled" mapstructure:"enabled"`
+	WindowHours          int      `json:"windowHours" yaml:"windowHours" mapstructure:"windowHours"`
+	MinCommentNum        int      `json:"minCommentNum" yaml:"minCommentNum" mapstructure:"minCommentNum"`
+	ApplyKeywordRules    bool     `json:"applyKeywordRules" yaml:"applyKeywordRules" mapstructure:"applyKeywordRules"`
+	FollowAuthorsEnabled bool     `json:"followAuthorsEnabled" yaml:"followAuthorsEnabled" mapstructure:"followAuthorsEnabled"`
+	FollowedAuthors      []string `json:"followedAuthors" yaml:"followedAuthors" mapstructure:"followedAuthors"`
 }
 
 type KeywordRule struct {

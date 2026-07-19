@@ -12,6 +12,7 @@
 
 - 按关键词搜索什么值得买好价文章
 - 支持多组独立关键词规则
+- 支持全站热门商品筛选和关注作者推送
 - 支持过滤词、最低评论数、最低值率、价格区间
 - 支持搜索预览
 - 支持 Telegram Bot 推送
@@ -77,6 +78,14 @@ keywordRules:
 
 tickTime: 10800
 
+globalHot:
+  enabled: false
+  windowHours: 3
+  minCommentNum: 200
+  applyKeywordRules: true
+  followAuthorsEnabled: false
+  followedAuthors: []
+
 telegram:
   enabled: false
   botToken: ""
@@ -96,6 +105,12 @@ telegram:
 - `maxPrice`: 最高价格, `0` 表示不限制.
 - `satisfyNum`: 单次推送数量上限.
 - `tickTime`: 定时任务间隔, 单位秒.
+- `globalHot.enabled`: 是否开启全站热门推送.
+- `globalHot.windowHours`: 全站热门发布时间窗口, 支持 3 / 6 / 12 小时.
+- `globalHot.minCommentNum`: 全站热门最低评论门槛, 支持 100 或 200.
+- `globalHot.applyKeywordRules`: 是否对全站热门继续套用商品规则做二次筛选.
+- `globalHot.followAuthorsEnabled`: 是否推送关注作者发布的好价.
+- `globalHot.followedAuthors`: 值得买作者昵称列表.
 - `telegram`: Telegram Bot 推送配置.
 
 ## 数据存储

@@ -46,6 +46,15 @@ keywordRules:
 # 定时任务多长执行一次 单位秒 默认 3个小时
 tickTime: 10800
 
+# 全站热门与关注作者推送. 默认关闭.
+globalHot:
+  enabled: false
+  windowHours: 3
+  minCommentNum: 200
+  applyKeywordRules: true
+  followAuthorsEnabled: false
+  followedAuthors: []
+
 # Telegram Bot 推送. 生产环境在面板里保存到数据库.
 telegram:
   enabled: false
