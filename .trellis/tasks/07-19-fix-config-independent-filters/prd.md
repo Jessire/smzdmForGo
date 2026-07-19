@@ -23,6 +23,7 @@
 - Replace the global-hot preset selects with positive integer inputs so the time window and minimum comment count can be entered freely.
 - Do not report a successful configuration save when PostgreSQL is unavailable.
 - Do not replace the broken PostgreSQL dependency with ephemeral Render-local SQLite.
+- Keep the Render service and Aiven database warm by probing `/health/db` every 10 minutes from GitHub Actions and from the running application.
 
 ## Acceptance Criteria
 

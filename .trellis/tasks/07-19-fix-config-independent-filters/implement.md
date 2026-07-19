@@ -6,3 +6,4 @@
 4. Replace global-hot presets with positive integer inputs and preserve custom values end to end.
 5. Add and run backend/UI tests plus browser interaction verification.
 6. Obtain a valid PostgreSQL DSN, update Render, verify `/health/db`, deploy, then verify save survives restart.
+7. Keep Render and Aiven warm with a 10-minute external health probe plus an in-process database ping.

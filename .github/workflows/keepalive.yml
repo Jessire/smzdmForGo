@@ -2,8 +2,8 @@ name: Keep Render + Aiven DB awake
 
 on:
   schedule:
-    # Every 6 hours — enough to reduce free Aiven idle power-off risk
-    - cron: "0 */6 * * *"
+    # Keep both the Render web service and the Aiven database warm.
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 jobs:

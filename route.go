@@ -240,7 +240,7 @@ func pingDatabase() error {
 }
 
 func keepaliveDatabase() {
-	// First ping shortly after boot, then every 6 hours.
+	// First ping shortly after boot, then every 10 minutes.
 	time.Sleep(30 * time.Second)
 	for {
 		if err := pingDatabase(); err != nil {
@@ -248,7 +248,7 @@ func keepaliveDatabase() {
 		} else {
 			log.Printf("db keepalive ok")
 		}
-		time.Sleep(6 * time.Hour)
+		time.Sleep(10 * time.Minute)
 	}
 }
 

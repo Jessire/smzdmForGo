@@ -4,6 +4,8 @@
 
 The existing PostgreSQL JSON settings blob remains authoritative. The current loss is caused by an unreachable Aiven DSN, not JSON serialization. Keep `REQUIRE_DATABASE_URL=true`; once a valid DSN is supplied, verify save, restart, and reload against the same database row.
 
+After Aiven is running, GitHub Actions calls the database health endpoint every 10 minutes so Render wakes before the request and the endpoint performs a real PostgreSQL ping. The running application performs the same lightweight ping every 10 minutes while its process is active.
+
 ## Independent Filters
 
 Extend `GlobalHotConfig` with `HotKeywords` and `AuthorKeywords`. `ApplyKeywordRules` remains decodable for backward compatibility but is no longer used by matching or shown in the UI.
