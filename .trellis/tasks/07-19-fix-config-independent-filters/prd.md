@@ -27,11 +27,11 @@
 
 ## Acceptance Criteria
 
-- [ ] Go tests cover independent hot keywords, exact author matching, author keywords, and config round-trip.
-- [ ] Dashboard JavaScript syntax check passes.
-- [ ] Browser verification confirms Enter/paste creates chips and removal updates saved JSON.
-- [ ] Browser verification confirms custom time/comment values survive save and reload without horizontal overflow at desktop and mobile widths.
-- [ ] Production deployment occurs only after a valid PostgreSQL DSN is available and `/health/db` returns 200.
+- [x] Go tests cover independent hot keywords, exact author matching, author keywords, and config round-trip.
+- [x] Dashboard JavaScript syntax check passes.
+- [x] Browser verification confirms Enter/paste creates chips and removal updates saved JSON.
+- [x] Browser verification confirms custom time/comment values survive save and reload without horizontal overflow at desktop and mobile widths.
+- [x] Production deployment occurs only after a valid PostgreSQL DSN is available and `/health/db` returns 200.
 
 ## Out Of Scope
 
