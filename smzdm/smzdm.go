@@ -103,13 +103,58 @@ func getSatisfiedGoodsFromGlobalFeed(conf file.Config, pushedMap map[string]inte
 }
 
 func globalFeedProductMatches(good Product, conf file.Config) bool {
-	if conf.GlobalHot.FollowAuthorsEnabled && followedAuthorMatch(good.Referral, conf.GlobalHot.FollowedAuthors) {
-		return matchesDiscoveryTitle(good, conf.GlobalHot.AuthorKeywords)
+	if conf.GlobalHot.FollowAuthorsEnabled && discoveryProductMatches(good, conf.GlobalHot, "author") {
+		return true
 	}
-	if !conf.GlobalHot.Enabled || parseMetric(good.ArticleComment) < globalHotCommentFloor(conf.GlobalHot.MinCommentNum) {
+	if !conf.GlobalHot.Enabled {
 		return false
 	}
-	return matchesDiscoveryTitle(good, conf.GlobalHot.HotKeywords)
+	return discoveryProductMatches(good, conf.GlobalHot, "hot")
+}
+
+// SearchDiscoveryGoods returns a bounded, recent slice of the global feed for
+// the dashboard preview. Unlike the production scan, it intentionally stops
+// after a small number of pages so opening a rule remains responsive.
+func SearchDiscoveryGoods(globalHot file.GlobalHotConfig, kind string, limit int) []Product {
+	if limit <= 0 {
+		limit = 24
+	}
+	if limit > 48 {
+		limit = 48
+	}
+	windowHours := globalHot.WindowHours
+	if windowHours <= 0 {
+		windowHours = 3
+	}
+	cutoff := time.Now().Add(-time.Duration(windowHours) * time.Hour)
+	rows := scanGlobalFeedWithLimit(cutoff, 10)
+	result := make([]Product, 0, limit)
+	for _, good := range rows {
+		if !discoveryProductMatches(good, globalHot, kind) {
+			continue
+		}
+		result = append(result, good)
+		if len(result) >= limit {
+			break
+		}
+	}
+	sortProductsByComment(result)
+	return result
+}
+
+func discoveryProductMatches(good Product, globalHot file.GlobalHotConfig, kind string) bool {
+	switch kind {
+	case "hot":
+		if parseMetric(good.ArticleComment) < globalHotCommentFloor(globalHot.MinCommentNum) {
+			return false
+		}
+		return matchesDiscoveryTitle(good, globalHot.HotKeywords)
+	case "author":
+		return followedAuthorMatch(good.Referral, globalHot.FollowedAuthors) &&
+			matchesDiscoveryTitle(good, globalHot.AuthorKeywords)
+	default:
+		return false
+	}
 }
 
 func matchesDiscoveryTitle(good Product, keywords []string) bool {
@@ -134,7 +179,13 @@ func globalHotCommentFloor(value int) int {
 }
 
 func scanGlobalFeed(cutoff time.Time) []Product {
-	const maxPages = 120
+	return scanGlobalFeedWithLimit(cutoff, 120)
+}
+
+func scanGlobalFeedWithLimit(cutoff time.Time, maxPages int) []Product {
+	if maxPages <= 0 {
+		return []Product{}
+	}
 	const emptyPageLimit = 2
 	var result []Product
 	emptyPages := 0

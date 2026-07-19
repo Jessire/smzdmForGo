@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"ggball.com/smzdm/file"
 	"ggball.com/smzdm/smzdm"
@@ -14,6 +15,12 @@ import (
 type productSearchRequest struct {
 	Rule  keywordRuleConfigRequest `json:"rule"`
 	Limit int                      `json:"limit"`
+}
+
+type discoverySearchRequest struct {
+	Type      string                 `json:"type"`
+	GlobalHot globalHotConfigRequest `json:"globalHot"`
+	Limit     int                    `json:"limit"`
 }
 
 type productSearchResponse struct {
@@ -58,6 +65,56 @@ func ProductSearchHandler(w http.ResponseWriter, r *http.Request) {
 	keyword := words[0]
 	rule := searchRuleFromRequest(req.Rule)
 	products := smzdm.SearchGoods(keyword, rule, req.Limit)
+	response := productSearchPayload(keyword, keywordSearchURL(keyword), products)
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"code": "0",
+		"msg":  "",
+		"data": response,
+	})
+}
+
+func DiscoverySearchHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	body, _ := ioutil.ReadAll(r.Body)
+	var req discoverySearchRequest
+	if err := json.Unmarshal(body, &req); err != nil {
+		writeError(w, fmt.Errorf("解析搜索条件失败: %v", err))
+		return
+	}
+
+	kind := strings.ToLower(strings.TrimSpace(req.Type))
+	if kind != "hot" && kind != "author" {
+		writeError(w, fmt.Errorf("不支持的发现规则类型"))
+		return
+	}
+
+	globalHot := file.GlobalHotConfig{
+		Enabled:              req.GlobalHot.Enabled,
+		WindowHours:          normalizeGlobalHotWindow(req.GlobalHot.WindowHours),
+		MinCommentNum:        normalizeGlobalHotCommentFloor(req.GlobalHot.MinCommentNum),
+		HotKeywords:          cleanWords(req.GlobalHot.HotKeywords),
+		FollowAuthorsEnabled: req.GlobalHot.FollowAuthorsEnabled,
+		FollowedAuthors:      cleanWords(req.GlobalHot.FollowedAuthors),
+		AuthorKeywords:       cleanWords(req.GlobalHot.AuthorKeywords),
+	}
+	products := smzdm.SearchDiscoveryGoods(globalHot, kind, req.Limit)
+	label := "全站热门"
+	if kind == "author" {
+		label = "关注作者"
+	}
+	response := productSearchPayload(label, "", products)
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"code": "0",
+		"msg":  "",
+		"data": response,
+	})
+}
+
+func productSearchPayload(keyword, openURL string, products []smzdm.Product) productSearchResponse {
 	pushedMap := smzdm.LoadPushedMap()
 	maxAgeDays := smzdm.NormalizeMaxArticleAgeDays(currentConfig().MaxArticleAgeDays)
 	items := make([]productSearchProduct, 0, len(products))
@@ -85,18 +142,14 @@ func ProductSearchHandler(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	writeJSON(w, http.StatusOK, map[string]interface{}{
-		"code": "0",
-		"msg":  "",
-		"data": productSearchResponse{
-			Keyword:     keyword,
-			OpenURL:     keywordSearchURL(keyword),
-			Items:       items,
-			Pushable:    pushable,
-			AlreadyPush: already,
-			TooOld:      tooOld,
-		},
-	})
+	return productSearchResponse{
+		Keyword:     keyword,
+		OpenURL:     openURL,
+		Items:       items,
+		Pushable:    pushable,
+		AlreadyPush: already,
+		TooOld:      tooOld,
+	}
 }
 
 func searchRuleFromRequest(req keywordRuleConfigRequest) file.KeywordRule {

@@ -103,6 +103,7 @@ func init() {
 	http.HandleFunc("/check", CheckInHandler)
 	http.HandleFunc("/productConfig", ProductConfigHandler)
 	http.HandleFunc("/productSearch", ProductSearchHandler)
+	http.HandleFunc("/discoverySearch", DiscoverySearchHandler)
 	http.HandleFunc("/imageProxy", ImageProxyHandler)
 	http.HandleFunc("/telegramTest", TelegramTestHandler)
 	http.HandleFunc("/telegramAvatar", TelegramAvatarHandler)

@@ -63,6 +63,29 @@ func TestGlobalHotUsesCustomCommentFloor(t *testing.T) {
 	}
 }
 
+func TestDiscoveryPreviewMatchesSelectedTypeWithoutEnableFlag(t *testing.T) {
+	config := file.GlobalHotConfig{
+		Enabled:              false,
+		MinCommentNum:        300,
+		HotKeywords:          []string{"显示器"},
+		FollowAuthorsEnabled: false,
+		FollowedAuthors:      []string{"值得关注"},
+		AuthorKeywords:       []string{"耳机"},
+	}
+	if !discoveryProductMatches(Product{ArticleTitle: "显示器优惠", ArticleComment: "300"}, config, "hot") {
+		t.Fatal("expected hot preview to use its configured comment and title filters")
+	}
+	if !discoveryProductMatches(Product{ArticleTitle: "耳机优惠", Referral: "值得关注"}, config, "author") {
+		t.Fatal("expected author preview to use its configured author and title filters")
+	}
+	if discoveryProductMatches(Product{ArticleTitle: "耳机优惠", Referral: "其他作者"}, config, "author") {
+		t.Fatal("expected author preview to reject an unfollowed author")
+	}
+	if discoveryProductMatches(Product{ArticleTitle: "显示器优惠", ArticleComment: "299"}, config, "hot") {
+		t.Fatal("expected hot preview to reject items below the comment floor")
+	}
+}
+
 func TestSortProductsByCommentAndTime(t *testing.T) {
 	later := time.Now().Add(-time.Minute).Unix()
 	earlier := time.Now().Add(-time.Hour).Unix()

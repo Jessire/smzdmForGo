@@ -27,6 +27,12 @@ func TestDashboardSearchFeedbackPlacement(t *testing.T) {
 		"id=\"authorKeywordTokenBox\"",
 		"function bindDiscoveryTokenEditor",
 		"function normalizeGlobalHot(value)",
+		"var selectedRuleKind = 'product'",
+		"function openRuleTypePicker",
+		"data-rule-kind=\"hot\"",
+		"id=\"hotRuleEditor\"",
+		"id=\"authorRuleEditor\"",
+		"/discoverySearch",
 	}
 	for _, marker := range required {
 		if !strings.Contains(page, marker) {
