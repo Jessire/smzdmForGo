@@ -51,9 +51,10 @@ globalHot:
   enabled: false
   windowHours: 3
   minCommentNum: 200
-  applyKeywordRules: true
+  hotKeywords: []
   followAuthorsEnabled: false
   followedAuthors: []
+  authorKeywords: []
 
 # Telegram Bot 推送. 生产环境在面板里保存到数据库.
 telegram:

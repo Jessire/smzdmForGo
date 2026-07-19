@@ -14,9 +14,10 @@ func TestGlobalHotFiltersAndAuthorMatching(t *testing.T) {
 	conf := file.Config{GlobalHot: file.GlobalHotConfig{
 		Enabled:              true,
 		MinCommentNum:        200,
-		ApplyKeywordRules:    true,
+		HotKeywords:          []string{"显示器"},
 		FollowAuthorsEnabled: true,
 		FollowedAuthors:      []string{"  关注的人  "},
+		AuthorKeywords:       []string{"耳机"},
 	}}
 	hot := Product{ArticleTitle: "27寸显示器", ArticleComment: "200", ArticleDate: "1784434480"}
 	low := Product{ArticleTitle: "27寸显示器", ArticleComment: "199", ArticleDate: "1784434480"}
@@ -27,15 +28,38 @@ func TestGlobalHotFiltersAndAuthorMatching(t *testing.T) {
 	if globalFeedProductMatches(low, conf) {
 		t.Fatal("expected item below comment floor to be rejected")
 	}
+	unrelatedHot := hot
+	unrelatedHot.ArticleTitle = "高评论零食"
+	if globalFeedProductMatches(unrelatedHot, conf) {
+		t.Fatal("expected hot item without its independent keyword to be rejected")
+	}
+	if globalFeedProductMatches(author, conf) {
+		t.Fatal("expected followed author item without its independent keyword to be rejected")
+	}
+	author.ArticleTitle = "耳机好价"
 	if !globalFeedProductMatches(author, conf) {
-		t.Fatal("expected followed author item to bypass hot floor")
+		t.Fatal("expected followed author keyword match")
 	}
 	if !followedAuthorMatch("关注的人", []string{" 关注的人 "}) {
 		t.Fatal("expected normalized author match")
 	}
 	globalConf = file.Config{}
+	conf.GlobalHot.HotKeywords = nil
 	if !globalFeedProductMatches(hot, conf) {
-		t.Fatal("expected hot item to pass when no secondary rules exist")
+		t.Fatal("expected hot item to pass when its independent keyword list is empty")
+	}
+}
+
+func TestGlobalHotUsesCustomCommentFloor(t *testing.T) {
+	conf := file.Config{GlobalHot: file.GlobalHotConfig{
+		Enabled:       true,
+		MinCommentNum: 175,
+	}}
+	if !globalFeedProductMatches(Product{ArticleTitle: "商品", ArticleComment: "175"}, conf) {
+		t.Fatal("expected item at custom comment floor to match")
+	}
+	if globalFeedProductMatches(Product{ArticleTitle: "商品", ArticleComment: "174"}, conf) {
+		t.Fatal("expected item below custom comment floor to be rejected")
 	}
 }
 

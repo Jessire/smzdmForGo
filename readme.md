@@ -82,9 +82,10 @@ globalHot:
   enabled: false
   windowHours: 3
   minCommentNum: 200
-  applyKeywordRules: true
+  hotKeywords: []
   followAuthorsEnabled: false
   followedAuthors: []
+  authorKeywords: []
 
 telegram:
   enabled: false
@@ -106,11 +107,12 @@ telegram:
 - `satisfyNum`: 单次推送数量上限.
 - `tickTime`: 定时任务间隔, 单位秒.
 - `globalHot.enabled`: 是否开启全站热门推送.
-- `globalHot.windowHours`: 全站热门发布时间窗口, 支持 3 / 6 / 12 小时.
-- `globalHot.minCommentNum`: 全站热门最低评论门槛, 支持 100 或 200.
-- `globalHot.applyKeywordRules`: 是否对全站热门继续套用商品规则做二次筛选.
+- `globalHot.windowHours`: 全站热门发布时间窗口, 正整数小时, 可自行填写.
+- `globalHot.minCommentNum`: 全站热门最低评论门槛, 正整数, 可自行填写.
+- `globalHot.hotKeywords`: 全站热门独立标题关键词列表.
 - `globalHot.followAuthorsEnabled`: 是否推送关注作者发布的好价.
 - `globalHot.followedAuthors`: 值得买作者昵称列表.
+- `globalHot.authorKeywords`: 关注作者内容的独立标题关键词列表.
 - `telegram`: Telegram Bot 推送配置.
 
 ## 数据存储

@@ -153,12 +153,12 @@ func ProductConfigHandler(w http.ResponseWriter, r *http.Request) {
 
 		database, err := openUserDB()
 		if err != nil {
-			writeError(w, err)
+			writeError(w, fmt.Errorf("配置未保存, 数据库连接失败: %v", err))
 			return
 		}
 		defer database.Close()
 		if err := database.SaveProductConfig(next); err != nil {
-			writeError(w, err)
+			writeError(w, fmt.Errorf("配置未保存, 数据库写入失败: %v", err))
 			return
 		}
 		setCurrentConfig(next)

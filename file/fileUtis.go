@@ -35,9 +35,10 @@ type GlobalHotConfig struct {
 	Enabled              bool     `json:"enabled" yaml:"enabled" mapstructure:"enabled"`
 	WindowHours          int      `json:"windowHours" yaml:"windowHours" mapstructure:"windowHours"`
 	MinCommentNum        int      `json:"minCommentNum" yaml:"minCommentNum" mapstructure:"minCommentNum"`
-	ApplyKeywordRules    bool     `json:"applyKeywordRules" yaml:"applyKeywordRules" mapstructure:"applyKeywordRules"`
+	HotKeywords          []string `json:"hotKeywords" yaml:"hotKeywords" mapstructure:"hotKeywords"`
 	FollowAuthorsEnabled bool     `json:"followAuthorsEnabled" yaml:"followAuthorsEnabled" mapstructure:"followAuthorsEnabled"`
 	FollowedAuthors      []string `json:"followedAuthors" yaml:"followedAuthors" mapstructure:"followedAuthors"`
+	AuthorKeywords       []string `json:"authorKeywords" yaml:"authorKeywords" mapstructure:"authorKeywords"`
 }
 
 type KeywordRule struct {

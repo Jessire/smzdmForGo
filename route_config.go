@@ -28,9 +28,10 @@ type globalHotConfigRequest struct {
 	Enabled              bool     `json:"enabled"`
 	WindowHours          int      `json:"windowHours"`
 	MinCommentNum        int      `json:"minCommentNum"`
-	ApplyKeywordRules    bool     `json:"applyKeywordRules"`
+	HotKeywords          []string `json:"hotKeywords"`
 	FollowAuthorsEnabled bool     `json:"followAuthorsEnabled"`
 	FollowedAuthors      []string `json:"followedAuthors"`
+	AuthorKeywords       []string `json:"authorKeywords"`
 }
 
 type telegramConfigRequest struct {
@@ -57,11 +58,6 @@ type keywordRuleConfigRequest struct {
 
 func productConfigFromConfig(conf file.Config) productConfigRequest {
 	globalHot := conf.GlobalHot
-	// Old configurations have no globalHot fields. New discovery defaults to
-	// applying the existing rules when the user first enables the feature.
-	if globalHot.WindowHours == 0 && globalHot.MinCommentNum == 0 && !globalHot.Enabled && !globalHot.FollowAuthorsEnabled && len(globalHot.FollowedAuthors) == 0 {
-		globalHot.ApplyKeywordRules = true
-	}
 	rules := make([]keywordRuleConfigRequest, 0, len(conf.KeywordRules)+len(conf.KeyWords))
 	seenWords := map[string]bool{}
 	for _, rule := range conf.KeywordRules {
@@ -126,9 +122,10 @@ func productConfigFromConfig(conf file.Config) productConfigRequest {
 			Enabled:              globalHot.Enabled,
 			WindowHours:          normalizeGlobalHotWindow(globalHot.WindowHours),
 			MinCommentNum:        normalizeGlobalHotCommentFloor(globalHot.MinCommentNum),
-			ApplyKeywordRules:    globalHot.ApplyKeywordRules,
+			HotKeywords:          cleanWords(globalHot.HotKeywords),
 			FollowAuthorsEnabled: globalHot.FollowAuthorsEnabled,
 			FollowedAuthors:      cleanWords(globalHot.FollowedAuthors),
+			AuthorKeywords:       cleanWords(globalHot.AuthorKeywords),
 		},
 	}
 }
@@ -161,9 +158,10 @@ func (req productConfigRequest) applyTo(conf file.Config) file.Config {
 		Enabled:              req.GlobalHot.Enabled,
 		WindowHours:          normalizeGlobalHotWindow(req.GlobalHot.WindowHours),
 		MinCommentNum:        normalizeGlobalHotCommentFloor(req.GlobalHot.MinCommentNum),
-		ApplyKeywordRules:    req.GlobalHot.ApplyKeywordRules,
+		HotKeywords:          cleanWords(req.GlobalHot.HotKeywords),
 		FollowAuthorsEnabled: req.GlobalHot.FollowAuthorsEnabled,
 		FollowedAuthors:      cleanWords(req.GlobalHot.FollowedAuthors),
+		AuthorKeywords:       cleanWords(req.GlobalHot.AuthorKeywords),
 	}
 	conf.Telegram = file.Telegram{
 		Enabled:               req.Telegram.Enabled,
@@ -296,22 +294,17 @@ func nonNegativeFloat(value float64) float64 {
 }
 
 func normalizeGlobalHotWindow(value int) int {
-	switch value {
-	case 3, 6, 12:
-		return value
-	default:
+	if value <= 0 {
 		return 3
 	}
+	return value
 }
 
 func normalizeGlobalHotCommentFloor(value int) int {
 	if value <= 0 {
 		return 200
 	}
-	if value >= 200 {
-		return 200
-	}
-	return 100
+	return value
 }
 
 func normalizedParseMode(value string) string {

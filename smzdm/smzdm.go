@@ -84,7 +84,7 @@ func GetSatisfiedGoods(conf file.Config) ([]Product, []Product) {
 
 func getSatisfiedGoodsFromGlobalFeed(conf file.Config, pushedMap map[string]interface{}) []Product {
 	windowHours := conf.GlobalHot.WindowHours
-	if windowHours != 3 && windowHours != 6 && windowHours != 12 {
+	if windowHours <= 0 {
 		windowHours = 3
 	}
 	cutoff := time.Now().Add(-time.Duration(windowHours) * time.Hour)
@@ -104,22 +104,33 @@ func getSatisfiedGoodsFromGlobalFeed(conf file.Config, pushedMap map[string]inte
 
 func globalFeedProductMatches(good Product, conf file.Config) bool {
 	if conf.GlobalHot.FollowAuthorsEnabled && followedAuthorMatch(good.Referral, conf.GlobalHot.FollowedAuthors) {
-		return true
+		return matchesDiscoveryTitle(good, conf.GlobalHot.AuthorKeywords)
 	}
 	if !conf.GlobalHot.Enabled || parseMetric(good.ArticleComment) < globalHotCommentFloor(conf.GlobalHot.MinCommentNum) {
 		return false
 	}
-	if !conf.GlobalHot.ApplyKeywordRules || (len(conf.KeywordRules) == 0 && len(conf.KeyWords) == 0) {
+	return matchesDiscoveryTitle(good, conf.GlobalHot.HotKeywords)
+}
+
+func matchesDiscoveryTitle(good Product, keywords []string) bool {
+	if len(keywords) == 0 {
 		return true
 	}
-	return matchesPersonalRules(good)
+	title := strings.ToLower(strings.TrimSpace(good.ArticleTitle))
+	for _, keyword := range keywords {
+		keyword = strings.ToLower(strings.TrimSpace(keyword))
+		if keyword != "" && strings.Contains(title, keyword) {
+			return true
+		}
+	}
+	return false
 }
 
 func globalHotCommentFloor(value int) int {
-	if value == 100 {
-		return 100
+	if value <= 0 {
+		return 200
 	}
-	return 200
+	return value
 }
 
 func scanGlobalFeed(cutoff time.Time) []Product {

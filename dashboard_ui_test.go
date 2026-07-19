@@ -19,8 +19,13 @@ func TestDashboardSearchFeedbackPlacement(t *testing.T) {
 		"toggleClass('is-searching', state === '搜索中')",
 		"if (selector === '#searchRule')",
 		"id=\"globalHotEnabled\"",
-		"id=\"globalHotApplyRules\"",
+		"id=\"globalHotWindow\" type=\"number\"",
+		"id=\"globalHotMinComment\" type=\"number\"",
+		"id=\"hotKeywordTokenBox\"",
+		"id=\"followedAuthorsTokenBox\"",
 		"id=\"followAuthorsEnabled\"",
+		"id=\"authorKeywordTokenBox\"",
+		"function bindDiscoveryTokenEditor",
 		"function normalizeGlobalHot(value)",
 	}
 	for _, marker := range required {
@@ -30,5 +35,8 @@ func TestDashboardSearchFeedbackPlacement(t *testing.T) {
 	}
 	if strings.Contains(page, "本次临时搜索") {
 		t.Error("dashboard still shows the obsolete label 本次临时搜索")
+	}
+	if strings.Contains(page, "<select id=\"globalHotWindow\"") || strings.Contains(page, "<select id=\"globalHotMinComment\"") {
+		t.Error("global hot numeric settings still use preset selects")
 	}
 }
