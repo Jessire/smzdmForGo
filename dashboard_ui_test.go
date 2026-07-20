@@ -46,6 +46,14 @@ func TestDashboardSearchFeedbackPlacement(t *testing.T) {
 	if strings.Contains(page, "id=\"globalHotEnabled\"") || strings.Contains(page, "id=\"followAuthorsEnabled\"") {
 		t.Error("discovery editors still contain redundant enable switches")
 	}
+	if strings.Contains(page, "product-author") {
+		t.Error("search result cards should not display author metadata")
+	}
+	for _, marker := range []string{"<strong>搜索关键词</strong>", "<strong>搜索热门</strong>", "<strong>搜索作者</strong>", "for=\"followedAuthorsInput\">搜索作者</label>"} {
+		if !strings.Contains(page, marker) {
+			t.Errorf("dashboard HTML missing discovery search label %q", marker)
+		}
+	}
 	if strings.Contains(page, "<select id=\"globalHotWindow\"") || strings.Contains(page, "<select id=\"globalHotMinComment\"") {
 		t.Error("global hot numeric settings still use preset selects")
 	}

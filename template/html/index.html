@@ -244,7 +244,6 @@
     .discovery-time-editor .rule-summary-field{min-height:64px}
     .discovery-inline{min-width:0;white-space:normal!important}
     .discovery-inline input{min-width:0!important;max-width:100%;box-sizing:border-box}
-    .product-meta .product-author{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     @media (max-width:1100px){
       .advanced-rule-fields.is-open{grid-template-columns:repeat(2,minmax(0,1fr))!important}
     }
@@ -679,10 +678,6 @@
       </div>
       <div class="rule-summary-grid discovery-rule-editor" id="hotRuleEditor" hidden>
         <div class="rule-summary-field discovery-field">
-          <strong class="discovery-label">全站热门</strong>
-          <div class="field-hint">按评论门槛与热门关键词筛选</div>
-        </div>
-        <div class="rule-summary-field discovery-field">
           <label for="globalHotMinComment">热门评论门槛</label>
           <div class="summary-inline discovery-inline">
             <span>评论</span>
@@ -691,7 +686,7 @@
           </div>
         </div>
         <div class="rule-summary-field discovery-field">
-          <label class="discovery-token-label" for="hotKeywordInput">热门关键词</label>
+          <label class="discovery-token-label" for="hotKeywordInput">搜索热门关键词</label>
           <div id="hotKeywordTokenBox" class="filter-token-box discovery-token-box">
             <input id="hotKeywordInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加, 支持粘贴">
           </div>
@@ -699,19 +694,15 @@
       </div>
       <div class="rule-summary-grid discovery-rule-editor" id="authorRuleEditor" hidden>
         <div class="rule-summary-field discovery-field">
-          <strong class="discovery-label">关注作者</strong>
-          <div class="field-hint">按作者昵称与内容关键词筛选</div>
-        </div>
-        <div class="rule-summary-field discovery-field">
-          <label class="discovery-token-label" for="followedAuthorsInput">作者昵称</label>
+          <label class="discovery-token-label" for="followedAuthorsInput">搜索作者</label>
           <div id="followedAuthorsTokenBox" class="filter-token-box discovery-token-box">
-            <input id="followedAuthorsInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加作者">
+            <input id="followedAuthorsInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加作者名称">
           </div>
         </div>
         <div class="rule-summary-field discovery-field">
-          <label class="discovery-token-label" for="authorKeywordInput">作者内容关键词</label>
+          <label class="discovery-token-label" for="authorKeywordInput">作者爆料关键词</label>
           <div id="authorKeywordTokenBox" class="filter-token-box discovery-token-box">
-            <input id="authorKeywordInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加关键词">
+            <input id="authorKeywordInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加爆料关键词">
           </div>
         </div>
       </div>
@@ -1118,8 +1109,8 @@ layui.use(function(){
   });
   bindFilterTokenEditor();
   bindDiscoveryTokenEditor('hotKeywords', '#hotKeywordTokenBox', '#hotKeywordInput', '热门关键词');
-  bindDiscoveryTokenEditor('followedAuthors', '#followedAuthorsTokenBox', '#followedAuthorsInput', '作者');
-  bindDiscoveryTokenEditor('authorKeywords', '#authorKeywordTokenBox', '#authorKeywordInput', '作者内容关键词');
+  bindDiscoveryTokenEditor('followedAuthors', '#followedAuthorsTokenBox', '#followedAuthorsInput', '搜索作者');
+  bindDiscoveryTokenEditor('authorKeywords', '#authorKeywordTokenBox', '#authorKeywordInput', '作者爆料关键词');
   $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput, #maxArticleAgeDaysInput, #globalHotWindow, #globalHotMinComment, #hotKeywordInput, #followedAuthorsInput, #authorKeywordInput').on('input change', function(){
     syncEditorToRule();
     updateSwitchLabels();
@@ -1230,9 +1221,9 @@ layui.use(function(){
       shadeClose: true,
       shade: 0.08,
       content: '<div class="rule-type-picker" id="ruleTypePicker">' +
-        '<button type="button" data-rule-kind="product">' + iconSvg('plus') + '<span><strong>商品规则</strong><br>按商品关键词与门槛筛选</span></button>' +
-        '<button type="button" data-rule-kind="hot">' + iconSvg('worthy') + '<span><strong>全站热门</strong><br>按时间、评论和热门关键词筛选</span></button>' +
-        '<button type="button" data-rule-kind="author">' + iconSvg('comment') + '<span><strong>关注作者</strong><br>按作者昵称和内容关键词筛选</span></button>' +
+        '<button type="button" data-rule-kind="product">' + iconSvg('plus') + '<span><strong>搜索关键词</strong><br>按商品关键词与门槛筛选</span></button>' +
+        '<button type="button" data-rule-kind="hot">' + iconSvg('worthy') + '<span><strong>搜索热门</strong><br>按时间、评论和热门关键词筛选</span></button>' +
+        '<button type="button" data-rule-kind="author">' + iconSvg('comment') + '<span><strong>搜索作者</strong><br>直接搜索作者发布的商品爆料</span></button>' +
       '</div>'
     });
     $('#ruleTypePicker').off('click').on('click', 'button[data-rule-kind]', function(){
@@ -1570,7 +1561,7 @@ layui.use(function(){
     ['hot', 'author'].forEach(function(kind){
       var hot = normalizeGlobalHot(productConfig.globalHot);
       var enabled = kind === 'hot' ? hot.enabled : hot.followAuthorsEnabled;
-      var title = kind === 'hot' ? '全站热门' : '关注作者';
+      var title = kind === 'hot' ? '搜索热门' : '搜索作者';
       var tokens = kind === 'hot' ? hot.hotKeywords.concat(hot.filterWords) : hot.followedAuthors.concat(hot.authorKeywords, hot.filterWords);
       var haystack = (title + ' ' + tokens.join(' ')).toLowerCase();
       if (ruleListFilter === 'enabled' && !enabled) { return; }
@@ -1753,7 +1744,7 @@ layui.use(function(){
     $('#authorRuleEditor').prop('hidden', kind !== 'author');
     $('#ruleSummaryStrip').prop('hidden', kind !== 'product');
     $('#toggleAdvancedRule, #advancedRuleFields').prop('hidden', kind !== 'product');
-    var saveLabel = kind === 'hot' ? '保存全站热门' : (kind === 'author' ? '保存关注作者' : '保存并启用');
+    var saveLabel = kind === 'hot' ? '保存搜索热门' : (kind === 'author' ? '保存搜索作者' : '保存并启用');
     $('#saveProductConfig').attr('aria-label', saveLabel).attr('title', saveLabel).find('span').last().text(saveLabel);
     $('#saveDraftConfig').attr('aria-label', kind === 'product' ? '仅保存草稿' : '保存设置')
       .attr('title', kind === 'product' ? '仅保存草稿（不强制启用）' : '保存设置')
@@ -1761,8 +1752,8 @@ layui.use(function(){
   }
 
   function selectedRuleTitle() {
-    if (selectedRuleKind === 'hot') { return '全站热门'; }
-    if (selectedRuleKind === 'author') { return '关注作者'; }
+    if (selectedRuleKind === 'hot') { return '搜索热门'; }
+    if (selectedRuleKind === 'author') { return '搜索作者'; }
     return firstWord(currentRule()) || ($('#keywordInput').val() || '').trim();
   }
 
@@ -1933,6 +1924,10 @@ layui.use(function(){
       layer.msg('关键词不能为空');
       return;
     }
+    if (selectedRuleKind === 'author' && !productConfig.globalHot.followedAuthors.length) {
+      layer.msg('请先添加要搜索的作者');
+      return;
+    }
     setSearchLoading(true, '#searchRule', '搜索预览', '搜索中');
     $('#previewMeta').text('搜索中');
     updateCurrentRuleOverview('搜索中', true);
@@ -2041,10 +2036,10 @@ layui.use(function(){
       $('#previewImage').attr('alt', '');
       $('#previewTitle').text('暂无结果');
       $('#previewMetrics').empty();
-      var emptyTitle = selectedRuleKind === 'hot' ? '当前时间范围内暂无热门命中' : (selectedRuleKind === 'author' ? '当前时间范围内暂无作者命中' : '暂无匹配结果');
+      var emptyTitle = selectedRuleKind === 'hot' ? '当前时间范围内暂无热门命中' : (selectedRuleKind === 'author' ? '当前时间范围内暂无作者爆料' : '暂无匹配结果');
       var emptyMessage = selectedRuleKind === 'hot'
         ? ('近' + productConfig.globalHot.windowHours + '小时内没有达到' + productConfig.globalHot.minCommentNum + '条评论的商品, 或被通用筛选条件排除。')
-        : (selectedRuleKind === 'author' ? ('近' + productConfig.globalHot.windowHours + '小时内没有匹配关注作者的内容, 或被通用筛选条件排除。') : '调整过滤词、评论、值率或价格范围后再搜索。');
+        : (selectedRuleKind === 'author' ? ('近' + productConfig.globalHot.windowHours + '小时内没有匹配作者的商品爆料, 或被通用筛选条件排除。') : '调整过滤词、评论、值率或价格范围后再搜索。');
       renderEmptyPreview(emptyTitle, emptyMessage);
       renderFilteredNote([]);
       renderRules();
@@ -2599,10 +2594,10 @@ layui.use(function(){
   function buildHitReason(item) {
     item = item || {};
     if (selectedRuleKind === 'hot') {
-      return '全站热门 · 评论 ' + (item.comment || '0') + ' · ' + (productConfig.globalHot.hotKeywords.length ? productConfig.globalHot.hotKeywords.join(' / ') : '不限关键词');
+      return '搜索热门 · 评论 ' + (item.comment || '0') + ' · ' + (productConfig.globalHot.hotKeywords.length ? productConfig.globalHot.hotKeywords.join(' / ') : '不限关键词');
     }
     if (selectedRuleKind === 'author') {
-      return '关注作者 · ' + (productConfig.globalHot.authorKeywords.length ? productConfig.globalHot.authorKeywords.join(' / ') : '不限内容关键词');
+      return '作者爆料 · ' + (productConfig.globalHot.authorKeywords.length ? productConfig.globalHot.authorKeywords.join(' / ') : '不限爆料关键词');
     }
     var rule = currentRuleFromEditor();
     var keyword = item.keyword || firstWord(rule) || firstWord(currentRule()) || '';
@@ -2777,7 +2772,7 @@ layui.use(function(){
     }
     priceHtml += '</div>';
     info.append(priceHtml);
-    info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-author" title="作者 ' + escapeAttr(item.referral || '未知') + '">作者 ' + escapeHtml(item.referral || '未知') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
+    info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
     // Green hit bar = pushable; full greyscale card + muted bar = not pushable.
     var hit = $('<div class="hit-reason' + (blocked ? ' is-blocked' : '') + '"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
     if (blocked) {
