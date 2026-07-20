@@ -197,3 +197,48 @@ func TestKeywordRules(t *testing.T) {
 		t.Fatal("expected disabled keyword rule to be rejected")
 	}
 }
+
+
+func TestNormalizeAuthorName(t *testing.T) {
+	if !followedAuthorMatch(" 糖果 雨雨 ", []string{"糖果雨雨"}) {
+		t.Fatal("expected author match after stripping spaces")
+	}
+	if followedAuthorMatch("糖果雨雨", []string{"糖果"}) {
+		t.Fatal("expected partial author nickname to be rejected")
+	}
+}
+
+func TestAcceptAuthorProductFiltersWindowAndAuthor(t *testing.T) {
+	now := time.Now().Unix()
+	globalHot := file.GlobalHotConfig{
+		FollowedAuthors: []string{"专修复印机"},
+		AuthorKeywords:  []string{},
+	}
+	common := file.KeywordRule{}
+	seen := map[string]bool{}
+	good := Product{
+		ArticleId:      "a1",
+		ArticleTitle:   "鲜花好价",
+		Referral:       "专修复印机",
+		ArticleDate:    stringInt64(now - 600),
+		ArticleComment: "1",
+	}
+	if !acceptAuthorProduct(good, globalHot, common, time.Now().Add(-3*time.Hour), seen) {
+		t.Fatal("expected recent followed author product to be accepted")
+	}
+	if acceptAuthorProduct(good, globalHot, common, time.Now().Add(-3*time.Hour), seen) {
+		t.Fatal("expected duplicate article id to be rejected")
+	}
+	old := good
+	old.ArticleId = "a2"
+	old.ArticleDate = stringInt64(now - 10*3600)
+	if acceptAuthorProduct(old, globalHot, common, time.Now().Add(-3*time.Hour), map[string]bool{}) {
+		t.Fatal("expected product outside time window to be rejected")
+	}
+	other := good
+	other.ArticleId = "a3"
+	other.Referral = "其他人"
+	if acceptAuthorProduct(other, globalHot, common, time.Now().Add(-3*time.Hour), map[string]bool{}) {
+		t.Fatal("expected unfollowed author product to be rejected")
+	}
+}

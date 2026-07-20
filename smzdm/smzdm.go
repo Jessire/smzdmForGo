@@ -88,18 +88,32 @@ func getSatisfiedGoodsFromGlobalFeed(conf file.Config, pushedMap map[string]inte
 		windowHours = 3
 	}
 	cutoff := time.Now().Add(-time.Duration(windowHours) * time.Hour)
-	rows := scanGlobalFeed(cutoff)
-	result := make([]Product, 0, len(rows))
-	for _, good := range rows {
-		if removePushedOrOld(good, pushedMap) {
-			continue
+	common := discoveryCommonRule(conf.GlobalHot)
+	result := []Product{}
+	if conf.GlobalHot.Enabled {
+		for _, good := range scanGlobalFeed(cutoff) {
+			if removePushedOrOld(good, pushedMap) {
+				continue
+			}
+			if !discoveryProductMatchesWithRule(good, conf.GlobalHot, "hot", common) {
+				continue
+			}
+			result = append(result, good)
 		}
-		if !globalFeedProductMatches(good, conf) {
-			continue
-		}
-		result = append(result, good)
 	}
-	return result
+	if conf.GlobalHot.FollowAuthorsEnabled {
+		authorLimit := conf.SatisfyNum * 3
+		if authorLimit < 24 {
+			authorLimit = 24
+		}
+		for _, good := range searchAuthorGoods(conf.GlobalHot, common, cutoff, authorLimit) {
+			if removePushedOrOld(good, pushedMap) {
+				continue
+			}
+			result = append(result, good)
+		}
+	}
+	return mergeProducts(nil, result)
 }
 
 func globalFeedProductMatches(good Product, conf file.Config) bool {
@@ -113,9 +127,10 @@ func globalFeedProductMatches(good Product, conf file.Config) bool {
 	return discoveryProductMatchesWithRule(good, conf.GlobalHot, "hot", common)
 }
 
-// SearchDiscoveryGoods returns a bounded, recent slice of the global feed for
-// the dashboard preview. Unlike the production scan, it intentionally stops
-// after a small number of pages so opening a rule remains responsive.
+// SearchDiscoveryGoods returns a bounded dashboard preview for hot/author rules.
+// Hot rules still scan the recent global feed. Author rules search each author
+// nickname directly so the preview is not limited to whoever happens to appear
+// in the latest global pages.
 func SearchDiscoveryGoods(globalHot file.GlobalHotConfig, kind string, common file.KeywordRule, limit int) []Product {
 	if limit <= 0 {
 		limit = 24
@@ -128,19 +143,120 @@ func SearchDiscoveryGoods(globalHot file.GlobalHotConfig, kind string, common fi
 		windowHours = 3
 	}
 	cutoff := time.Now().Add(-time.Duration(windowHours) * time.Hour)
-	rows := scanGlobalFeedWithLimit(cutoff, 10)
-	result := make([]Product, 0, limit)
-	for _, good := range rows {
-		if !discoveryProductMatchesWithRule(good, globalHot, kind, common) {
-			continue
-		}
-		result = append(result, good)
-		if len(result) >= limit {
-			break
+	var result []Product
+	switch strings.ToLower(strings.TrimSpace(kind)) {
+	case "author":
+		result = searchAuthorGoods(globalHot, common, cutoff, limit)
+	default:
+		rows := scanGlobalFeedWithLimit(cutoff, 10)
+		result = make([]Product, 0, limit)
+		for _, good := range rows {
+			if !discoveryProductMatchesWithRule(good, globalHot, kind, common) {
+				continue
+			}
+			result = append(result, good)
+			if len(result) >= limit {
+				break
+			}
 		}
 	}
 	sortProductsByComment(result)
+	if len(result) > limit {
+		result = result[:limit]
+	}
 	return result
+}
+
+// searchAuthorGoods finds good-price posts from configured authors.
+// Primary path: search SMZDM with the author nickname as keyword, then keep
+// exact referral matches. Fallback path: scan the recent global feed for any
+// authors that keyword search could not surface.
+func searchAuthorGoods(globalHot file.GlobalHotConfig, common file.KeywordRule, cutoff time.Time, limit int) []Product {
+	authors := cleanDiscoveryWords(globalHot.FollowedAuthors)
+	if len(authors) == 0 {
+		return []Product{}
+	}
+	if limit <= 0 {
+		limit = 24
+	}
+	maxPages := 6
+	if limit > 24 {
+		maxPages = 8
+	}
+	perAuthorLimit := limit
+	if len(authors) > 1 {
+		perAuthorLimit = (limit + len(authors) - 1) / len(authors)
+		if perAuthorLimit < 8 {
+			perAuthorLimit = 8
+		}
+	}
+	result := make([]Product, 0, limit)
+	seen := map[string]bool{}
+	hitsByAuthor := map[string]int{}
+	for _, author := range authors {
+		for page := 0; page < maxPages && hitsByAuthor[author] < perAuthorLimit && len(result) < limit*2; page++ {
+			rows := GetGoods(page, author).Data.Rows
+			if len(rows) == 0 {
+				break
+			}
+			pageUseful := 0
+			for _, good := range rows {
+				if !acceptAuthorProduct(good, globalHot, common, cutoff, seen) {
+					continue
+				}
+				result = append(result, good)
+				hitsByAuthor[author]++
+				pageUseful++
+				if hitsByAuthor[author] >= perAuthorLimit {
+					break
+				}
+			}
+			if pageUseful == 0 && page >= 2 && hitsByAuthor[author] == 0 && page >= 3 {
+				break
+			}
+		}
+	}
+	// Some nicknames are not indexed as keywords. Fall back to the global feed
+	// so recently posted author deals are still discoverable.
+	missing := 0
+	for _, author := range authors {
+		if hitsByAuthor[author] == 0 {
+			missing++
+		}
+	}
+	if missing > 0 || len(result) < limit {
+		feedPages := 20
+		if missing == 0 {
+			feedPages = 8
+		}
+		for _, good := range scanGlobalFeedWithLimit(cutoff, feedPages) {
+			if !acceptAuthorProduct(good, globalHot, common, cutoff, seen) {
+				continue
+			}
+			result = append(result, good)
+			if len(result) >= limit*2 {
+				break
+			}
+		}
+	}
+	return result
+}
+
+func acceptAuthorProduct(good Product, globalHot file.GlobalHotConfig, common file.KeywordRule, cutoff time.Time, seen map[string]bool) bool {
+	if good.ArticleId != "" && seen[good.ArticleId] {
+		return false
+	}
+	publishedAt, ok := productPublishedAt(good)
+	if !ok || publishedAt.Before(cutoff) || publishedAt.After(time.Now().Add(2*time.Minute)) {
+		return false
+	}
+	if !discoveryProductMatchesWithRule(good, globalHot, "author", common) {
+		return false
+	}
+	if good.ArticleId != "" {
+		seen[good.ArticleId] = true
+	}
+	return true
 }
 
 func discoveryProductMatches(good Product, globalHot file.GlobalHotConfig, kind string) bool {
@@ -272,16 +388,23 @@ func productPublishedAt(good Product) (time.Time, bool) {
 }
 
 func followedAuthorMatch(author string, followed []string) bool {
-	author = strings.TrimSpace(strings.ToLower(author))
+	author = normalizeAuthorName(author)
 	if author == "" {
 		return false
 	}
 	for _, candidate := range followed {
-		if author == strings.TrimSpace(strings.ToLower(candidate)) {
+		if author == normalizeAuthorName(candidate) {
 			return true
 		}
 	}
 	return false
+}
+
+func normalizeAuthorName(value string) string {
+	value = strings.ToLower(strings.TrimSpace(value))
+	value = strings.ReplaceAll(value, " ", "")
+	value = strings.ReplaceAll(value, "　", "")
+	return value
 }
 
 func mergeProducts(existing []Product, additional []Product) []Product {

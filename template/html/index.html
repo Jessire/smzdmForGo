@@ -2039,7 +2039,7 @@ layui.use(function(){
       var emptyTitle = selectedRuleKind === 'hot' ? '当前时间范围内暂无热门命中' : (selectedRuleKind === 'author' ? '当前时间范围内暂无作者爆料' : '暂无匹配结果');
       var emptyMessage = selectedRuleKind === 'hot'
         ? ('近' + productConfig.globalHot.windowHours + '小时内没有达到' + productConfig.globalHot.minCommentNum + '条评论的商品, 或被通用筛选条件排除。')
-        : (selectedRuleKind === 'author' ? ('近' + productConfig.globalHot.windowHours + '小时内没有匹配作者的商品爆料, 或被通用筛选条件排除。') : '调整过滤词、评论、值率或价格范围后再搜索。');
+        : (selectedRuleKind === 'author' ? ('近' + productConfig.globalHot.windowHours + '小时内没有该作者的商品爆料。请确认作者昵称与值得买完全一致, 或扩大发现时间范围 / 放宽通用筛选。') : '调整过滤词、评论、值率或价格范围后再搜索。');
       renderEmptyPreview(emptyTitle, emptyMessage);
       renderFilteredNote([]);
       renderRules();
