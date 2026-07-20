@@ -235,11 +235,16 @@
     .discovery-token-box{height:auto!important;min-height:32px!important;max-height:76px!important;padding:3px!important;border:1px solid color-mix(in srgb,var(--line) 72%,transparent)!important;border-radius:8px!important;background:var(--surface)!important;overflow:auto!important}
     .discovery-token-box .filter-token{min-height:24px;padding-left:8px}
     .discovery-token-box .filter-token-input{height:24px!important;min-width:90px!important;font-size:12px!important}
-    #productRuleEditor[hidden],.discovery-rule-editor[hidden],#ruleSummaryStrip[hidden],#toggleAdvancedRule[hidden],#advancedRuleFields[hidden]{display:none!important}
+    #productKeywordField[hidden],.discovery-rule-editor[hidden],.discovery-time-editor[hidden],#ruleSummaryStrip[hidden],#toggleAdvancedRule[hidden],#advancedRuleFields[hidden]{display:none!important}
     .rule-type-picker{display:grid;gap:8px;padding:2px}
     .rule-type-picker button{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);text-align:left;cursor:pointer}
     .rule-type-picker button:hover,.rule-type-picker button:focus-visible{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 7%,var(--surface));outline:none}
     .rule-type-picker strong{font-size:14px;font-weight:850}.rule-type-picker span{color:var(--muted);font-size:12px;font-weight:700}
+    .discovery-time-editor{grid-template-columns:minmax(0,1fr)!important;max-width:260px;margin-top:9px}
+    .discovery-time-editor .rule-summary-field{min-height:64px}
+    .discovery-inline{min-width:0;white-space:normal!important}
+    .discovery-inline input{min-width:0!important;max-width:100%;box-sizing:border-box}
+    .product-meta .product-author{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     @media (max-width:1100px){
       .advanced-rule-fields.is-open{grid-template-columns:repeat(2,minmax(0,1fr))!important}
     }
@@ -496,6 +501,10 @@
       .preview-panel{min-height:360px}
       #previewCards.product-list:not(:has(.empty-state)){grid-template-columns:1fr!important}
     }
+    body.zero-redesign.trellis-ui .discovery-time-editor{grid-template-columns:minmax(0,1fr)!important}
+    body.zero-redesign.trellis-ui .discovery-time-editor .rule-summary-field{grid-column:1/-1!important}
+    body.zero-redesign.trellis-ui .discovery-time-editor .discovery-inline{display:flex!important;align-items:center;gap:8px;white-space:nowrap!important}
+    body.zero-redesign.trellis-ui .discovery-time-editor .discovery-inline input{width:72px!important;flex:0 1 72px!important}
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
@@ -588,7 +597,7 @@
       </div>
 
       <div class="rule-summary-grid" id="productRuleEditor">
-        <div class="rule-summary-field">
+        <div class="rule-summary-field" id="productKeywordField">
           <label for="keywordInput">关键词</label>
           <input id="keywordInput" type="text" autocomplete="off" placeholder="如：大米、显示器">
         </div>
@@ -658,23 +667,25 @@
           <div class="field-hint">0 = 不限天数</div>
         </div>
       </div>
-      <div class="rule-summary-grid discovery-rule-editor" id="hotRuleEditor" hidden>
+      <div class="rule-summary-grid discovery-time-editor" id="discoveryTimeEditor" hidden>
         <div class="rule-summary-field discovery-field">
-          <div class="setting-row">
-            <strong class="discovery-label">全站热门</strong>
-            <label class="switch" title="开启全站热门推送" aria-label="开启全站热门推送">
-              <input id="globalHotEnabled" type="checkbox">
-              <span></span>
-            </label>
+          <label for="globalHotWindow">发现时间范围</label>
+          <div class="summary-inline discovery-inline">
+            <span>近</span>
+            <input id="globalHotWindow" type="number" min="1" step="1" inputmode="numeric" aria-label="发现时间范围">
+            <span>小时</span>
           </div>
         </div>
+      </div>
+      <div class="rule-summary-grid discovery-rule-editor" id="hotRuleEditor" hidden>
         <div class="rule-summary-field discovery-field">
-          <label>发现范围</label>
+          <strong class="discovery-label">全站热门</strong>
+          <div class="field-hint">按评论门槛与热门关键词筛选</div>
+        </div>
+        <div class="rule-summary-field discovery-field">
+          <label for="globalHotMinComment">热门评论门槛</label>
           <div class="summary-inline discovery-inline">
-            <label for="globalHotWindow">近</label>
-            <input id="globalHotWindow" type="number" min="1" step="1" inputmode="numeric" aria-label="全站热门时间范围">
-            <span>小时</span>
-            <label for="globalHotMinComment">评论</label>
+            <span>评论</span>
             <input id="globalHotMinComment" type="number" min="1" step="1" inputmode="numeric" aria-label="全站热门最低评论数">
             <span>条以上</span>
           </div>
@@ -688,13 +699,8 @@
       </div>
       <div class="rule-summary-grid discovery-rule-editor" id="authorRuleEditor" hidden>
         <div class="rule-summary-field discovery-field">
-          <div class="setting-row">
-            <strong class="discovery-label">关注作者</strong>
-            <label class="switch" title="开启关注作者推送" aria-label="开启关注作者推送">
-              <input id="followAuthorsEnabled" type="checkbox">
-              <span></span>
-            </label>
-          </div>
+          <strong class="discovery-label">关注作者</strong>
+          <div class="field-hint">按作者昵称与内容关键词筛选</div>
         </div>
         <div class="rule-summary-field discovery-field">
           <label class="discovery-token-label" for="followedAuthorsInput">作者昵称</label>
@@ -878,7 +884,7 @@ var productConfig = {
   maxArticleAgeDays: 7,
   cron: '0 10 10 ? * *',
   telegram: { enabled: false, botToken: '', chatId: '', parseMode: 'HTML', disableWebPagePreview: false },
-  globalHot: { enabled: false, windowHours: 3, minCommentNum: 200, hotKeywords: [], followAuthorsEnabled: false, followedAuthors: [], authorKeywords: [] },
+  globalHot: { enabled: false, windowHours: 3, minCommentNum: 200, hotKeywords: [], followAuthorsEnabled: false, followedAuthors: [], authorKeywords: [], filterWords: [], lowCommentNum: 0, lowWorthyNum: 0, minPrice: 0, maxPrice: 0 },
   keywordRules: []
 };
 var selectedRuleIndex = -1;
@@ -1114,7 +1120,7 @@ layui.use(function(){
   bindDiscoveryTokenEditor('hotKeywords', '#hotKeywordTokenBox', '#hotKeywordInput', '热门关键词');
   bindDiscoveryTokenEditor('followedAuthors', '#followedAuthorsTokenBox', '#followedAuthorsInput', '作者');
   bindDiscoveryTokenEditor('authorKeywords', '#authorKeywordTokenBox', '#authorKeywordInput', '作者内容关键词');
-  $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput, #maxArticleAgeDaysInput, #globalHotEnabled, #globalHotWindow, #globalHotMinComment, #followAuthorsEnabled, #hotKeywordInput, #followedAuthorsInput, #authorKeywordInput').on('input change', function(){
+  $('#keywordInput, #lowCommentInput, #lowWorthyInput, #minPriceInput, #maxPriceInput, #enabledInput, #tickValueInput, #tickUnitInput, #satisfyNumInput, #maxArticleAgeDaysInput, #globalHotWindow, #globalHotMinComment, #hotKeywordInput, #followedAuthorsInput, #authorKeywordInput').on('input change', function(){
     syncEditorToRule();
     updateSwitchLabels();
     updateCurrentRuleOverview('需验证', true);
@@ -1209,11 +1215,20 @@ layui.use(function(){
 
   function openRuleTypePicker() {
     syncEditorToRule();
+    var anchor = document.getElementById('addRule');
+    var rect = anchor ? anchor.getBoundingClientRect() : { top: 12, bottom: 52, left: 12, right: 46 };
+    var pickerWidth = 330;
+    var left = Math.max(8, Math.min(window.innerWidth - pickerWidth - 8, rect.right - pickerWidth));
+    var top = Math.min(window.innerHeight - 320, rect.bottom + 8);
+    top = Math.max(8, top);
     var pickerIndex = layer.open({
       type: 1,
       title: '新增规则',
-      area: ['330px', 'auto'],
+      area: [pickerWidth + 'px', 'auto'],
+      offset: [top + 'px', left + 'px'],
+      fixed: false,
       shadeClose: true,
+      shade: 0.08,
       content: '<div class="rule-type-picker" id="ruleTypePicker">' +
         '<button type="button" data-rule-kind="product">' + iconSvg('plus') + '<span><strong>商品规则</strong><br>按商品关键词与门槛筛选</span></button>' +
         '<button type="button" data-rule-kind="hot">' + iconSvg('worthy') + '<span><strong>全站热门</strong><br>按时间、评论和热门关键词筛选</span></button>' +
@@ -1556,7 +1571,7 @@ layui.use(function(){
       var hot = normalizeGlobalHot(productConfig.globalHot);
       var enabled = kind === 'hot' ? hot.enabled : hot.followAuthorsEnabled;
       var title = kind === 'hot' ? '全站热门' : '关注作者';
-      var tokens = kind === 'hot' ? hot.hotKeywords : hot.followedAuthors.concat(hot.authorKeywords);
+      var tokens = kind === 'hot' ? hot.hotKeywords.concat(hot.filterWords) : hot.followedAuthors.concat(hot.authorKeywords, hot.filterWords);
       var haystack = (title + ' ' + tokens.join(' ')).toLowerCase();
       if (ruleListFilter === 'enabled' && !enabled) { return; }
       if (ruleListFilter === 'disabled' && enabled) { return; }
@@ -1732,7 +1747,8 @@ layui.use(function(){
   function setEditorKind(kind) {
     kind = kind === 'hot' || kind === 'author' ? kind : 'product';
     $('.editor-panel').attr('data-editor-kind', kind);
-    $('#productRuleEditor').prop('hidden', kind !== 'product');
+    $('#productKeywordField').prop('hidden', kind !== 'product');
+    $('#discoveryTimeEditor').prop('hidden', kind === 'product');
     $('#hotRuleEditor').prop('hidden', kind !== 'hot');
     $('#authorRuleEditor').prop('hidden', kind !== 'author');
     $('#ruleSummaryStrip').prop('hidden', kind !== 'product');
@@ -1834,26 +1850,44 @@ layui.use(function(){
   function fillGlobalHotForm() {
     var hot = normalizeGlobalHot(productConfig.globalHot);
     productConfig.globalHot = hot;
-    $('#globalHotEnabled').prop('checked', hot.enabled);
     $('#globalHotWindow').val(String(hot.windowHours));
     $('#globalHotMinComment').val(String(hot.minCommentNum));
-    $('#followAuthorsEnabled').prop('checked', hot.followAuthorsEnabled);
     setDiscoveryTokens('hotKeywords', hot.hotKeywords);
     setDiscoveryTokens('followedAuthors', hot.followedAuthors);
     setDiscoveryTokens('authorKeywords', hot.authorKeywords);
+    if (selectedRuleKind === 'hot' || selectedRuleKind === 'author') {
+      setFilterWordsInEditor(hot.filterWords);
+      $('#lowCommentInput').val(hot.lowCommentNum || 0);
+      $('#lowWorthyInput').val(hot.lowWorthyNum || 0);
+      $('#minPriceInput').val(hot.minPrice || '');
+      $('#maxPriceInput').val(hot.maxPrice || '');
+    }
   }
 
   function readGlobalHotForm() {
-    if (!$('#globalHotEnabled').length) { return; }
-    productConfig.globalHot = normalizeGlobalHot({
-      enabled: $('#globalHotEnabled').is(':checked'),
+    var previous = normalizeGlobalHot(productConfig.globalHot);
+    var next = {
+      enabled: previous.enabled,
       windowHours: toInt($('#globalHotWindow').val()),
       minCommentNum: toInt($('#globalHotMinComment').val()),
       hotKeywords: getDiscoveryTokens('hotKeywords'),
-      followAuthorsEnabled: $('#followAuthorsEnabled').is(':checked'),
+      followAuthorsEnabled: previous.followAuthorsEnabled,
       followedAuthors: getDiscoveryTokens('followedAuthors'),
-      authorKeywords: getDiscoveryTokens('authorKeywords')
-    });
+      authorKeywords: getDiscoveryTokens('authorKeywords'),
+      filterWords: previous.filterWords,
+      lowCommentNum: previous.lowCommentNum,
+      lowWorthyNum: previous.lowWorthyNum,
+      minPrice: previous.minPrice,
+      maxPrice: previous.maxPrice
+    };
+    if (selectedRuleKind === 'hot' || selectedRuleKind === 'author') {
+      next.filterWords = getFilterWordsFromEditor();
+      next.lowCommentNum = toInt($('#lowCommentInput').val());
+      next.lowWorthyNum = toInt($('#lowWorthyInput').val());
+      next.minPrice = toFloat($('#minPriceInput').val());
+      next.maxPrice = toFloat($('#maxPriceInput').val());
+    }
+    productConfig.globalHot = normalizeGlobalHot(next);
   }
 
   function setDiscoveryTokens(key, values) {
@@ -1907,7 +1941,7 @@ layui.use(function(){
       url: BASE_URL + (discovery ? '/discoverySearch' : '/productSearch'),
       contentType: 'application/json;charset=utf-8',
       data: JSON.stringify(discovery
-        ? { type: selectedRuleKind, globalHot: productConfig.globalHot, limit: 24 }
+        ? { type: selectedRuleKind, globalHot: productConfig.globalHot, rule: currentDiscoveryRuleFromEditor(), limit: 24 }
         : { rule: rule, limit: 24 }),
       dataType: 'json',
       type: 'POST',
@@ -1924,6 +1958,16 @@ layui.use(function(){
         setSearchLoading(false, '#searchRule', '搜索预览', '搜索中');
       }
     });
+  }
+
+  function currentDiscoveryRuleFromEditor() {
+    return {
+      filterWords: getFilterWordsFromEditor(),
+      lowCommentNum: toInt($('#lowCommentInput').val()),
+      lowWorthyNum: toInt($('#lowWorthyInput').val()),
+      minPrice: toFloat($('#minPriceInput').val()),
+      maxPrice: toFloat($('#maxPriceInput').val())
+    };
   }
 
   function searchAllRules() {
@@ -1997,7 +2041,11 @@ layui.use(function(){
       $('#previewImage').attr('alt', '');
       $('#previewTitle').text('暂无结果');
       $('#previewMetrics').empty();
-      renderEmptyPreview('暂无匹配结果', '调整过滤词、评论、值率或价格范围后再搜索。');
+      var emptyTitle = selectedRuleKind === 'hot' ? '当前时间范围内暂无热门命中' : (selectedRuleKind === 'author' ? '当前时间范围内暂无作者命中' : '暂无匹配结果');
+      var emptyMessage = selectedRuleKind === 'hot'
+        ? ('近' + productConfig.globalHot.windowHours + '小时内没有达到' + productConfig.globalHot.minCommentNum + '条评论的商品, 或被通用筛选条件排除。')
+        : (selectedRuleKind === 'author' ? ('近' + productConfig.globalHot.windowHours + '小时内没有匹配关注作者的内容, 或被通用筛选条件排除。') : '调整过滤词、评论、值率或价格范围后再搜索。');
+      renderEmptyPreview(emptyTitle, emptyMessage);
       renderFilteredNote([]);
       renderRules();
       return;
@@ -2387,7 +2435,12 @@ layui.use(function(){
       hotKeywords: textToList(value.hotKeywords || []),
       followAuthorsEnabled: !!value.followAuthorsEnabled,
       followedAuthors: textToList(value.followedAuthors || []),
-      authorKeywords: textToList(value.authorKeywords || [])
+      authorKeywords: textToList(value.authorKeywords || []),
+      filterWords: textToList(value.filterWords || []),
+      lowCommentNum: toInt(value.lowCommentNum),
+      lowWorthyNum: toInt(value.lowWorthyNum),
+      minPrice: toFloat(value.minPrice),
+      maxPrice: toFloat(value.maxPrice)
     };
   }
 
@@ -2724,7 +2777,7 @@ layui.use(function(){
     }
     priceHtml += '</div>';
     info.append(priceHtml);
-    info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
+    info.append('<div class="product-meta"><span class="tag">' + iconSvg('worthy') + escapeHtml(item.worthy || '0') + '%</span><span class="tag">' + iconSvg('comment') + escapeHtml(item.comment || '0') + '</span><span class="product-author" title="作者 ' + escapeAttr(item.referral || '未知') + '">作者 ' + escapeHtml(item.referral || '未知') + '</span><span class="product-time">' + escapeHtml(formatUpdateTime(item.date)) + '</span></div>');
     // Green hit bar = pushable; full greyscale card + muted bar = not pushable.
     var hit = $('<div class="hit-reason' + (blocked ? ' is-blocked' : '') + '"><b>命中：</b>' + escapeHtml(buildHitReason(item)) + '</div>');
     if (blocked) {

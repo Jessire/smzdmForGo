@@ -18,9 +18,10 @@ type productSearchRequest struct {
 }
 
 type discoverySearchRequest struct {
-	Type      string                 `json:"type"`
-	GlobalHot globalHotConfigRequest `json:"globalHot"`
-	Limit     int                    `json:"limit"`
+	Type      string                   `json:"type"`
+	GlobalHot globalHotConfigRequest   `json:"globalHot"`
+	Rule      keywordRuleConfigRequest `json:"rule"`
+	Limit     int                      `json:"limit"`
 }
 
 type productSearchResponse struct {
@@ -100,8 +101,17 @@ func DiscoverySearchHandler(w http.ResponseWriter, r *http.Request) {
 		FollowAuthorsEnabled: req.GlobalHot.FollowAuthorsEnabled,
 		FollowedAuthors:      cleanWords(req.GlobalHot.FollowedAuthors),
 		AuthorKeywords:       cleanWords(req.GlobalHot.AuthorKeywords),
+		FilterWords:          cleanWords(req.GlobalHot.FilterWords),
+		LowCommentNum:        nonNegativeInt(req.GlobalHot.LowCommentNum),
+		LowWorthyNum:         nonNegativeInt(req.GlobalHot.LowWorthyNum),
+		MinPrice:             nonNegativeFloat(req.GlobalHot.MinPrice),
+		MaxPrice:             nonNegativeFloat(req.GlobalHot.MaxPrice),
 	}
-	products := smzdm.SearchDiscoveryGoods(globalHot, kind, req.Limit)
+	common := searchRuleFromRequest(req.Rule)
+	if len(common.FilterWords) == 0 && common.LowCommentNum == nil && common.LowWorthyNum == nil && common.MinPrice == nil && common.MaxPrice == nil {
+		common = discoveryCommonRuleFromRequest(globalHot)
+	}
+	products := smzdm.SearchDiscoveryGoods(globalHot, kind, common, req.Limit)
 	label := "全站热门"
 	if kind == "author" {
 		label = "关注作者"
@@ -112,6 +122,27 @@ func DiscoverySearchHandler(w http.ResponseWriter, r *http.Request) {
 		"msg":  "",
 		"data": response,
 	})
+}
+
+func discoveryCommonRuleFromRequest(globalHot file.GlobalHotConfig) file.KeywordRule {
+	rule := file.KeywordRule{FilterWords: cleanWords(globalHot.FilterWords)}
+	if globalHot.LowCommentNum > 0 {
+		value := globalHot.LowCommentNum
+		rule.LowCommentNum = &value
+	}
+	if globalHot.LowWorthyNum > 0 {
+		value := globalHot.LowWorthyNum
+		rule.LowWorthyNum = &value
+	}
+	if globalHot.MinPrice > 0 {
+		value := globalHot.MinPrice
+		rule.MinPrice = &value
+	}
+	if globalHot.MaxPrice > 0 {
+		value := globalHot.MaxPrice
+		rule.MaxPrice = &value
+	}
+	return rule
 }
 
 func productSearchPayload(keyword, openURL string, products []smzdm.Product) productSearchResponse {

@@ -32,6 +32,11 @@ type globalHotConfigRequest struct {
 	FollowAuthorsEnabled bool     `json:"followAuthorsEnabled"`
 	FollowedAuthors      []string `json:"followedAuthors"`
 	AuthorKeywords       []string `json:"authorKeywords"`
+	FilterWords          []string `json:"filterWords"`
+	LowCommentNum        int      `json:"lowCommentNum"`
+	LowWorthyNum         int      `json:"lowWorthyNum"`
+	MinPrice             float64  `json:"minPrice"`
+	MaxPrice             float64  `json:"maxPrice"`
 }
 
 type telegramConfigRequest struct {
@@ -126,6 +131,11 @@ func productConfigFromConfig(conf file.Config) productConfigRequest {
 			FollowAuthorsEnabled: globalHot.FollowAuthorsEnabled,
 			FollowedAuthors:      cleanWords(globalHot.FollowedAuthors),
 			AuthorKeywords:       cleanWords(globalHot.AuthorKeywords),
+			FilterWords:          cleanWords(globalHot.FilterWords),
+			LowCommentNum:        nonNegativeInt(globalHot.LowCommentNum),
+			LowWorthyNum:         nonNegativeInt(globalHot.LowWorthyNum),
+			MinPrice:             nonNegativeFloat(globalHot.MinPrice),
+			MaxPrice:             nonNegativeFloat(globalHot.MaxPrice),
 		},
 	}
 }
@@ -162,6 +172,11 @@ func (req productConfigRequest) applyTo(conf file.Config) file.Config {
 		FollowAuthorsEnabled: req.GlobalHot.FollowAuthorsEnabled,
 		FollowedAuthors:      cleanWords(req.GlobalHot.FollowedAuthors),
 		AuthorKeywords:       cleanWords(req.GlobalHot.AuthorKeywords),
+		FilterWords:          cleanWords(req.GlobalHot.FilterWords),
+		LowCommentNum:        nonNegativeInt(req.GlobalHot.LowCommentNum),
+		LowWorthyNum:         nonNegativeInt(req.GlobalHot.LowWorthyNum),
+		MinPrice:             nonNegativeFloat(req.GlobalHot.MinPrice),
+		MaxPrice:             nonNegativeFloat(req.GlobalHot.MaxPrice),
 	}
 	conf.Telegram = file.Telegram{
 		Enabled:               req.Telegram.Enabled,

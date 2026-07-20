@@ -103,19 +103,20 @@ func getSatisfiedGoodsFromGlobalFeed(conf file.Config, pushedMap map[string]inte
 }
 
 func globalFeedProductMatches(good Product, conf file.Config) bool {
-	if conf.GlobalHot.FollowAuthorsEnabled && discoveryProductMatches(good, conf.GlobalHot, "author") {
+	common := discoveryCommonRule(conf.GlobalHot)
+	if conf.GlobalHot.FollowAuthorsEnabled && discoveryProductMatchesWithRule(good, conf.GlobalHot, "author", common) {
 		return true
 	}
 	if !conf.GlobalHot.Enabled {
 		return false
 	}
-	return discoveryProductMatches(good, conf.GlobalHot, "hot")
+	return discoveryProductMatchesWithRule(good, conf.GlobalHot, "hot", common)
 }
 
 // SearchDiscoveryGoods returns a bounded, recent slice of the global feed for
 // the dashboard preview. Unlike the production scan, it intentionally stops
 // after a small number of pages so opening a rule remains responsive.
-func SearchDiscoveryGoods(globalHot file.GlobalHotConfig, kind string, limit int) []Product {
+func SearchDiscoveryGoods(globalHot file.GlobalHotConfig, kind string, common file.KeywordRule, limit int) []Product {
 	if limit <= 0 {
 		limit = 24
 	}
@@ -130,7 +131,7 @@ func SearchDiscoveryGoods(globalHot file.GlobalHotConfig, kind string, limit int
 	rows := scanGlobalFeedWithLimit(cutoff, 10)
 	result := make([]Product, 0, limit)
 	for _, good := range rows {
-		if !discoveryProductMatches(good, globalHot, kind) {
+		if !discoveryProductMatchesWithRule(good, globalHot, kind, common) {
 			continue
 		}
 		result = append(result, good)
@@ -143,18 +144,59 @@ func SearchDiscoveryGoods(globalHot file.GlobalHotConfig, kind string, limit int
 }
 
 func discoveryProductMatches(good Product, globalHot file.GlobalHotConfig, kind string) bool {
+	return discoveryProductMatchesWithRule(good, globalHot, kind, discoveryCommonRule(globalHot))
+}
+
+func discoveryProductMatchesWithRule(good Product, globalHot file.GlobalHotConfig, kind string, common file.KeywordRule) bool {
+	var typeMatched bool
 	switch kind {
 	case "hot":
 		if parseMetric(good.ArticleComment) < globalHotCommentFloor(globalHot.MinCommentNum) {
 			return false
 		}
-		return matchesDiscoveryTitle(good, globalHot.HotKeywords)
+		typeMatched = matchesDiscoveryTitle(good, globalHot.HotKeywords)
 	case "author":
-		return followedAuthorMatch(good.Referral, globalHot.FollowedAuthors) &&
+		typeMatched = followedAuthorMatch(good.Referral, globalHot.FollowedAuthors) &&
 			matchesDiscoveryTitle(good, globalHot.AuthorKeywords)
 	default:
 		return false
 	}
+	return typeMatched && searchProductMatches(good, common)
+}
+
+func discoveryCommonRule(globalHot file.GlobalHotConfig) file.KeywordRule {
+	rule := file.KeywordRule{FilterWords: cleanDiscoveryWords(globalHot.FilterWords)}
+	if globalHot.LowCommentNum > 0 {
+		value := globalHot.LowCommentNum
+		rule.LowCommentNum = &value
+	}
+	if globalHot.LowWorthyNum > 0 {
+		value := globalHot.LowWorthyNum
+		rule.LowWorthyNum = &value
+	}
+	if globalHot.MinPrice > 0 {
+		value := globalHot.MinPrice
+		rule.MinPrice = &value
+	}
+	if globalHot.MaxPrice > 0 {
+		value := globalHot.MaxPrice
+		rule.MaxPrice = &value
+	}
+	return rule
+}
+
+func cleanDiscoveryWords(words []string) []string {
+	result := make([]string, 0, len(words))
+	seen := map[string]bool{}
+	for _, word := range words {
+		word = strings.TrimSpace(word)
+		if word == "" || seen[word] {
+			continue
+		}
+		seen[word] = true
+		result = append(result, word)
+	}
+	return result
 }
 
 func matchesDiscoveryTitle(good Product, keywords []string) bool {

@@ -86,6 +86,29 @@ func TestDiscoveryPreviewMatchesSelectedTypeWithoutEnableFlag(t *testing.T) {
 	}
 }
 
+func TestDiscoveryPreviewAppliesSharedFilters(t *testing.T) {
+	comment := 2
+	worthy := 10
+	minPrice := 50.0
+	maxPrice := 100.0
+	common := file.KeywordRule{
+		FilterWords:   []string{"二手"},
+		LowCommentNum: &comment,
+		LowWorthyNum:  &worthy,
+		MinPrice:      &minPrice,
+		MaxPrice:      &maxPrice,
+	}
+	config := file.GlobalHotConfig{MinCommentNum: 1}
+	good := Product{ArticleTitle: "显示器", ArticleComment: "5", ArticleWorthy: "12", ArticlePrice: "79元"}
+	if !discoveryProductMatchesWithRule(good, config, "hot", common) {
+		t.Fatal("expected discovery item to pass shared filters")
+	}
+	good.ArticleTitle = "二手显示器"
+	if discoveryProductMatchesWithRule(good, config, "hot", common) {
+		t.Fatal("expected discovery item with a shared filter word to be rejected")
+	}
+}
+
 func TestSortProductsByCommentAndTime(t *testing.T) {
 	later := time.Now().Add(-time.Minute).Unix()
 	earlier := time.Now().Add(-time.Hour).Unix()

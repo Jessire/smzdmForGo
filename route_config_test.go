@@ -15,6 +15,11 @@ func TestGlobalHotConfigNormalization(t *testing.T) {
 		FollowAuthorsEnabled: true,
 		FollowedAuthors:      []string{"  张三,李四 ", "李四"},
 		AuthorKeywords:       []string{" 耳机 "},
+		FilterWords:          []string{" 临期, 售罄 "},
+		LowCommentNum:        3,
+		LowWorthyNum:         8,
+		MinPrice:             29.9,
+		MaxPrice:             199,
 	}}
 	got := req.applyTo(file.Config{})
 	if got.GlobalHot.WindowHours != 9 {
@@ -33,6 +38,9 @@ func TestGlobalHotConfigNormalization(t *testing.T) {
 	}
 	if len(response.GlobalHot.HotKeywords) != 2 || len(response.GlobalHot.AuthorKeywords) != 1 {
 		t.Fatalf("independent keywords were not preserved: %#v", response.GlobalHot)
+	}
+	if len(response.GlobalHot.FilterWords) != 2 || response.GlobalHot.LowCommentNum != 3 || response.GlobalHot.LowWorthyNum != 8 || response.GlobalHot.MinPrice != 29.9 || response.GlobalHot.MaxPrice != 199 {
+		t.Fatalf("shared discovery filters were not preserved: %#v", response.GlobalHot)
 	}
 }
 

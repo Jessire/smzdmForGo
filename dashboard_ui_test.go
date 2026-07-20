@@ -18,17 +18,18 @@ func TestDashboardSearchFeedbackPlacement(t *testing.T) {
 		".rule-auto-state.is-searching:before",
 		"toggleClass('is-searching', state === '搜索中')",
 		"if (selector === '#searchRule')",
-		"id=\"globalHotEnabled\"",
 		"id=\"globalHotWindow\" type=\"number\"",
 		"id=\"globalHotMinComment\" type=\"number\"",
 		"id=\"hotKeywordTokenBox\"",
 		"id=\"followedAuthorsTokenBox\"",
-		"id=\"followAuthorsEnabled\"",
 		"id=\"authorKeywordTokenBox\"",
+		"id=\"productKeywordField\"",
+		"id=\"discoveryTimeEditor\"",
 		"function bindDiscoveryTokenEditor",
 		"function normalizeGlobalHot(value)",
 		"var selectedRuleKind = 'product'",
 		"function openRuleTypePicker",
+		"offset: [top + 'px', left + 'px']",
 		"data-rule-kind=\"hot\"",
 		"id=\"hotRuleEditor\"",
 		"id=\"authorRuleEditor\"",
@@ -41,6 +42,9 @@ func TestDashboardSearchFeedbackPlacement(t *testing.T) {
 	}
 	if strings.Contains(page, "本次临时搜索") {
 		t.Error("dashboard still shows the obsolete label 本次临时搜索")
+	}
+	if strings.Contains(page, "id=\"globalHotEnabled\"") || strings.Contains(page, "id=\"followAuthorsEnabled\"") {
+		t.Error("discovery editors still contain redundant enable switches")
 	}
 	if strings.Contains(page, "<select id=\"globalHotWindow\"") || strings.Contains(page, "<select id=\"globalHotMinComment\"") {
 		t.Error("global hot numeric settings still use preset selects")
