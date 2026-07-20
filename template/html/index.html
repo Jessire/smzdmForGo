@@ -241,18 +241,39 @@
     .rule-type-picker button:hover,.rule-type-picker button:focus-visible{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 7%,var(--surface));outline:none}
     .rule-type-picker strong{font-size:14px;font-weight:850}.rule-type-picker span{color:var(--muted);font-size:12px;font-weight:700}
     .discovery-fields-row{
-      display:grid!important;
-      grid-template-columns:repeat(auto-fit,minmax(190px,1fr))!important;
-      gap:9px!important;
+      display:flex!important;
+      flex-wrap:wrap!important;
+      gap:8px!important;
       margin-top:9px;
       align-items:stretch;
     }
     .discovery-rule-group{display:contents}
     .discovery-rule-group[hidden]{display:none!important}
-    .discovery-fields-row .rule-summary-field{min-height:72px;min-width:0}
-    .discovery-time-field{max-width:none}
-    .discovery-inline{min-width:0;white-space:normal!important}
+    .discovery-fields-row .rule-summary-field{
+      min-height:62px;
+      min-width:0;
+      flex:1 1 220px;
+    }
+    .discovery-fields-row .discovery-time-field,
+    .discovery-fields-row .discovery-compact-field{
+      flex:0 0 132px;
+      max-width:148px;
+    }
+    .discovery-fields-row .discovery-grow-field{
+      flex:1 1 240px;
+      min-width:min(100%,240px);
+    }
+    .discovery-time-field{max-width:148px}
+    .discovery-inline{min-width:0;white-space:nowrap!important}
     .discovery-inline input{min-width:0!important;max-width:100%;box-sizing:border-box}
+    @media (max-width:720px){
+      .discovery-fields-row .discovery-time-field,
+      .discovery-fields-row .discovery-compact-field{
+        flex:1 1 calc(50% - 4px);
+        max-width:none;
+      }
+      .discovery-fields-row .discovery-grow-field{flex:1 1 100%}
+    }
     @media (max-width:1100px){
       .advanced-rule-fields.is-open{grid-template-columns:repeat(2,minmax(0,1fr))!important}
     }
@@ -510,9 +531,18 @@
       #previewCards.product-list:not(:has(.empty-state)){grid-template-columns:1fr!important}
     }
     body.zero-redesign.trellis-ui .discovery-fields-row{
-      display:grid!important;
-      grid-template-columns:repeat(auto-fit,minmax(190px,1fr))!important;
-      gap:9px!important;
+      display:flex!important;
+      flex-wrap:wrap!important;
+      gap:8px!important;
+    }
+    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-time-field,
+    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-compact-field{
+      flex:0 0 132px;
+      max-width:148px;
+    }
+    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-grow-field{
+      flex:1 1 240px;
+      min-width:min(100%,240px);
     }
     body.zero-redesign.trellis-ui .discovery-rule-group{display:contents}
     body.zero-redesign.trellis-ui .discovery-rule-group[hidden]{display:none!important}
@@ -690,7 +720,7 @@
           </div>
         </div>
         <div class="discovery-rule-group" id="hotRuleEditor" hidden>
-          <div class="rule-summary-field discovery-field">
+          <div class="rule-summary-field discovery-field discovery-compact-field">
             <label for="globalHotMinComment">热门评论门槛</label>
             <div class="summary-inline discovery-inline">
               <span>评论</span>
@@ -698,7 +728,7 @@
               <span>条以上</span>
             </div>
           </div>
-          <div class="rule-summary-field discovery-field">
+          <div class="rule-summary-field discovery-field discovery-grow-field">
             <label class="discovery-token-label" for="hotKeywordInput">搜索热门关键词</label>
             <div id="hotKeywordTokenBox" class="filter-token-box discovery-token-box">
               <input id="hotKeywordInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加, 支持粘贴">
@@ -706,13 +736,13 @@
           </div>
         </div>
         <div class="discovery-rule-group" id="authorRuleEditor" hidden>
-          <div class="rule-summary-field discovery-field">
+          <div class="rule-summary-field discovery-field discovery-grow-field">
             <label class="discovery-token-label" for="followedAuthorsInput">搜索作者</label>
             <div id="followedAuthorsTokenBox" class="filter-token-box discovery-token-box">
               <input id="followedAuthorsInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加作者名称">
             </div>
           </div>
-          <div class="rule-summary-field discovery-field">
+          <div class="rule-summary-field discovery-field discovery-grow-field">
             <label class="discovery-token-label" for="authorKeywordInput">作者爆料关键词</label>
             <div id="authorKeywordTokenBox" class="filter-token-box discovery-token-box">
               <input id="authorKeywordInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加爆料关键词">
