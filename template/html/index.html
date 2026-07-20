@@ -235,13 +235,22 @@
     .discovery-token-box{height:auto!important;min-height:32px!important;max-height:76px!important;padding:3px!important;border:1px solid color-mix(in srgb,var(--line) 72%,transparent)!important;border-radius:8px!important;background:var(--surface)!important;overflow:auto!important}
     .discovery-token-box .filter-token{min-height:24px;padding-left:8px}
     .discovery-token-box .filter-token-input{height:24px!important;min-width:90px!important;font-size:12px!important}
-    #productKeywordField[hidden],.discovery-rule-editor[hidden],.discovery-time-editor[hidden],#ruleSummaryStrip[hidden],#toggleAdvancedRule[hidden],#advancedRuleFields[hidden]{display:none!important}
+    #productKeywordField[hidden],.discovery-fields-row[hidden],.discovery-rule-group[hidden],#ruleSummaryStrip[hidden],#toggleAdvancedRule[hidden],#advancedRuleFields[hidden]{display:none!important}
     .rule-type-picker{display:grid;gap:8px;padding:2px}
     .rule-type-picker button{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);text-align:left;cursor:pointer}
     .rule-type-picker button:hover,.rule-type-picker button:focus-visible{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 7%,var(--surface));outline:none}
     .rule-type-picker strong{font-size:14px;font-weight:850}.rule-type-picker span{color:var(--muted);font-size:12px;font-weight:700}
-    .discovery-time-editor{grid-template-columns:minmax(0,1fr)!important;max-width:260px;margin-top:9px}
-    .discovery-time-editor .rule-summary-field{min-height:64px}
+    .discovery-fields-row{
+      display:grid!important;
+      grid-template-columns:repeat(auto-fit,minmax(190px,1fr))!important;
+      gap:9px!important;
+      margin-top:9px;
+      align-items:stretch;
+    }
+    .discovery-rule-group{display:contents}
+    .discovery-rule-group[hidden]{display:none!important}
+    .discovery-fields-row .rule-summary-field{min-height:72px;min-width:0}
+    .discovery-time-field{max-width:none}
     .discovery-inline{min-width:0;white-space:normal!important}
     .discovery-inline input{min-width:0!important;max-width:100%;box-sizing:border-box}
     @media (max-width:1100px){
@@ -500,10 +509,15 @@
       .preview-panel{min-height:360px}
       #previewCards.product-list:not(:has(.empty-state)){grid-template-columns:1fr!important}
     }
-    body.zero-redesign.trellis-ui .discovery-time-editor{grid-template-columns:minmax(0,1fr)!important}
-    body.zero-redesign.trellis-ui .discovery-time-editor .rule-summary-field{grid-column:1/-1!important}
-    body.zero-redesign.trellis-ui .discovery-time-editor .discovery-inline{display:flex!important;align-items:center;gap:8px;white-space:nowrap!important}
-    body.zero-redesign.trellis-ui .discovery-time-editor .discovery-inline input{width:72px!important;flex:0 1 72px!important}
+    body.zero-redesign.trellis-ui .discovery-fields-row{
+      display:grid!important;
+      grid-template-columns:repeat(auto-fit,minmax(190px,1fr))!important;
+      gap:9px!important;
+    }
+    body.zero-redesign.trellis-ui .discovery-rule-group{display:contents}
+    body.zero-redesign.trellis-ui .discovery-rule-group[hidden]{display:none!important}
+    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-inline{display:flex!important;align-items:center;gap:8px;white-space:nowrap!important}
+    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-inline input{width:72px!important;flex:0 1 72px!important}
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
@@ -666,8 +680,8 @@
           <div class="field-hint">0 = 不限天数</div>
         </div>
       </div>
-      <div class="rule-summary-grid discovery-time-editor" id="discoveryTimeEditor" hidden>
-        <div class="rule-summary-field discovery-field">
+      <div class="discovery-fields-row" id="discoveryFieldsRow" hidden>
+        <div class="rule-summary-field discovery-field discovery-time-field" id="discoveryTimeEditor">
           <label for="globalHotWindow">发现时间范围</label>
           <div class="summary-inline discovery-inline">
             <span>近</span>
@@ -675,34 +689,34 @@
             <span>小时</span>
           </div>
         </div>
-      </div>
-      <div class="rule-summary-grid discovery-rule-editor" id="hotRuleEditor" hidden>
-        <div class="rule-summary-field discovery-field">
-          <label for="globalHotMinComment">热门评论门槛</label>
-          <div class="summary-inline discovery-inline">
-            <span>评论</span>
-            <input id="globalHotMinComment" type="number" min="1" step="1" inputmode="numeric" aria-label="全站热门最低评论数">
-            <span>条以上</span>
+        <div class="discovery-rule-group" id="hotRuleEditor" hidden>
+          <div class="rule-summary-field discovery-field">
+            <label for="globalHotMinComment">热门评论门槛</label>
+            <div class="summary-inline discovery-inline">
+              <span>评论</span>
+              <input id="globalHotMinComment" type="number" min="1" step="1" inputmode="numeric" aria-label="全站热门最低评论数">
+              <span>条以上</span>
+            </div>
+          </div>
+          <div class="rule-summary-field discovery-field">
+            <label class="discovery-token-label" for="hotKeywordInput">搜索热门关键词</label>
+            <div id="hotKeywordTokenBox" class="filter-token-box discovery-token-box">
+              <input id="hotKeywordInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加, 支持粘贴">
+            </div>
           </div>
         </div>
-        <div class="rule-summary-field discovery-field">
-          <label class="discovery-token-label" for="hotKeywordInput">搜索热门关键词</label>
-          <div id="hotKeywordTokenBox" class="filter-token-box discovery-token-box">
-            <input id="hotKeywordInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加, 支持粘贴">
+        <div class="discovery-rule-group" id="authorRuleEditor" hidden>
+          <div class="rule-summary-field discovery-field">
+            <label class="discovery-token-label" for="followedAuthorsInput">搜索作者</label>
+            <div id="followedAuthorsTokenBox" class="filter-token-box discovery-token-box">
+              <input id="followedAuthorsInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加作者名称">
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="rule-summary-grid discovery-rule-editor" id="authorRuleEditor" hidden>
-        <div class="rule-summary-field discovery-field">
-          <label class="discovery-token-label" for="followedAuthorsInput">搜索作者</label>
-          <div id="followedAuthorsTokenBox" class="filter-token-box discovery-token-box">
-            <input id="followedAuthorsInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加作者名称">
-          </div>
-        </div>
-        <div class="rule-summary-field discovery-field">
-          <label class="discovery-token-label" for="authorKeywordInput">作者爆料关键词</label>
-          <div id="authorKeywordTokenBox" class="filter-token-box discovery-token-box">
-            <input id="authorKeywordInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加爆料关键词">
+          <div class="rule-summary-field discovery-field">
+            <label class="discovery-token-label" for="authorKeywordInput">作者爆料关键词</label>
+            <div id="authorKeywordTokenBox" class="filter-token-box discovery-token-box">
+              <input id="authorKeywordInput" class="filter-token-input" type="text" autocomplete="off" placeholder="回车添加爆料关键词">
+            </div>
           </div>
         </div>
       </div>
@@ -1739,7 +1753,7 @@ layui.use(function(){
     kind = kind === 'hot' || kind === 'author' ? kind : 'product';
     $('.editor-panel').attr('data-editor-kind', kind);
     $('#productKeywordField').prop('hidden', kind !== 'product');
-    $('#discoveryTimeEditor').prop('hidden', kind === 'product');
+    $('#discoveryFieldsRow').prop('hidden', kind === 'product');
     $('#hotRuleEditor').prop('hidden', kind !== 'hot');
     $('#authorRuleEditor').prop('hidden', kind !== 'author');
     $('#ruleSummaryStrip').prop('hidden', kind !== 'product');
