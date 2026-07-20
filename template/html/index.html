@@ -243,7 +243,7 @@
     .discovery-fields-row{
       display:flex!important;
       flex-wrap:wrap!important;
-      gap:8px!important;
+      gap:9px!important;
       margin-top:9px;
       align-items:stretch;
     }
@@ -254,25 +254,64 @@
       min-width:0;
       flex:1 1 220px;
     }
-    .discovery-fields-row .discovery-time-field,
-    .discovery-fields-row .discovery-compact-field{
-      flex:0 0 132px;
-      max-width:148px;
+    .discovery-fields-row .discovery-params-field{
+      flex:0 1 auto;
+      width:max-content;
+      max-width:100%;
+      min-width:0;
     }
     .discovery-fields-row .discovery-grow-field{
-      flex:1 1 240px;
-      min-width:min(100%,240px);
+      flex:1 1 280px;
+      min-width:min(100%,260px);
     }
-    .discovery-time-field{max-width:148px}
+    .discovery-params-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      min-height:30px;
+    }
+    .discovery-param{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      white-space:nowrap;
+      color:var(--text);
+      font-size:12px;
+      font-weight:780;
+    }
+    .discovery-param-sep{
+      color:color-mix(in srgb,var(--muted) 78%,transparent);
+      font-weight:850;
+      margin:0 1px;
+    }
+    .discovery-param input[type=number]{
+      width:52px!important;
+      height:28px!important;
+      padding:0 8px!important;
+      border:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+      border-radius:7px;
+      background:var(--surface);
+      color:var(--text);
+      font-size:12px;
+      font-weight:850;
+      text-align:center;
+      box-sizing:border-box;
+      -moz-appearance:textfield;
+    }
+    .discovery-param input[type=number]::-webkit-outer-spin-button,
+    .discovery-param input[type=number]::-webkit-inner-spin-button{
+      -webkit-appearance:none;
+      margin:0;
+    }
     .discovery-inline{min-width:0;white-space:nowrap!important}
     .discovery-inline input{min-width:0!important;max-width:100%;box-sizing:border-box}
     @media (max-width:720px){
-      .discovery-fields-row .discovery-time-field,
-      .discovery-fields-row .discovery-compact-field{
-        flex:1 1 calc(50% - 4px);
-        max-width:none;
+      .discovery-fields-row .discovery-params-field,
+      .discovery-fields-row .discovery-grow-field{
+        flex:1 1 100%;
+        width:100%;
       }
-      .discovery-fields-row .discovery-grow-field{flex:1 1 100%}
     }
     @media (max-width:1100px){
       .advanced-rule-fields.is-open{grid-template-columns:repeat(2,minmax(0,1fr))!important}
@@ -533,21 +572,22 @@
     body.zero-redesign.trellis-ui .discovery-fields-row{
       display:flex!important;
       flex-wrap:wrap!important;
-      gap:8px!important;
+      gap:9px!important;
     }
-    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-time-field,
-    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-compact-field{
-      flex:0 0 132px;
-      max-width:148px;
+    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-params-field{
+      flex:0 1 auto;
+      width:max-content;
+      max-width:100%;
     }
     body.zero-redesign.trellis-ui .discovery-fields-row .discovery-grow-field{
-      flex:1 1 240px;
-      min-width:min(100%,240px);
+      flex:1 1 280px;
+      min-width:min(100%,260px);
     }
     body.zero-redesign.trellis-ui .discovery-rule-group{display:contents}
     body.zero-redesign.trellis-ui .discovery-rule-group[hidden]{display:none!important}
-    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-inline{display:flex!important;align-items:center;gap:8px;white-space:nowrap!important}
-    body.zero-redesign.trellis-ui .discovery-fields-row .discovery-inline input{width:72px!important;flex:0 1 72px!important}
+    body.zero-redesign.trellis-ui .discovery-params-row{display:flex!important;align-items:center;gap:10px;flex-wrap:wrap}
+    body.zero-redesign.trellis-ui .discovery-param{display:inline-flex!important;align-items:center;gap:6px;white-space:nowrap}
+    body.zero-redesign.trellis-ui .discovery-param input[type=number]{width:52px!important;height:28px!important;flex:0 0 52px!important}
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
@@ -711,23 +751,22 @@
         </div>
       </div>
       <div class="discovery-fields-row" id="discoveryFieldsRow" hidden>
-        <div class="rule-summary-field discovery-field discovery-time-field" id="discoveryTimeEditor">
-          <label for="globalHotWindow">发现时间范围</label>
-          <div class="summary-inline discovery-inline">
-            <span>近</span>
-            <input id="globalHotWindow" type="number" min="1" step="1" inputmode="numeric" aria-label="发现时间范围">
-            <span>小时</span>
+        <div class="rule-summary-field discovery-field discovery-params-field" id="discoveryTimeEditor">
+          <label id="discoveryParamsLabel" for="globalHotWindow">发现条件</label>
+          <div class="discovery-params-row">
+            <div class="discovery-param">
+              <span>近</span>
+              <input id="globalHotWindow" type="number" min="1" step="1" inputmode="numeric" aria-label="发现时间范围">
+              <span>小时</span>
+            </div>
+            <div class="discovery-param" id="hotThresholdParam" hidden>
+              <span class="discovery-param-sep">·</span>
+              <span>评论 ≥</span>
+              <input id="globalHotMinComment" type="number" min="1" step="1" inputmode="numeric" aria-label="全站热门最低评论数">
+            </div>
           </div>
         </div>
         <div class="discovery-rule-group" id="hotRuleEditor" hidden>
-          <div class="rule-summary-field discovery-field discovery-compact-field">
-            <label for="globalHotMinComment">热门评论门槛</label>
-            <div class="summary-inline discovery-inline">
-              <span>评论</span>
-              <input id="globalHotMinComment" type="number" min="1" step="1" inputmode="numeric" aria-label="全站热门最低评论数">
-              <span>条以上</span>
-            </div>
-          </div>
           <div class="rule-summary-field discovery-field discovery-grow-field">
             <label class="discovery-token-label" for="hotKeywordInput">搜索热门关键词</label>
             <div id="hotKeywordTokenBox" class="filter-token-box discovery-token-box">
@@ -1786,6 +1825,8 @@ layui.use(function(){
     $('#discoveryFieldsRow').prop('hidden', kind === 'product');
     $('#hotRuleEditor').prop('hidden', kind !== 'hot');
     $('#authorRuleEditor').prop('hidden', kind !== 'author');
+    $('#hotThresholdParam').prop('hidden', kind !== 'hot');
+    $('#discoveryParamsLabel').text(kind === 'hot' ? '发现条件' : '发现时间');
     $('#ruleSummaryStrip').prop('hidden', kind !== 'product');
     $('#toggleAdvancedRule, #advancedRuleFields').prop('hidden', kind !== 'product');
     var saveLabel = kind === 'hot' ? '保存搜索热门' : (kind === 'author' ? '保存搜索作者' : '保存并启用');
