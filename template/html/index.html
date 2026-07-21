@@ -588,6 +588,233 @@
     body.zero-redesign.trellis-ui .discovery-params-row{display:flex!important;align-items:center;gap:10px;flex-wrap:wrap}
     body.zero-redesign.trellis-ui .discovery-param{display:inline-flex!important;align-items:center;gap:6px;white-space:nowrap}
     body.zero-redesign.trellis-ui .discovery-param input[type=number]{width:52px!important;height:28px!important;flex:0 0 52px!important}
+    /* ===== Approved UI refinements (source-order overrides) ===== */
+    /* 1) preview empty -> slim hint bar so rule details rise up */
+    .preview-panel:has(#previewCards .empty-state){
+      flex:0 0 auto!important;
+      grid-template-rows:auto auto!important;
+      overflow:visible!important;
+    }
+    .preview-panel:has(#previewCards .empty-state) .empty-state{
+      display:flex!important;
+      flex-direction:row!important;
+      align-items:center!important;
+      justify-content:flex-start!important;
+      gap:10px!important;
+      min-height:0!important;
+      padding:9px 14px!important;
+      text-align:left!important;
+    }
+    .preview-panel:has(#previewCards .empty-state) .empty-state svg{
+      width:22px!important;height:22px!important;flex:0 0 22px;opacity:.7;
+    }
+    .preview-panel:has(#previewCards .empty-state) .empty-state strong{font-size:14px!important}
+    .preview-panel:has(#previewCards .empty-state) .empty-state p{font-size:12px!important;margin:0}
+    /* 4) KPI numbers bigger/bolder */
+    .rule-kpi-value{font-size:30px!important;font-weight:900!important;line-height:1.02!important}
+    .rule-kpi-label{font-size:11.5px!important;font-weight:800!important}
+    /* 5) summary chips: per-dimension light color coding */
+    #summaryPrice{border-color:color-mix(in srgb,var(--price) 34%,var(--line))!important;background:color-mix(in srgb,var(--price) 9%,var(--surface))!important;color:color-mix(in srgb,var(--price) 82%,var(--text))!important}
+    #summaryThreshold{border-color:color-mix(in srgb,#d97706 34%,var(--line))!important;background:color-mix(in srgb,#d97706 10%,var(--surface))!important;color:#b45309!important}
+    #summaryFreq,#summaryLimit{border-color:color-mix(in srgb,var(--blue) 30%,var(--line))!important;background:color-mix(in srgb,var(--blue) 8%,var(--surface))!important;color:color-mix(in srgb,var(--blue) 82%,var(--text))!important}
+    /* 7) secondary actions neutral outline; only primary stays solid blue */
+    .editor-panel .editor-actions #searchRule,
+    .editor-panel .editor-actions #saveDraftConfig,
+    .tg-health-actions #testTelegram{
+      border:1px solid color-mix(in srgb,var(--line) 82%,transparent)!important;
+      background:var(--surface)!important;
+      color:var(--text)!important;
+      box-shadow:none!important;
+    }
+    .editor-panel .editor-actions #searchRule svg{color:var(--blue)}
+    /* 2) rule cards: drop low-value metadata row, hit count -> corner badge */
+    .rule-hit-badge{
+      position:absolute;bottom:8px;right:8px;z-index:2;
+      display:inline-flex;align-items:center;gap:3px;
+      min-height:20px;padding:0 8px;border-radius:999px;
+      border:1px solid color-mix(in srgb,var(--blue) 26%,var(--line));
+      background:color-mix(in srgb,var(--blue) 9%,var(--surface));
+      color:color-mix(in srgb,var(--blue) 80%,var(--text));
+      font-size:11px;font-weight:850;line-height:1;white-space:nowrap;
+    }
+    .rule-hit-badge.is-zero{
+      border-color:color-mix(in srgb,var(--line) 70%,transparent);
+      background:color-mix(in srgb,var(--soft) 82%,var(--surface));
+      color:var(--faint);
+    }
+    .rule-runtime{display:none!important}
+    /* 8) discovery rules unified icons: hot=flame, author=person */
+    .discovery-rule-card .rule-thumb-media{
+      background:color-mix(in srgb,var(--blue) 8%,var(--surface))!important;
+      border-color:color-mix(in srgb,var(--blue) 22%,var(--line))!important;
+    }
+    .discovery-rule-card .rule-thumb-media .thumb{display:none!important}
+    .discovery-rule-card .rule-thumb-media .discovery-glyph{
+      width:100%;height:100%;display:grid;place-items:center;color:var(--blue);
+    }
+    .discovery-rule-card .rule-thumb-media .discovery-glyph svg{width:46%;height:46%;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .discovery-rule-card.rule-card[data-discovery=hot] .rule-thumb-media{background:color-mix(in srgb,#f97316 10%,var(--surface))!important;border-color:color-mix(in srgb,#f97316 26%,var(--line))!important}
+    .discovery-rule-card.rule-card[data-discovery=hot] .discovery-glyph{color:#ea580c}
+    /* ===== Final visual pass (own judgment): depth, no void, unified surfaces ===== */
+    /* Shell fits content and sits on the canvas; panels become the visible objects */
+    body.zero-redesign.trellis-ui .app-shell{
+      height:auto!important;min-height:0!important;
+      align-items:start!important;
+      grid-template-rows:56px auto!important;
+      background:transparent!important;border:0!important;box-shadow:none!important;
+      overflow:visible!important;
+      padding:2px!important;
+    }
+    /* Every panel is an elevated card; empty space reads as intentional canvas */
+    body.zero-redesign.trellis-ui .app-topbar,
+    body.zero-redesign.trellis-ui .rules-panel,
+    body.zero-redesign.trellis-ui .editor-panel,
+    body.zero-redesign.trellis-ui .preview-panel,
+    body.zero-redesign.trellis-ui .notification-shell{
+      background:var(--surface)!important;
+      border:1px solid var(--line)!important;
+      border-radius:14px!important;
+      box-shadow:0 1px 2px rgb(15 23 42/.05),0 10px 30px rgb(15 23 42/.06)!important;
+    }
+    /* Cap the rule column so the shell never grows into a tall empty box */
+    body.zero-redesign.trellis-ui .rules-panel{
+      max-height:calc(100dvh - 96px)!important;
+      overflow:auto!important;
+    }
+    /* KPI tiles: one calm surface, single blue accent only for the active tile */
+    body.zero-redesign.trellis-ui .rule-kpi-card,
+    body.zero-redesign.trellis-ui .rule-kpi-card.is-warn{
+      background:color-mix(in srgb,var(--soft) 55%,var(--surface))!important;
+      border:1px solid var(--line)!important;
+    }
+    body.zero-redesign.trellis-ui .rule-kpi-card.is-warn .rule-kpi-value{color:var(--text)!important}
+    body.zero-redesign.trellis-ui .rule-kpi-card.is-active{
+      background:color-mix(in srgb,var(--blue) 8%,var(--surface))!important;
+      border-color:color-mix(in srgb,var(--blue) 42%,var(--line))!important;
+    }
+    /* Editor inner fields: soften borders so it is not box-in-box */
+    body.zero-redesign.trellis-ui .rule-summary-field,
+    body.zero-redesign.trellis-ui .discovery-field,
+    body.zero-redesign.trellis-ui .studio-grid .field,
+    body.zero-redesign.trellis-ui .rule-summary-grid .rule-summary-field{
+      border-color:color-mix(in srgb,var(--line) 55%,transparent)!important;
+      background:color-mix(in srgb,var(--soft) 38%,var(--surface))!important;
+    }
+    /* Dark theme: give panels real elevation so they stop blending into the page */
+    body.zero-redesign.trellis-ui[data-theme=dark] .app-topbar,
+    body.zero-redesign.trellis-ui[data-theme=dark] .rules-panel,
+    body.zero-redesign.trellis-ui[data-theme=dark] .editor-panel,
+    body.zero-redesign.trellis-ui[data-theme=dark] .preview-panel,
+    body.zero-redesign.trellis-ui[data-theme=dark] .notification-shell{
+      background:#1a2432!important;
+      border-color:#2b3648!important;
+      box-shadow:0 1px 2px rgb(0 0 0/.30),0 12px 34px rgb(0 0 0/.38)!important;
+    }
+    body.zero-redesign.trellis-ui[data-theme=dark] .rule-kpi-card,
+    body.zero-redesign.trellis-ui[data-theme=dark] .rule-kpi-card.is-warn{
+      background:#141c28!important;border-color:#2b3648!important;
+    }
+    /* ===== Full-height columns: fill viewport, scroll inside, zero void ===== */
+    body.zero-redesign.trellis-ui{overflow:hidden!important}
+    body.zero-redesign.trellis-ui .app-shell{
+      height:calc(100dvh - 20px)!important;min-height:0!important;
+      margin:10px auto!important;
+      align-items:stretch!important;
+      grid-template-rows:56px minmax(0,1fr)!important;
+      overflow:hidden!important;
+    }
+    /* each column stretches to full height */
+    body.zero-redesign.trellis-ui .rules-panel,
+    body.zero-redesign.trellis-ui .workbench,
+    body.zero-redesign.trellis-ui .inspector-column,
+    body.zero-redesign.trellis-ui .notification-shell{
+      min-height:0!important;height:100%!important;
+    }
+    /* rules rail: header fixed, list scrolls */
+    body.zero-redesign.trellis-ui .rules-panel{
+      display:flex!important;flex-direction:column!important;
+      max-height:none!important;overflow:hidden!important;
+    }
+    /* right inspector column: allow its own scroll if content overflows */
+    body.zero-redesign.trellis-ui .inspector-column{
+      display:flex!important;flex-direction:column!important;gap:14px!important;
+      overflow:auto!important;
+    }
+    /* middle workbench: editor natural, preview grows to fill remaining height */
+    body.zero-redesign.trellis-ui .preview-panel{
+      flex:1 1 auto!important;min-height:220px!important;
+    }
+    /* empty states center vertically so a short-content card still looks intentional */
+    body.zero-redesign.trellis-ui .preview-panel:has(#previewCards .empty-state){
+      grid-template-rows:auto 1fr!important;overflow:hidden!important;
+    }
+    body.zero-redesign.trellis-ui #previewCards:has(.empty-state){
+      display:grid!important;place-items:center!important;min-height:0!important;
+    }
+    body.zero-redesign.trellis-ui .preview-panel:has(#previewCards .empty-state) .empty-state{
+      flex-direction:column!important;justify-content:center!important;align-items:center!important;
+      text-align:center!important;gap:8px!important;padding:24px!important;
+    }
+    body.zero-redesign.trellis-ui .preview-panel:has(#previewCards .empty-state) .empty-state svg{
+      width:32px!important;height:32px!important;flex:0 0 32px;opacity:.55;
+    }
+
+    /* ===== Deterministic middle column: grid beats the flex !important fight ===== */
+    body.zero-redesign.trellis-ui .workbench{
+      display:grid!important;
+      grid-template-rows:auto minmax(0,1fr)!important;
+      grid-template-columns:100%!important;
+      gap:14px!important;
+      height:100%!important;min-height:0!important;
+    }
+    body.zero-redesign.trellis-ui .workbench > .editor-panel{
+      align-self:start!important;
+    }
+    body.zero-redesign.trellis-ui .workbench > .preview-panel{
+      height:100%!important;min-height:0!important;
+      align-self:stretch!important;
+    }
+
+    /* Fix: children carried stale grid-area:editor/preview from the outer shell,
+       so both landed in workbench row 1 and overlapped. Place them explicitly. */
+    body.zero-redesign.trellis-ui .workbench > .editor-panel{
+      grid-area:auto!important;grid-row:1!important;grid-column:1!important;
+    }
+    body.zero-redesign.trellis-ui .workbench > .preview-panel{
+      grid-area:auto!important;grid-row:2!important;grid-column:1!important;
+    }
+
+    /* ===== Uniform discovery editor: align 发现/关键词/作者 cards to the top summary grid ===== */
+    @media (min-width:721px){
+      body.zero-redesign.trellis-ui .editor-panel[data-editor-kind="hot"] .rule-summary-grid,
+      body.zero-redesign.trellis-ui .editor-panel[data-editor-kind="author"] .rule-summary-grid{
+        grid-template-columns:repeat(3,minmax(0,1fr))!important;
+      }
+      body.zero-redesign.trellis-ui .discovery-fields-row{
+        display:grid!important;
+        grid-template-columns:repeat(3,minmax(0,1fr))!important;
+        gap:9px!important;
+        align-items:stretch!important;
+        margin-top:9px!important;
+      }
+      body.zero-redesign.trellis-ui .discovery-fields-row .discovery-params-field{
+        grid-column:span 1!important;width:auto!important;max-width:none!important;min-width:0!important;
+      }
+      body.zero-redesign.trellis-ui #hotRuleEditor .discovery-grow-field{grid-column:span 2!important;min-width:0!important;}
+      body.zero-redesign.trellis-ui #authorRuleEditor .discovery-grow-field{grid-column:span 1!important;min-width:0!important;}
+      body.zero-redesign.trellis-ui .editor-panel[data-editor-kind="hot"] .rule-summary-field,
+      body.zero-redesign.trellis-ui .editor-panel[data-editor-kind="author"] .rule-summary-field{min-height:102px!important;}
+    }
+    body.zero-redesign.trellis-ui .discovery-token-box{
+      height:auto!important;min-height:32px!important;max-height:88px!important;
+      padding:4px 0!important;border:0!important;background:transparent!important;border-radius:0!important;
+    }
+    body.zero-redesign.trellis-ui .discovery-token-box .filter-token-input{
+      height:23px!important;min-width:70px!important;font-size:12px!important;font-weight:700!important;
+    }
+    body.zero-redesign.trellis-ui .discovery-token-label{
+      margin:0 0 5px!important;font-size:11px!important;font-weight:780!important;color:var(--muted)!important;
+    }
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
@@ -704,17 +931,17 @@
         </div>
         <div class="rule-summary-field">
           <label>命中门槛</label>
+          <div class="preset-row" id="thresholdPresets">
+            <button type="button" class="preset-chip" data-threshold="loose">宽松</button>
+            <button type="button" class="preset-chip active" data-threshold="medium">中等</button>
+            <button type="button" class="preset-chip" data-threshold="strict">严格</button>
+          </div>
           <div class="summary-inline threshold-summary-control">
             <span>评论 ≥</span>
             <input id="lowCommentInput" type="number" min="0" aria-label="最低评论">
             <span>· 值率 ≥</span>
             <input id="lowWorthyInput" type="number" min="0" aria-label="最低值率">
             <span>%</span>
-          </div>
-          <div class="preset-row" id="thresholdPresets">
-            <button type="button" class="preset-chip" data-threshold="loose">宽松</button>
-            <button type="button" class="preset-chip active" data-threshold="medium">中等</button>
-            <button type="button" class="preset-chip" data-threshold="strict">严格</button>
           </div>
         </div>
       </div>
@@ -1631,7 +1858,7 @@ layui.use(function(){
       var rt = ruleRuntime[keywordRaw] || {};
       var lastText = rt.at ? formatRelativeTime(rt.at) : '未扫描';
       var hitText = typeof rt.hits === 'number' ? rt.hits : 0;
-      row.append('<div class="rule-runtime">上次扫描 <strong>' + escapeHtml(lastText) + '</strong> · 今日命中 <strong>' + hitText + '</strong></div>');
+      row.append('<span class="rule-hit-badge' + (hitText > 0 ? '' : ' is-zero') + '" title="今日命中 ' + hitText + ' · 上次扫描 ' + escapeAttr(lastText) + '">命中 ' + hitText + '</span>');
       row.on('click', function(){ selectRule(index, { search: true }); });
       row.on('keydown', function(e){
         if (e.key === 'Enter' || e.key === ' ') {
@@ -1655,9 +1882,14 @@ layui.use(function(){
       var row = $('<div class="rule-card discovery-rule-card" role="button" tabindex="0"></div>')
         .toggleClass('active', selectedRuleKind === kind)
         .toggleClass('disabled', !enabled);
+      row.attr('data-discovery', kind);
       var image = $('<img class="thumb" loading="lazy" decoding="async">');
       image.attr('alt', title).attr('src', placeholderImage(kind === 'hot' ? '热' : '作'));
       var media = $('<div class="rule-thumb-media media-square"></div>').append(image);
+      var glyphSvg = kind === 'hot'
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1.2 2.6.4 4.3-.9 5.7C9.4 10.5 8 12 8 14.5A4 4 0 0 0 16 15c0-1.6-.6-2.7-1.3-3.6.2 1 .1 2-.9 2.6.4-1.8-.6-3.2-1.5-4.1C10.8 8.4 11 5.6 12 3Z"/></svg>'
+        : '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 19.5a6.5 6.5 0 0 1 13 0"/></svg>';
+      media.append('<span class="discovery-glyph" aria-hidden="true">' + glyphSvg + '</span>');
       var wrap = $('<div class="rule-main"></div>').append(media);
       var actionWrap = $('<div class="row-actions"></div>');
       var enabledSwitch = $(statusSwitch(enabled));
@@ -1696,7 +1928,7 @@ layui.use(function(){
       var rt = ruleRuntime[runtimeKey] || {};
       var lastText = rt.at ? formatRelativeTime(rt.at) : '未扫描';
       var hitText = typeof rt.hits === 'number' ? rt.hits : 0;
-      row.append('<div class="rule-runtime">上次扫描 <strong>' + escapeHtml(lastText) + '</strong> · 今日命中 <strong>' + hitText + '</strong></div>');
+      row.append('<span class="rule-hit-badge' + (hitText > 0 ? '' : ' is-zero') + '" title="今日命中 ' + hitText + ' · 上次扫描 ' + escapeAttr(lastText) + '">命中 ' + hitText + '</span>');
       row.on('click', function(){ selectSystemRule(kind, { search: true }); });
       row.on('keydown', function(e){
         if (e.key === 'Enter' || e.key === ' ') {
@@ -3039,3 +3271,4 @@ layui.use(function(){
 </script>
 </body>
 </html>
+
