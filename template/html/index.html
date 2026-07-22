@@ -815,6 +815,8 @@
     body.zero-redesign.trellis-ui .discovery-token-label{
       margin:0 0 5px!important;font-size:11px!important;font-weight:780!important;color:var(--muted)!important;
     }
+    /* Guard: discovery row must stay hidden in product mode (beats display:grid/flex overrides) */
+    body.zero-redesign.trellis-ui .discovery-fields-row[hidden]{display:none!important;}
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
