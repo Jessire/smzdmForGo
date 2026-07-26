@@ -233,6 +233,8 @@ function saveJSON(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(
 function esc(s){ var d=document.createElement('div'); d.textContent=s==null?'':String(s); return d.innerHTML; }
 function el(id){ return document.getElementById(id); }
 function num(v){ var n=parseFloat(String(v==null?'':v).replace(/[^0-9.]/g,'')); return isNaN(n)?0:n; }
+function fmtPrice(p){ p=String(p||'').trim(); if(!p) return '—'; return /^[¥￥]/.test(p)?p:'¥ '+p; }
+function fmtDate(d){ d=String(d||'').trim(); if(/^\d{13}$/.test(d)) d=String(Math.floor(+d/1000)); if(/^\d{10}$/.test(d)){ var t=new Date(+d*1000); var z=function(n){return (n<10?'0':'')+n;}; return z(t.getMonth()+1)+'-'+z(t.getDate())+' '+z(t.getHours())+':'+z(t.getMinutes()); } return d; }
 
 /* ---------- api ---------- */
 function api(path, opts){
@@ -791,12 +793,11 @@ function renderPreview(){
       '<div style="display:flex;gap:14px;padding:12px 12px 10px;flex:1">'+img+
         '<div style="min-width:0;display:flex;flex-direction:column;gap:6px;justify-content:center">'+
           '<a href="'+esc(p.url)+'" target="_blank" rel="noopener" style="color:var(--ink);font-size:14.5px;font-weight:500;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+esc(p.title)+'</a>'+
-          '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px;font-weight:700;font-variant-numeric:tabular-nums">'+esc(p.price)+'</span>'+
-          (p.referral?'<a href="'+esc(p.referral)+'" target="_blank" rel="noopener" style="font-size:10.5px;font-weight:500;color:var(--coupon);background:var(--coupon-bg);border:1px solid var(--coupon-border);padding:1px 6px;border-radius:4px">直达链接</a>':'')+'</div>'+
+          '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px;font-weight:700;font-variant-numeric:tabular-nums">'+esc(fmtPrice(p.price))+'</span></div>'+
           '<div style="display:flex;align-items:center;gap:11px;font-size:12.5px;color:var(--muted)">'+
             '<span class="meta-ico" style="font-weight:600;color:var(--accent)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>'+esc(p.worthy)+'%</span>'+
             '<span class="meta-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>'+esc(p.comment)+'</span>'+
-            '<span class="meta-ico" style="color:var(--muted-2)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'+esc(p.date)+'</span>'+
+            '<span class="meta-ico" style="color:var(--muted-2)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'+esc(fmtDate(p.date))+'</span>'+
           '</div>'+
         '</div>'+
       '</div>'+
