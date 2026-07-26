@@ -817,31 +817,78 @@
     }
     /* Guard: discovery row must stay hidden in product mode (beats display:grid/flex overrides) */
     body.zero-redesign.trellis-ui .discovery-fields-row[hidden]{display:none!important;}
+  
+    /* ===== Design handoff v2: header / rails / footer additions ===== */
+    body.zero-redesign.trellis-ui .brand-mark{width:30px;height:30px;flex:none;display:grid;place-items:center;background:#e11d48;color:#fff;font-weight:700;font-size:15px;border-radius:8px}
+    body.zero-redesign.trellis-ui .top-brand strong{font-size:15px;font-weight:600;letter-spacing:-0.01em}
+    body.zero-redesign.trellis-ui .top-divider{width:1px;height:16px;background:var(--line);display:inline-block}
+    body.zero-redesign.trellis-ui .top-brand .top-summary{display:inline;font-size:12.5px;color:var(--muted);font-weight:600}
+    body.zero-redesign.trellis-ui .scan-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#15803d;background:#f0fdf4;border:1px solid #dcfce7;padding:4px 10px;border-radius:999px;white-space:nowrap;flex:none}
+    body.zero-redesign.trellis-ui .scan-badge .scan-dot{width:6px;height:6px;border-radius:50%;background:#22c55e}
+    body.zero-redesign.trellis-ui .scan-badge.is-idle{color:var(--muted);background:var(--soft);border-color:var(--line)}
+    body.zero-redesign.trellis-ui .scan-badge.is-idle .scan-dot{background:var(--faint)}
+    body.zero-redesign.trellis-ui[data-theme=dark] .scan-badge{color:#4ade80;background:#12281a;border-color:#1d4029}
+    body.zero-redesign.trellis-ui .icon-square{width:34px;height:34px;min-width:34px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--muted);padding:0;line-height:0}
+    body.zero-redesign.trellis-ui .icon-square:hover{background:var(--soft);color:var(--text)}
+    body.zero-redesign.trellis-ui .icon-square svg{width:16px;height:16px}
+    body.zero-redesign.trellis-ui .icon-square .theme-icon svg{display:block;width:18px;height:18px;stroke:currentColor}
+    body.zero-redesign.trellis-ui .icon-square .tg-top-glyph svg{display:block;width:18px;height:18px;fill:currentColor;stroke:none}
+    body.zero-redesign.trellis-ui .icon-square.top-telegram-toggle.is-on{background:#229ed9;border-color:#229ed9;color:#fff}
+    body.zero-redesign.trellis-ui .btn.ghost{background:transparent;border-color:transparent;color:var(--muted);box-shadow:none}
+    body.zero-redesign.trellis-ui .btn.ghost:hover{background:var(--soft);color:var(--text)}
+    body.zero-redesign.trellis-ui .add-rule-btn{height:28px;padding:0 10px;font-size:12.5px;font-weight:600;gap:5px}
+    body.zero-redesign.trellis-ui .add-rule-btn svg{width:13px;height:13px}
+    body.zero-redesign.trellis-ui .add-rule-card{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:6px;padding:12px;border:1px dashed var(--line2);border-radius:10px;background:transparent;color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer}
+    body.zero-redesign.trellis-ui .add-rule-card:hover{border-color:var(--blue);color:var(--blue);background:color-mix(in srgb,var(--blue) 6%,transparent)}
+    body.zero-redesign.trellis-ui .add-rule-card svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+    body.zero-redesign.trellis-ui .rules-footer{flex:none;margin-top:8px;padding:8px 2px 2px;font-size:11.5px;color:var(--faint);text-align:center;border-top:1px solid var(--line)}
+    body.zero-redesign.trellis-ui .save-dirty-note{margin-right:auto;font-size:12px;color:var(--faint);font-weight:600;align-self:center;white-space:nowrap}
+    body.zero-redesign.trellis-ui .save-dirty-note.is-dirty{color:#b45309}
+    body.zero-redesign.trellis-ui[data-theme=dark] .save-dirty-note.is-dirty{color:#fbbf24}
+    body.zero-redesign.trellis-ui .editor-actions .action-button:disabled{opacity:.45;cursor:not-allowed}
+    body.zero-redesign.trellis-ui .tg-rail-expand{display:none}
+    @media (min-width:1101px){
+      body.zero-redesign.trellis-ui .app-shell.tg-collapsed{grid-template-columns:minmax(280px,320px) minmax(0,1fr) 44px!important}
+      body.zero-redesign.trellis-ui .app-shell.tg-collapsed .push-log-card{display:none!important}
+      body.zero-redesign.trellis-ui .app-shell.tg-collapsed .notification-shell{padding:6px!important;overflow:hidden!important}
+      body.zero-redesign.trellis-ui .app-shell.tg-collapsed .notification-shell > *:not(.tg-rail-expand){display:none!important}
+      body.zero-redesign.trellis-ui .app-shell.tg-collapsed .notification-shell .tg-rail-expand{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;height:100%;border:0;background:transparent;color:var(--muted);cursor:pointer;padding:10px 0}
+      body.zero-redesign.trellis-ui .tg-rail-expand svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      body.zero-redesign.trellis-ui .tg-rail-label{writing-mode:vertical-rl;letter-spacing:.14em;font-size:11px;font-weight:700}
+      body.zero-redesign.trellis-ui .app-shell.tg-collapsed .notification-shell .tg-rail-expand:hover{color:var(--blue)}
+    }
+    @media (max-width:1100px){
+      body.zero-redesign.trellis-ui #tgCollapseBtn{display:none}
+    }
   </style>
 </head>
 <body class="zero-redesign trellis-ui">
 <div class="app-shell">
   <header class="app-topbar" aria-label="全局状态">
     <div class="top-brand">
-      <img class="brand-logo" src="https://www.smzdm.com/favicon.ico" alt="什么值得买">
-      <strong>什么值得买商品提醒</strong>
-      <span id="topRuleStatus">等待配置</span>
+      <div class="brand-mark" aria-hidden="true">值</div>
+      <strong>什么值得买 · 商品提醒</strong>
+      <span class="top-divider" aria-hidden="true"></span>
+      <span class="top-summary" id="topRuleStatus">等待配置</span>
     </div>
     <div class="top-channel-alert" id="channelAlert" role="status">
       <span class="top-alert-text" id="channelAlertDesc">配置 Telegram 后才会推送</span>
       <button type="button" id="goConfigureTelegram">去配置</button>
     </div>
     <div class="top-status">
-      <button class="top-pill top-telegram-toggle off" id="topTelegramToggle" type="button" aria-label="Telegram 未启用" title="Telegram 未启用" aria-pressed="false">
-        <span class="tg-top-glyph" aria-hidden="true">
-          <!-- Official Telegram brand mark -->
-          <svg class="tg-logo-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056Zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472c-.18 1.898-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.065-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.48.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.245-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635Z"/></svg>
-        </span>
-        <span class="sr-only">Telegram 未启用</span>
-      </button>
-      <button class="top-pill" id="themeModeButton" type="button" aria-label="切换主题" title="切换主题">
+      <span class="scan-badge" id="scanStatusBadge" title="扫描状态">
+        <span class="scan-dot" aria-hidden="true"></span>
+        <span id="scanStatusText">扫描待机</span>
+      </span>
+      <button class="icon-square" id="themeModeButton" type="button" aria-label="切换主题" title="切换主题">
         <span class="theme-icon" aria-hidden="true"></span>
         <span class="sr-only">跟随系统主题</span>
+      </button>
+      <button class="icon-square top-telegram-toggle off" id="topTelegramToggle" type="button" aria-label="Telegram 推送记录" title="Telegram 推送记录" aria-pressed="false">
+        <span class="tg-top-glyph" aria-hidden="true">
+          <svg class="tg-logo-svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056Zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472c-.18 1.898-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.065-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.48.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.245-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635Z"/></svg>
+        </span>
+        <span class="sr-only">Telegram 推送记录</span>
       </button>
     </div>
   </header>
@@ -852,13 +899,13 @@
         <div class="meta" id="rulesMeta">0 条规则</div>
       </div>
       <div class="rail-actions" aria-label="规则操作">
-        <button class="btn primary icon-btn" id="searchAllRules" type="button" aria-label="全局搜索" title="全局搜索">
+        <button class="btn ghost icon-btn" id="searchAllRules" type="button" aria-label="全局搜索" title="全局搜索">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
           <span class="sr-only">全局搜索</span>
         </button>
-        <button class="btn success icon-btn" id="addRule" type="button" aria-label="新增规则" title="新增规则">
+        <button class="btn primary add-rule-btn" id="addRule" type="button" aria-label="新增规则" title="新增规则">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-          <span class="sr-only">新增规则</span>
+          <span>新建</span>
         </button>
         <button class="btn refresh icon-btn" id="reloadProductConfig" type="button" aria-label="重新加载" title="重新加载">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M18 3v5h-5"/><path d="M6 21v-5h5"/></svg>
@@ -879,6 +926,11 @@
     </div>
     <div class="rules-list" aria-label="关键词规则">
       <div class="rules-body" id="rulesBody"></div>
+      <button type="button" class="add-rule-card" id="addRuleCard" aria-label="新建规则">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        新建规则
+      </button>
+      <div class="rules-footer" id="rulesFooter">0 条规则</div>
     </div>
   </aside>
 
@@ -1024,6 +1076,7 @@
       </div>
 
       <div class="bottom-bar editor-actions">
+        <span class="save-dirty-note" id="saveDirtyNote">所有更改已保存</span>
         <button class="btn action-button" id="saveDraftConfig" type="button" aria-label="仅保存草稿" title="仅保存草稿（不强制启用）">
           <span>仅保存草稿</span>
         </button>
@@ -1079,7 +1132,15 @@
     <section class="notification-shell inspector-card notify-panel" aria-label="Telegram 通知">
       <div class="inspector-head">
         <h2>Telegram 通知</h2>
+        <button class="btn ghost icon-btn" id="tgCollapseBtn" type="button" aria-label="折叠 Telegram 栏" title="折叠">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          <span class="sr-only">折叠</span>
+        </button>
       </div>
+      <button class="tg-rail-expand" id="tgExpandBtn" type="button" aria-label="展开 Telegram 通知" title="展开 Telegram 通知" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        <span class="tg-rail-label">TELEGRAM 通知</span>
+      </button>
       <div class="tg-health-card" id="telegramHealthCard">
         <div class="tg-account-visual" id="telegramAccountVisual">
           <span class="tg-official-avatar" id="telegramOfficialAvatar" aria-hidden="true">
@@ -1486,7 +1547,7 @@ layui.use(function(){
 
   $('#thresholdPresets').on('click', '.preset-chip', function(){
     var kind = $(this).data('threshold');
-    var map = { loose: { c: 0, w: 0 }, medium: { c: 1, w: 5 }, strict: { c: 10, w: 20 } };
+    var map = { loose: { c: 0, w: 0 }, medium: { c: 10, w: 10 }, strict: { c: 50, w: 20 } };
     var preset = map[kind] || map.medium;
     $('#thresholdPresets .preset-chip').removeClass('active');
     $(this).addClass('active');
@@ -2661,12 +2722,23 @@ layui.use(function(){
     return '已推送';
   }
 
+  var configDirty = false;
+
   function markConfigDirty() {
     setTopIconState('#topSaveStatus', '有未保存更改', 'dirty');
+    configDirty = true;
+    updateSaveState();
   }
 
   function markConfigSaved() {
     setTopIconState('#topSaveStatus', '已保存', 'ok');
+    configDirty = false;
+    updateSaveState();
+  }
+
+  function updateSaveState() {
+    $('#saveDirtyNote').text(configDirty ? '编辑尚未保存' : '所有更改已保存').toggleClass('is-dirty', configDirty);
+    $('#saveProductConfig, #saveDraftConfig').prop('disabled', !configDirty);
   }
 
   function setTopIconState(selector, label, state) {
@@ -2798,7 +2870,10 @@ layui.use(function(){
       filters = filters.concat(rule.filterWords || []);
     });
     $('#rulesMeta').text('规则 ' + (rules.length + 2) + ' · 启用 ' + enabled + ' · 过滤词 ' + textToList(filters).length);
-    $('#topRuleStatus').text('规则 ' + (rules.length + 2) + ' / 启用 ' + enabled);
+    $('#topRuleStatus').text('规则 ' + (rules.length + 2) + ' · 启用 ' + enabled + ' · 过滤词 ' + textToList(filters).length);
+    $('#rulesFooter').text('共 ' + (rules.length + 2) + ' 条规则 · ' + enabled + ' 条启用');
+    $('#scanStatusText').text(enabled > 0 ? '扫描运行中' : '扫描待机');
+    $('#scanStatusBadge').toggleClass('is-idle', enabled === 0);
     dashboardStats.scanned = enabled;
     renderDashboardStats();
   }
@@ -3269,6 +3344,20 @@ layui.use(function(){
       return '请求失败';
     }
   }
+
+  $('#addRuleCard').on('click', function(){ $('#addRule').trigger('click'); });
+  $('#tgCollapseBtn').on('click', function(){ setTgCollapsed(true); });
+  $('#tgExpandBtn').on('click', function(){ setTgCollapsed(false); });
+  function setTgCollapsed(collapsed) {
+    $('.app-shell').toggleClass('tg-collapsed', !!collapsed);
+    $('#tgExpandBtn').prop('hidden', !collapsed);
+    try { localStorage.setItem('smzdmTgCollapsed', collapsed ? '1' : '0'); } catch (e) {}
+  }
+  try {
+    if (localStorage.getItem('smzdmTgCollapsed') === '1') { setTgCollapsed(true); }
+  } catch (e) {}
+  updateSaveState();
+
 });
 </script>
 </body>
