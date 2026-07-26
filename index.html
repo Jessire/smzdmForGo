@@ -18,7 +18,7 @@
   --danger:#dc2626;--danger-hover:#b91c1c;--danger-bg:#fef2f2;
   --thumb-bg:linear-gradient(160deg,#f8f8f9,#eef0f3);
   --k-product-bg:#ffedd5;--k-product-fg:#c2410c;--k-hot-bg:#fff1f2;--k-hot-fg:#e11d48;--k-author-bg:#eff6ff;--k-author-fg:#2563eb;
-}
+  --av0-bg:#ffedd5;--av0-fg:#c2410c;--av1-bg:#e0f2fe;--av1-fg:#0369a1;--av2-bg:#dcfce7;--av2-fg:#15803d;--av3-bg:#fef3c7;--av3-fg:#b45309;--av4-bg:#f3e8ff;--av4-fg:#7c3aed;
 [data-theme="dark"]{
   --bg-page:#101013;--surface:#18181c;--surface-2:#1d1d22;--surface-3:#26262d;
   --border:#26262d;--border-2:#303038;--border-3:#232329;--border-4:#2a2a31;--border-hover:#3d3d46;
@@ -30,6 +30,7 @@
   --danger:#f87171;--danger-hover:#ef4444;--danger-bg:#301b1b;
   --thumb-bg:linear-gradient(160deg,#1e1e24,#26262d);
   --k-product-bg:#33240f;--k-product-fg:#fdba74;--k-hot-bg:#341521;--k-hot-fg:#fb7185;--k-author-bg:#1c2a4a;--k-author-fg:#60a5fa;
+  --av0-bg:#33240f;--av0-fg:#fdba74;--av1-bg:#0c2a3d;--av1-fg:#7dd3fc;--av2-bg:#12281a;--av2-fg:#4ade80;--av3-bg:#2c2310;--av3-fg:#fbbf24;--av4-bg:#26173d;--av4-fg:#c4b5fd;
 }
 *{box-sizing:border-box}
 html,body{height:100%;overflow:hidden;margin:0}
@@ -71,7 +72,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .ghost-btn:hover{background:var(--surface-3);color:var(--ink)}
 .input{height:36px;padding:0 12px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface);font-size:14px;width:100%}
 .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-.lbl{font-size:12px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:5px}
+.lbl{font-size:12px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;min-height:16px}
 .lbl .dim{font-weight:400;color:var(--muted-2)}
 .lbl svg{color:var(--muted-2);flex:none}
 .chipbox{display:flex;flex-wrap:wrap;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface);min-height:38px}
@@ -106,7 +107,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .switch.on i{left:18px}
 .rule-card{display:flex;flex-direction:column;gap:8px;padding:12px;cursor:pointer;border-radius:8px;border:1px solid var(--border-4);background:var(--surface);transition:border-color .15s,box-shadow .15s,transform .15s}
 .rule-card:hover{border-color:var(--border-hover);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.06)}
-.rule-card.sel{border-color:var(--accent);background:var(--sel-bg);box-shadow:0 0 0 1px var(--accent)}
+.rule-card.sel{border-color:var(--accent);background:var(--sel-bg)}
 .rule-card.off{opacity:.6}
 .product-card{display:flex;flex-direction:column;border:1px solid var(--border-4);border-radius:8px;overflow:hidden;background:var(--surface);transition:border-color .15s,box-shadow .15s,transform .15s}
 .product-card:hover{border-color:var(--border-hover);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.06)}
@@ -354,9 +355,12 @@ function renderList(){
     var card=document.createElement('div');
     card.className='rule-card'+(selNow?' sel':'')+(v.on?'':' off');
     card.setAttribute('data-rule-kind', v.kind);
+    var icoBg, icoFg, ico;
+    if (v.kind==='product'){ var pi=(v.idx||0)%5; icoBg='var(--av'+pi+'-bg)'; icoFg='var(--av'+pi+'-fg)'; ico='<span style="font-size:22px;font-weight:700;line-height:1">'+esc(String(v.name||'规').charAt(0))+'</span>'; }
+    else { icoBg='var(--k-'+v.kind+'-bg)'; icoFg='var(--k-'+v.kind+'-fg)'; ico=kindIcon(v.kind); }
     card.innerHTML=
       '<div style="display:flex;align-items:flex-start;gap:12px">'+
-        '<div style="width:56px;height:56px;flex:none;display:grid;place-items:center;border-radius:12px;background:var(--k-'+v.kind+'-bg);color:var(--k-'+v.kind+'-fg)">'+kindIcon(v.kind)+'</div>'+
+        '<div style="width:56px;height:56px;flex:none;display:grid;place-items:center;border-radius:12px;background:'+icoBg+';color:'+icoFg+'">'+ico+'</div>'+
         '<div style="min-width:0;flex:1;display:flex;flex-direction:column;gap:3px">'+
           '<div style="display:flex;align-items:center;gap:8px">'+
             '<div style="min-width:0;margin-right:auto;font-weight:600;font-size:14px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(v.name)+'</div>'+
@@ -364,9 +368,9 @@ function renderList(){
               '<i style="width:6px;height:6px;border-radius:50%;background:'+(v.on?'var(--ok-dot)':'var(--muted-2)')+'"></i>'+(v.on?'运行中':'已停用')+'</span>'+
           '</div>'+
           '<div style="font-size:11.5px;color:var(--muted-2)">'+esc(v.sub)+'</div>'+
-          '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">'+
-            v.tags.map(function(t){ return '<span style="font-size:11px;color:var(--ink-3);background:var(--surface-3);padding:2px 8px;border-radius:999px">'+esc(t)+'</span>'; }).join('')+
-            '<span style="margin-left:auto;white-space:nowrap;font-size:11px;color:var(--muted-2)">'+esc(v.meta)+'</span>'+
+          '<div style="display:flex;align-items:center;gap:5px">'+
+            '<div style="display:flex;gap:5px;min-width:0;overflow:hidden">'+v.tags.map(function(t){ return '<span style="font-size:11px;color:var(--ink-3);background:var(--surface-3);padding:2px 8px;border-radius:999px;white-space:nowrap">'+esc(t)+'</span>'; }).join('')+'</div>'+
+            '<span style="margin-left:auto;flex:none;white-space:nowrap;font-size:11px;color:var(--muted-2)">'+esc(v.meta)+'</span>'+
           '</div>'+
         '</div>'+
       '</div>';
@@ -599,7 +603,7 @@ function renderEditor(){
       '<button class="btn btn-pri" id="saveEnableBtn" style="height:42px;padding:0 22px;font-size:14.5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>保存并启用</button>'+
       '<button class="btn" id="saveOnlyBtn" style="height:42px;padding:0 18px;font-size:14.5px">仅保存</button>'+
       '<button class="btn" id="previewBtn" style="height:42px;padding:0 18px;font-size:14.5px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>搜索预览</button>'+
-      '<span style="font-size:12px;color:var(--muted-2);margin-left:auto" id="dirtyNote"></span>'+
+      '<span style="font-size:12px;color:var(--muted-2);margin-left:6px" id="dirtyNote"></span>'+
     '</div>';
   if (isProduct){
     var kwInp=el('productKeywordField');
@@ -748,12 +752,12 @@ function renderPreview(){
     ext.classList.add('hidden');
     host.innerHTML=
       '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:48px 24px;min-height:360px;text-align:center">'+
-        '<div style="position:relative;width:128px;height:128px;display:grid;place-items:center;margin-bottom:6px">'+
+        '<div style="position:relative;width:96px;height:96px;display:grid;place-items:center;margin-bottom:6px">'+
           '<span style="position:absolute;inset:0;border:1.5px dashed var(--border-2);border-radius:50%"></span>'+
-          '<span style="position:absolute;inset:24px;border:1.5px dashed var(--border-2);border-radius:50%"></span>'+
-          '<span style="position:absolute;inset:46px;border-radius:50%;background:var(--accent-bg)"></span>'+
-          '<span style="position:absolute;top:16px;right:28px;width:7px;height:7px;border-radius:50%;background:var(--accent)"></span>'+
-          '<span style="position:absolute;bottom:26px;left:20px;width:5px;height:5px;border-radius:50%;background:var(--border-hover)"></span>'+
+          '<span style="position:absolute;inset:18px;border:1.5px dashed var(--border-2);border-radius:50%"></span>'+
+          '<span style="position:absolute;inset:34px;border-radius:50%;background:var(--accent-bg)"></span>'+
+          '<span style="position:absolute;top:12px;right:20px;width:6px;height:6px;border-radius:50%;background:var(--accent)"></span>'+
+          '<span style="position:absolute;bottom:18px;left:14px;width:5px;height:5px;border-radius:50%;background:var(--border-hover)"></span>'+
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" style="position:relative"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'+
         '</div>'+
         '<div style="font-size:14.5px;font-weight:600">暂无搜索结果</div>'+
