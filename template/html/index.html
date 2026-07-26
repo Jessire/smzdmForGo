@@ -55,7 +55,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .tgcol{width:clamp(268px,18vw,304px);flex:none;display:flex;flex-direction:column;min-height:0;overflow-y:auto;border-left:1px solid var(--border);background:var(--surface)}
 .tgrail{width:44px;flex:none;display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 0;border-left:1px solid var(--border);background:var(--surface)}
 .main{flex:1;min-width:0;overflow-y:auto}
-.wrap{max-width:1120px;padding:20px 28px 40px;display:flex;flex-direction:column;gap:16px}
+.wrap{max-width:1440px;margin:0 auto;padding:20px 28px 40px;display:flex;flex-direction:column;gap:16px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:12px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:8px;cursor:pointer;font-weight:500;border:1px solid var(--border-2);background:var(--surface);color:var(--ink-2);transition:background .15s,opacity .15s,transform .1s}
 .btn:hover{background:var(--surface-3)}
@@ -73,6 +73,14 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 .lbl{font-size:12px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:5px}
 .lbl .dim{font-weight:400;color:var(--muted-2)}
+.lbl svg{color:var(--muted-2);flex:none}
+.chipbox{display:flex;flex-wrap:wrap;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface);min-height:38px}
+.chipbox:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.chipbox input{border:none;background:transparent;flex:1;min-width:140px;height:26px;padding:0 4px;font-size:13px}
+.chip .pin{cursor:pointer;font-size:11px;opacity:.75}
+.chip .pin:hover{opacity:1}
+.qchip .qx{margin-left:4px;opacity:.5;cursor:pointer}
+.qchip .qx:hover{opacity:1}
 .field{display:flex;flex-direction:column;gap:8px;min-width:0}
 .seg{display:flex;background:var(--surface-3);border-radius:8px;padding:3px;gap:2px}
 .seg button{border:none;border-radius:6px;cursor:pointer;font-size:12.5px;font-weight:500;color:var(--muted);background:transparent;height:26px;padding:0 14px}
@@ -111,8 +119,10 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .statgrid{display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden;border-radius:12px}
 .stat{border-right:1px solid var(--border-3);display:flex;align-items:stretch;min-height:70px}
 .stat:last-child{border-right:none}
-.stat .ico{width:70px;flex:none;display:grid;place-items:center;background:var(--surface-3);border-right:1px solid var(--border-3);color:var(--ink-3)}
+.stat .ico{width:auto;min-width:70px;aspect-ratio:1/1;align-self:stretch;flex:none;display:grid;place-items:center;background:var(--surface-3);border-right:1px solid var(--border-3);color:var(--ink-3)}
 .stat .tx{padding:10px 16px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.stat .tx>div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:1500px){.statgrid{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:none}.stat:nth-child(-n+2){border-bottom:1px solid var(--border-3)}}
 .formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;padding:18px 20px}
 .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:10px;padding:14px 20px 20px}
 .logrow{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-3);font-size:13px}
@@ -132,7 +142,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <span class="pill" id="scanPill" style="color:var(--ok);background:var(--ok-bg);border:1px solid var(--ok-border)"><i style="width:6px;height:6px;border-radius:50%;background:var(--ok-dot)"></i>扫描运行中</span>
     <button class="icon-btn" id="themeBtn" title="切换明暗主题" aria-label="切换明暗主题"></button>
     <button class="icon-btn" id="logsBtn" title="推送记录" aria-label="推送记录">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.294.295-.604.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.196 1.006.128.832.941z"/></svg>
     </button>
   </header>
   <div class="cols">
@@ -167,7 +177,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
         <section class="card" id="ruleEditor"></section>
         <section class="card" id="searchRule">
           <div style="display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border-3)">
-            <h3 style="margin:0;font-size:14.5px;font-weight:600">搜索预览</h3>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" style="flex:none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><h3 style="margin:0;font-size:14.5px;font-weight:600">搜索预览</h3>
             <span style="font-size:12px;color:var(--muted-2)" id="previewSub">等待搜索</span>
             <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
               <div style="position:relative">
@@ -210,7 +220,9 @@ var state = {
   logs: [], lastPushable: null,
   gatePresets: loadJSON('smzdm_gate_presets', { loose:{c:0,r:0}, mid:{c:10,r:10}, strict:{c:50,r:20} })
 };
-var COMMON_FILTERS = ['临期','过期','售罄','二手'];
+var COMMON_FILTERS = loadJSON('smzdm_common_filters', ['临期','过期','售罄','二手']);
+var TG_PATH = 'M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.294.295-.604.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.196 1.006.128.832.941z';
+function tgIcon(size, color){ return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="'+color+'"><path d="'+TG_PATH+'"/></svg>'; }
 var selectedRuleKind = 'product';
 
 function loadJSON(k, dft){ try{ var v=JSON.parse(localStorage.getItem(k)); return v||dft; }catch(e){ return dft; } }
@@ -309,7 +321,7 @@ function refreshButtons(){
 function kindIcon(kind){
   if (kind==='hot') return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
   if (kind==='author') return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>';
-  return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>';
+  return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>';
 }
 function viewRules(){
   var list=[];
@@ -406,7 +418,7 @@ function renderStats(){
   var icons={
     rules:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>',
     hit:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
-    push:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>',
+    push:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="'+TG_PATH+'"/></svg>',
     warn:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
   };
   function cell(ico,label,val,extra){
@@ -432,36 +444,48 @@ function chipEditor(hostId, getArr, opts){
   function draw(){
     var arr=getArr();
     host.innerHTML='';
-    var box=document.createElement('div');
-    box.style.cssText='display:flex;gap:5px;flex-wrap:wrap;min-height:22px';
+    var box=document.createElement('div'); box.className='chipbox';
     arr.forEach(function(w,i){
       var c=document.createElement('span'); c.className='chip';
-      c.innerHTML=esc(w)+'<span class="x" title="移除">×</span>';
+      var pinned=COMMON_FILTERS.indexOf(w)>=0;
+      c.innerHTML=esc(w)+(opts.quick&&!pinned?'<span class="pin" title="收藏到常用">☆</span>':'')+'<span class="x" title="移除">×</span>';
+      var pin=c.querySelector('.pin');
+      if(pin) pin.addEventListener('click', function(){
+        COMMON_FILTERS.push(w); saveJSON('smzdm_common_filters', COMMON_FILTERS);
+        toast('已收藏「'+w+'」到常用'); draw();
+      });
       c.querySelector('.x').addEventListener('click', function(){ arr.splice(i,1); markDirty(); draw(); });
       box.appendChild(c);
     });
-    host.appendChild(box);
     var inp=document.createElement('input');
-    inp.className='input'; inp.style.cssText='height:32px;font-size:13px;margin-top:8px';
-    inp.placeholder=opts.placeholder||'回车添加，支持逗号分隔';
+    if (opts.inputId) inp.id=opts.inputId;
+    inp.placeholder=opts.placeholder||'输入后回车添加，支持粘贴';
     inp.addEventListener('keydown', function(e){
       if(e.key==='Enter'&&inp.value.trim()){
         inp.value.split(/[,，\n]/).forEach(function(p){ p=p.trim(); if(p&&arr.indexOf(p)<0) arr.push(p); });
-        inp.value=''; markDirty(); draw(); host.querySelector('input').focus();
+        inp.value=''; markDirty(); draw();
+        var ni=host.querySelector('input'); if(ni) ni.focus();
       }
     });
-    host.appendChild(inp);
+    box.appendChild(inp);
+    host.appendChild(box);
     if (opts.quick){
       var q=document.createElement('div');
       q.style.cssText='display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:8px';
-      q.innerHTML='<span style="font-size:11.5px;color:var(--muted-2)">常用</span>';
+      q.innerHTML='<span style="font-size:11.5px;color:var(--muted-2)">常用:</span>';
       COMMON_FILTERS.forEach(function(w){
-        var b=document.createElement('span');
         var onNow=arr.indexOf(w)>=0;
-        b.className='qchip'+(onNow?' on':''); b.textContent=onNow?w+' ✓':w;
+        var b=document.createElement('span');
+        b.className='qchip'+(onNow?' on':'');
+        b.innerHTML=esc(w)+(onNow?' ✓':'')+'<span class="qx" title="从常用移除">×</span>';
         b.addEventListener('click', function(){
           var j=arr.indexOf(w); if(j>=0) arr.splice(j,1); else arr.push(w);
           markDirty(); draw();
+        });
+        b.querySelector('.qx').addEventListener('click', function(e){
+          e.stopPropagation();
+          COMMON_FILTERS.splice(COMMON_FILTERS.indexOf(w),1);
+          saveJSON('smzdm_common_filters', COMMON_FILTERS); draw();
         });
         q.appendChild(b);
       });
@@ -512,68 +536,70 @@ function priceTarget(){
   if (state.sel.kind==='product') return currentRule();
   return gh();
 }
+function lblIco(paths){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+paths+'</svg>'; }
+var LBL_I={
+  type:'<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>',
+  price:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/>',
+  gauge:'<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+  check:'<path d="M21.8 10A10 10 0 1 1 17 3.34"/><path d="m9 11 3 3L22 4"/>',
+  filter:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>'
+};
 function renderEditor(){
   var kind=state.sel.kind, r=currentRule(), g=gh();
   var isProduct=kind==='product';
   var name=selName();
   var host=el('ruleEditor');
-  var kindFields='';
+  var priceFld='<div class="field"><label class="lbl">'+lblIco(LBL_I.price)+'价格区间（元）<span class="dim">· 0 或留空不限</span></label>'+
+    '<div style="display:flex;align-items:center;gap:8px"><input class="input" type="number" id="minPrice" style="width:0;flex:1"><span style="color:var(--border-hover)">—</span><input class="input" type="number" id="maxPrice" style="width:0;flex:1"></div></div>';
+  var gateFld='<div class="field"><label class="lbl">'+lblIco(LBL_I.gauge)+'命中门槛</label>'+
+    '<div class="seg" id="gateSeg" style="height:36px;align-items:center"><button data-g="loose" style="flex:1;height:30px">宽松</button><button data-g="mid" style="flex:1;height:30px">中等</button><button data-g="strict" style="flex:1;height:30px">严格</button></div></div>';
+  var threshFld='<div class="field"><label class="lbl">'+lblIco(LBL_I.check)+'达标条件</label>'+
+    '<div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)"><span style="white-space:nowrap">评论 ≥</span><input class="input" type="number" id="minComments" style="width:0;flex:1;min-width:52px"><span style="white-space:nowrap">· 值率 ≥</span><input class="input" type="number" id="minRate" style="width:0;flex:1;min-width:52px"><span>%</span></div></div>';
+  var top='', wide='';
   if (isProduct){
-    kindFields=
-      '<div class="field"><label class="lbl">关键词 <span class="dim">· 逗号分隔多个词</span></label>'+
-      '<input class="input" id="productKeywordField" placeholder="商品搜索关键词" style="font-size:15px"></div>'+
-      '<div class="field"><label class="lbl">过滤词 <span class="dim">· 排除命中</span></label><div id="filterTokenBox"></div></div>';
+    top='<div class="field"><label class="lbl">'+lblIco(LBL_I.type)+'关键词 <span class="dim">· 逗号分隔多个词</span></label><input class="input" id="productKeywordField" placeholder="商品搜索关键词" style="font-size:15px"></div>'+priceFld+gateFld+threshFld;
+    wide='<div class="field" style="grid-column:span 2"><label class="lbl">'+lblIco(LBL_I.filter)+'过滤词 <span class="dim">· 排除命中</span></label><div id="filterTokenBox"></div></div>';
   } else if (kind==='hot'){
-    kindFields=
-      '<div class="field" id="hotRuleEditor"><label class="lbl">热门窗口与门槛</label>'+
-        '<div id="discoveryTimeEditor" style="display:flex;gap:10px;flex-wrap:wrap" class="discovery-params-row">'+
-          '<div class="discovery-params-field" id="hotThresholdParam" style="flex:1;min-width:130px"><div style="font-size:11.5px;color:var(--muted-2);margin-bottom:4px">发布时间窗口</div>'+stepperHTML('globalHotWindow','<span class="unit">小时</span>')+'</div>'+
-          '<div class="discovery-params-field" style="flex:1;min-width:130px"><div style="font-size:11.5px;color:var(--muted-2);margin-bottom:4px">热门评论门槛</div>'+stepperHTML('globalHotMinComment','<span class="unit">条</span>')+'</div>'+
-        '</div></div>'+
-      '<div class="field"><label class="lbl">标题关键词 <span class="dim">· 留空则不限</span></label><div id="hotKeywordTokenBox"></div></div>'+
-      '<div class="field"><label class="lbl">共用过滤词 <span class="dim">· 热门与作者规则共用</span></label><div id="filterTokenBox"></div></div>';
+    top='<div class="field" id="hotRuleEditor"><label class="lbl">'+lblIco(LBL_I.flame)+'发布时间窗口</label><div id="discoveryTimeEditor">'+stepperHTML('globalHotWindow','<span class="unit">小时</span>')+'</div></div>'+
+      '<div class="field" id="hotThresholdParam"><label class="lbl">'+lblIco(LBL_I.check)+'热门评论门槛</label>'+stepperHTML('globalHotMinComment','<span class="unit">条</span>')+'</div>'+priceFld+gateFld+threshFld;
+    wide='<div class="field"><label class="lbl">'+lblIco(LBL_I.type)+'标题关键词 <span class="dim">· 留空则不限</span></label><div id="hotKeywordTokenBox"></div></div>'+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.filter)+'共用过滤词 <span class="dim">· 热门与作者共用</span></label><div id="filterTokenBox"></div></div>';
   } else {
-    kindFields=
-      '<div class="field" id="authorRuleEditor"><label class="lbl" for="followedAuthorsInput">搜索作者</label><div id="followedAuthorsTokenBox"></div></div>'+
-      '<div class="field"><label class="lbl">标题关键词 <span class="dim">· 留空推送作者全部好价</span></label><div id="authorKeywordTokenBox"></div></div>'+
-      '<div class="field"><label class="lbl">共用过滤词 <span class="dim">· 热门与作者规则共用</span></label><div id="filterTokenBox"></div></div>';
+    top='<div class="field" id="authorRuleEditor" style="grid-column:span 2"><label class="lbl" for="followedAuthorsInput">'+lblIco(LBL_I.user)+'搜索作者 <span class="dim">· 值得买作者昵称</span></label><div id="followedAuthorsTokenBox"></div></div>'+priceFld+gateFld+threshFld;
+    wide='<div class="field"><label class="lbl">'+lblIco(LBL_I.type)+'标题关键词 <span class="dim">· 留空推送作者全部好价</span></label><div id="authorKeywordTokenBox"></div></div>'+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.filter)+'共用过滤词 <span class="dim">· 热门与作者共用</span></label><div id="filterTokenBox"></div></div>';
   }
   host.innerHTML=
     '<div style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:1px solid var(--border-3);flex-wrap:wrap">'+
-      '<h2 style="margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;max-width:40%">当前规则 · '+esc(name)+'</h2>'+
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" style="flex:none"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>'+
+      '<h2 style="margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;max-width:38%">当前规则 · '+esc(name)+'</h2>'+
       '<span class="pill" id="ruleBadge"></span>'+
       '<span class="rule-auto-state" id="ruleAutoState" style="font-size:12px;color:var(--muted-2)"></span>'+
       '<span style="flex:1"></span>'+
+      '<span style="font-size:12px;color:var(--muted-2);white-space:nowrap">编辑后标记为需验证 · 保存只影响后台扫描</span>'+
+      '<span style="width:1px;height:16px;background:var(--border);flex:none"></span>'+
       '<span style="font-size:12.5px;color:var(--muted)" id="enLabel"></span>'+
       '<span class="switch" id="enSwitch" role="switch" title="启用 / 停用当前规则"><i></i></span>'+
       (isProduct?'<button class="ghost-btn" id="delBtn" style="width:30px;height:30px" title="删除当前规则"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>':'')+
     '</div>'+
-    '<div class="formgrid">'+kindFields+
-      '<div class="field"><label class="lbl">价格区间（元）<span class="dim">· 0 或留空不限</span></label>'+
-        '<div style="display:flex;align-items:center;gap:8px"><input class="input" type="number" id="minPrice" style="width:0;flex:1"><span style="color:var(--border-hover)">—</span><input class="input" type="number" id="maxPrice" style="width:0;flex:1"></div></div>'+
-      '<div class="field"><label class="lbl">命中门槛</label>'+
-        '<div class="seg" id="gateSeg" style="width:fit-content"><button data-g="loose">宽松</button><button data-g="mid">中等</button><button data-g="strict">严格</button></div>'+
-        '<div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2);flex-wrap:wrap">'+
-          '<span>评论 ≥</span><input class="input" type="number" id="minComments" style="width:60px;height:30px;padding:0 8px;font-size:13px">'+
-          '<span>· 值率 ≥</span><input class="input" type="number" id="minRate" style="width:60px;height:30px;padding:0 8px;font-size:13px"><span>%</span></div></div>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px 20px;padding:18px 20px 4px">'+top+'</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px 20px;padding:12px 20px 4px">'+wide+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.clock)+'扫描频率</label>'+stepperHTML('tickVal','<select id="tickUnit"><option>小时</option><option>分钟</option></select>')+'</div>'+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.cal)+'时间范围</label>'+stepperHTML('ageVal','<span class="unit">天</span>')+'</div>'+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.send)+'单条上限</label>'+stepperHTML('satisfyVal','<span class="unit">条</span>')+'</div>'+
     '</div>'+
-    '<div style="padding:0 20px;border-top:1px solid var(--border-3)">'+
-      '<button id="advBtn" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-size:12.5px;font-weight:500;color:var(--accent);padding:12px 0">高级设置 · 扫描频率与推送上限'+
-      '<svg id="advArrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .15s"><path d="m6 9 6 6 6-6"/></svg></button>'+
-      '<div id="advBody" class="discovery-fields-row hidden" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:0 0 16px">'+
-        '<div class="discovery-grow-field"><div style="font-size:11.5px;color:var(--muted-2);margin-bottom:4px">扫描频率 · 每</div>'+stepperHTML('tickVal','<select id="tickUnit"><option>小时</option><option>分钟</option></select>')+'</div>'+
-        '<div><div style="font-size:11.5px;color:var(--muted-2);margin-bottom:4px">时间范围 · 近</div>'+stepperHTML('ageVal','<span class="unit">天</span>')+'</div>'+
-        '<div><div style="font-size:11.5px;color:var(--muted-2);margin-bottom:4px">每条消息最多</div>'+stepperHTML('satisfyVal','<span class="unit">条</span>')+'</div>'+
-      '</div>'+
-    '</div>'+
+    '<div style="padding:8px 20px 16px;font-size:12px;color:var(--muted-2)">后台按此频率扫描，超出单条上限的商品分批推送 · 时间范围 0 天表示不限</div>'+
     '<div style="display:flex;align-items:center;gap:10px;padding:14px 20px;border-top:1px solid var(--border-3);background:var(--surface-2);border-radius:0 0 12px 12px;flex-wrap:wrap">'+
       '<button class="btn btn-pri" id="saveEnableBtn" style="height:42px;padding:0 22px;font-size:14.5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>保存并启用</button>'+
       '<button class="btn" id="saveOnlyBtn" style="height:42px;padding:0 18px;font-size:14.5px">仅保存</button>'+
       '<button class="btn" id="previewBtn" style="height:42px;padding:0 18px;font-size:14.5px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>搜索预览</button>'+
       '<span style="font-size:12px;color:var(--muted-2);margin-left:auto" id="dirtyNote"></span>'+
     '</div>';
-
-  /* bind */
   if (isProduct){
     var kwInp=el('productKeywordField');
     kwInp.value=(r.words||[]).join(', ');
@@ -589,7 +615,7 @@ function renderEditor(){
     chipEditor('hotKeywordTokenBox', function(){ return g.hotKeywords=(g.hotKeywords||[]); }, {placeholder:'回车添加标题关键词'});
     chipEditor('filterTokenBox', function(){ return g.filterWords=(g.filterWords||[]); }, {quick:true});
   } else {
-    chipEditor('followedAuthorsTokenBox', function(){ return g.followedAuthors=(g.followedAuthors||[]); }, {placeholder:'回车添加作者昵称'});
+    chipEditor('followedAuthorsTokenBox', function(){ return g.followedAuthors=(g.followedAuthors||[]); }, {placeholder:'回车添加作者昵称', inputId:'followedAuthorsInput'});
     chipEditor('authorKeywordTokenBox', function(){ return g.authorKeywords=(g.authorKeywords||[]); }, {placeholder:'回车添加标题关键词'});
     chipEditor('filterTokenBox', function(){ return g.filterWords=(g.filterWords||[]); }, {quick:true});
   }
@@ -607,10 +633,9 @@ function renderEditor(){
       b.title='评论 ≥'+p.c+' · 值率 ≥'+p.r+'%（修改数值自动存入该档）';
     });
   }
-  cInp.addEventListener('input', function(){ var v=Math.max(0,parseInt(cInp.value,10)||0); tt.setC(v); var gk=gateSelKey(); if(gk){state.gatePresets[gk].c=v; saveJSON('smzdm_gate_presets',state.gatePresets);} markDirty(); syncGateSeg(); });
-  rInp.addEventListener('input', function(){ var v=Math.max(0,parseInt(rInp.value,10)||0); tt.setR(v); var gk=gateSelKey(); if(gk){state.gatePresets[gk].r=v; saveJSON('smzdm_gate_presets',state.gatePresets);} markDirty(); syncGateSeg(); });
   var gateSel=gateOf();
-  function gateSelKey(){ return gateSel; }
+  cInp.addEventListener('input', function(){ var v=Math.max(0,parseInt(cInp.value,10)||0); tt.setC(v); if(gateSel){state.gatePresets[gateSel].c=v; saveJSON('smzdm_gate_presets',state.gatePresets);} markDirty(); syncGateSeg(); });
+  rInp.addEventListener('input', function(){ var v=Math.max(0,parseInt(rInp.value,10)||0); tt.setR(v); if(gateSel){state.gatePresets[gateSel].r=v; saveJSON('smzdm_gate_presets',state.gatePresets);} markDirty(); syncGateSeg(); });
   document.querySelectorAll('#gateSeg button').forEach(function(b){
     b.addEventListener('click', function(){
       gateSel=b.getAttribute('data-g');
@@ -620,14 +645,6 @@ function renderEditor(){
     });
   });
   syncGateSeg();
-  /* advanced */
-  el('advBtn').addEventListener('click', function(){
-    state.advOpen=!state.advOpen;
-    el('advBody').classList.toggle('hidden', !state.advOpen);
-    el('advArrow').style.transform=state.advOpen?'rotate(180deg)':'';
-  });
-  el('advBody').classList.toggle('hidden', !state.advOpen);
-  el('advArrow').style.transform=state.advOpen?'rotate(180deg)':'';
   var c=state.config;
   var unitSel=el('tickUnit');
   var isHour=(c.tickTime||10800)%3600===0;
@@ -642,7 +659,6 @@ function renderEditor(){
   });
   bindStepper('ageVal', function(){return c.maxArticleAgeDays||0;}, function(v){c.maxArticleAgeDays=v;}, 0);
   bindStepper('satisfyVal', function(){return c.satisfyNum||5;}, function(v){c.satisfyNum=v;}, 1);
-  /* header controls */
   syncEnabledUI();
   el('enSwitch').addEventListener('click', function(){
     setSelEnabled(!selEnabled());
@@ -668,7 +684,7 @@ function syncBadge(){
   b.style.background=done?'var(--ok-bg)':'var(--warn-bg)';
   var st=el('ruleAutoState');
   st.classList.toggle('is-searching', state.preview==='loading');
-  st.textContent=state.preview==='loading'?'搜索中…':'保存后立即触发一次扫描推送';
+  st.textContent=state.preview==='loading'?'搜索中…':'';
 }
 
 /* ---------- search preview ---------- */
@@ -805,8 +821,8 @@ function renderTg(){
     '<div style="padding:16px;display:flex;flex-direction:column;gap:14px">'+
       '<div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border-3);background:var(--surface-2);border-radius:8px">'+
         '<div style="width:38px;height:38px;flex:none;display:grid;place-items:center;background:var(--accent-bg);border-radius:8px;overflow:hidden">'+
-          (ok&&!state.demo?'<img src="/telegramAvatar" alt="" style="width:38px;height:38px;object-fit:cover" onerror="this.style.display=\'none\'">':'')+
-          '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></div>'+
+          (ok&&!state.demo?'<img src="/telegramAvatar" alt="" style="width:38px;height:38px;object-fit:cover;position:relative;z-index:1" onerror="this.style.display=\'none\'">':'')+
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="#26A5E4" style="position:absolute"><path d="'+TG_PATH+'"/></svg></div>'+
         '<div style="margin-right:auto"><div style="font-weight:600;font-size:13.5px">'+(ok?'配置完成':'未配置')+'</div>'+
         '<div style="font-size:11.5px;color:var(--muted-2)">'+esc(t.parseMode||'HTML')+' 模式</div></div>'+
         '<span class="pill" style="color:'+(ok&&t.enabled?'var(--ok)':'var(--muted)')+';background:'+(ok&&t.enabled?'var(--ok-bg)':'var(--surface-3)')+';border:1px solid '+(ok&&t.enabled?'var(--ok-border)':'var(--border-2)')+'">'+(ok&&t.enabled?'可推送':'未启用')+'</span>'+
@@ -820,7 +836,7 @@ function renderTg(){
       '</div>'+
       '<div style="display:flex;flex-direction:column;gap:8px">'+
         '<button class="btn btn-pri" id="tgEditBtn" style="height:36px;font-size:13px">'+(state.tgEdit?'保存配置':'编辑配置')+'</button>'+
-        '<button class="btn" id="tgTestBtn" style="height:36px;font-size:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>测试发送</button>'+
+        '<button class="btn" id="tgTestBtn" style="height:36px;font-size:13px">'+tgIcon(14,'currentColor')+'测试发送</button>'+
       '</div>'+
       '<div style="border-top:1px solid var(--border-3);padding-top:14px;display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:var(--muted)">'+
         '<div style="display:flex;justify-content:space-between"><span>推送成功（近 80 条）</span><span style="font-weight:600;color:var(--ink)">'+succ+' 条</span></div>'+
@@ -937,15 +953,21 @@ function toast(msg){
 }
 
 /* ---------- theme ---------- */
+var mediaDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+function themeMode(){ return localStorage.getItem('smzdm_theme') || 'auto'; }
 function applyTheme(){
-  var t=localStorage.getItem('smzdm_theme')||'light';
-  el('app').setAttribute('data-theme', t);
-  el('themeBtn').innerHTML=t==='light'
-    ?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>'
-    :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+  var m = themeMode();
+  var t = m === 'auto' ? ((mediaDark && mediaDark.matches) ? 'dark' : 'light') : m;
+  document.documentElement.setAttribute('data-theme', t);
+  var sun='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+  var moon='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+  var mon='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
+  el('themeBtn').innerHTML = m==='light' ? sun : (m==='dark' ? moon : mon);
+  el('themeBtn').title = '主题：' + (m==='light' ? '浅色' : (m==='dark' ? '深色' : '跟随系统')) + ' · 点击切换';
 }
+if (mediaDark && mediaDark.addEventListener) mediaDark.addEventListener('change', function(){ if (themeMode()==='auto') applyTheme(); });
 
-/* ---------- boot ---------- */
+/* ---------- boot ---------- *//* ---------- boot ---------- */
 function renderAll(){ renderList(); renderStats(); renderEditor(); renderPreview(); renderTg(); }
 function loadConfig(){
   return api('/productConfig').then(function(j){
@@ -959,8 +981,10 @@ function loadConfig(){
   });
 }
 el('themeBtn').addEventListener('click', function(){
-  var t=(localStorage.getItem('smzdm_theme')||'light')==='light'?'dark':'light';
-  localStorage.setItem('smzdm_theme', t); applyTheme();
+  var order=['light','dark','auto'];
+  var m=order[(order.indexOf(themeMode())+1)%order.length];
+  localStorage.setItem('smzdm_theme', m); applyTheme();
+  toast('主题：'+(m==='light'?'浅色':(m==='dark'?'深色':'跟随系统')));
 });
 el('logsBtn').addEventListener('click', openLogs);
 el('reloadBtn').addEventListener('click', function(){
