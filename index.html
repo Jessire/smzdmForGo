@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>什么值得买 · 商品提醒</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg-page:#f7f8fa;--surface:#ffffff;--surface-2:#fafafa;--surface-3:#f4f4f5;
+  --border:#e9eaee;--border-2:#e4e4e7;--border-3:#f0f0f2;--border-4:#ececef;--border-hover:#d4d4d8;
+  --ink:#18181b;--ink-2:#3f3f46;--ink-3:#52525b;--muted:#71717a;--muted-2:#a1a1aa;--muted-3:#c8c8ce;
+  --accent:#2563eb;--accent-hover:#1d4ed8;--accent-active:#1e40af;--accent-bg:#eff6ff;--accent-border:#dbeafe;--sel-bg:#f8faff;
+  --ok:#15803d;--ok-bg:#f0fdf4;--ok-border:#dcfce7;--ok-dot:#22c55e;
+  --warn:#b45309;--warn-bg:#fef3c7;
+  --coupon:#c2410c;--coupon-bg:#fff7ed;--coupon-border:#fed7aa;
+  --danger:#dc2626;--danger-hover:#b91c1c;--danger-bg:#fef2f2;
+  --thumb-bg:linear-gradient(160deg,#f8f8f9,#eef0f3);
+  --k-product-bg:#ffedd5;--k-product-fg:#c2410c;--k-hot-bg:#fff1f2;--k-hot-fg:#e11d48;--k-author-bg:#eff6ff;--k-author-fg:#2563eb;
+}
+[data-theme="dark"]{
+  --bg-page:#101013;--surface:#18181c;--surface-2:#1d1d22;--surface-3:#26262d;
+  --border:#26262d;--border-2:#303038;--border-3:#232329;--border-4:#2a2a31;--border-hover:#3d3d46;
+  --ink:#f4f4f5;--ink-2:#d4d4d8;--ink-3:#b6b6bf;--muted:#9a9aa3;--muted-2:#71717c;--muted-3:#52525c;
+  --accent:#3b82f6;--accent-hover:#60a5fa;--accent-active:#2563eb;--accent-bg:#1c2a4a;--accent-border:#2d4370;--sel-bg:#192338;
+  --ok:#4ade80;--ok-bg:#12281a;--ok-border:#1d4029;--ok-dot:#22c55e;
+  --warn:#fbbf24;--warn-bg:#2c2310;
+  --coupon:#fb923c;--coupon-bg:#2e2010;--coupon-border:#4a3418;
+  --danger:#f87171;--danger-hover:#ef4444;--danger-bg:#301b1b;
+  --thumb-bg:linear-gradient(160deg,#1e1e24,#26262d);
+  --k-product-bg:#33240f;--k-product-fg:#fdba74;--k-hot-bg:#341521;--k-hot-fg:#fb7185;--k-author-bg:#1c2a4a;--k-author-fg:#60a5fa;
+}
+*{box-sizing:border-box}
+html,body{height:100%;overflow:hidden;margin:0}
+body{font-family:"Geist","Noto Sans SC",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg-page);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s}
+a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent-hover);text-decoration:underline}
+input,select,button,textarea{font:inherit;color:inherit}
+input::placeholder{color:var(--muted-2)}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-radius:8px}
+::selection{background:var(--accent-border)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:var(--border-hover)}
+::-webkit-scrollbar-track{background:transparent}
+input[type="number"]{-moz-appearance:textfield;appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.app{height:100vh;display:flex;flex-direction:column;width:100%;max-width:1920px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border);background:var(--bg-page)}
+.hdr{display:flex;align-items:center;gap:14px;padding:0 20px;height:56px;flex:none;border-bottom:1px solid var(--border);background:var(--surface)}
+.logo{width:30px;height:30px;flex:none;display:grid;place-items:center;background:#e11d48;color:#fff;font-weight:700;font-size:15px;border-radius:8px}
+.cols{flex:1;min-height:0;display:flex;align-items:stretch}
+.side{width:clamp(264px,20vw,312px);flex:none;display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--border);background:var(--surface)}
+.tgcol{width:clamp(268px,18vw,304px);flex:none;display:flex;flex-direction:column;min-height:0;overflow-y:auto;border-left:1px solid var(--border);background:var(--surface)}
+.tgrail{width:44px;flex:none;display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 0;border-left:1px solid var(--border);background:var(--surface)}
+.main{flex:1;min-width:0;overflow-y:auto}
+.wrap{max-width:none;margin:0;padding:24px 32px 48px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:8px;cursor:pointer;font-weight:500;border:1px solid var(--border-2);background:var(--surface);color:var(--ink-2);transition:background .15s,opacity .15s,transform .1s}
+.btn:hover{background:var(--surface-3)}
+.btn-pri{background:var(--accent);color:#fff;border:none;font-weight:600}
+.btn-pri:hover{background:var(--accent-hover)}
+.btn-pri:active{background:var(--accent-active);transform:scale(.98)}
+.btn-danger{background:var(--danger);color:#fff;border:none;font-weight:600}
+.btn-danger:hover{background:var(--danger-hover)}
+.btn[disabled]{opacity:.45;cursor:default;pointer-events:none}
+.icon-btn{width:34px;height:34px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--border-2);border-radius:8px;cursor:pointer;color:var(--ink-3)}
+.icon-btn:hover{background:var(--surface-3)}
+.ghost-btn{display:grid;place-items:center;background:transparent;border:none;border-radius:6px;cursor:pointer;color:var(--muted-2)}
+.ghost-btn:hover{background:var(--surface-3);color:var(--ink)}
+.input{height:36px;padding:0 12px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface);font-size:14px;width:100%}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.lbl{font-size:12px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:5px}
+.lbl .dim{font-weight:400;color:var(--muted-2)}
+.lbl svg{color:var(--muted-2);flex:none}
+.chipbox{display:flex;flex-wrap:wrap;gap:5px;align-items:center;padding:5px 8px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface);min-height:38px}
+.chipbox:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.chipbox input{border:none;background:transparent;flex:1;min-width:140px;height:26px;padding:0 4px;font-size:13px}
+.chip .pin{cursor:pointer;font-size:11px;opacity:.75}
+.chip .pin:hover{opacity:1}
+.qchip .qx{margin-left:4px;opacity:.5;cursor:pointer}
+.qchip .qx:hover{opacity:1}
+.field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.seg{display:flex;background:var(--surface-3);border-radius:8px;padding:3px;gap:2px}
+.seg button{border:none;border-radius:6px;cursor:pointer;font-size:12.5px;font-weight:500;color:var(--muted);background:transparent;height:26px;padding:0 14px}
+.seg button.on{color:var(--ink);background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--accent-hover);background:var(--accent-bg);border:1px solid var(--accent-border);padding:2px 6px 2px 9px;border-radius:999px}
+.chip .x{cursor:pointer;width:14px;height:14px;display:grid;place-items:center;border-radius:50%;font-size:11px;line-height:1}
+.chip .x:hover{background:var(--accent-border)}
+.qchip{cursor:pointer;font-size:11.5px;padding:2px 9px;border-radius:999px;border:1px solid var(--border-2);color:var(--muted);background:var(--surface)}
+.qchip.on{border-color:var(--accent-border);color:var(--accent-hover);background:var(--accent-bg)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.stepper{display:flex;align-items:stretch;height:36px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface);overflow:hidden}
+.stepper button{flex:none;width:32px;border:none;background:transparent;cursor:pointer;color:var(--muted);font-size:16px}
+.stepper button:hover{background:var(--surface-3);color:var(--ink)}
+.stepper input{width:100%;min-width:36px;border:none;text-align:center;font-size:15px;font-weight:600;background:transparent}
+.stepper input:focus,.stepper input:focus-visible{outline:none;background:var(--accent-bg);border-radius:0}
+.stepper .unit{flex:none;display:flex;align-items:center;padding:0 10px;font-size:13px;color:var(--muted);border-left:1px solid var(--border-4)}
+.stepper select{flex:none;border:none;border-left:1px solid var(--border-4);background:var(--surface);font-size:13px;color:var(--ink-2);padding:0 3px;cursor:pointer}
+.stepper select:focus,.stepper select:focus-visible{outline:none;background:var(--accent-bg)}
+.chipbox input:focus,.chipbox input:focus-visible{outline:none;box-shadow:none}
+.switch{width:36px;height:20px;flex:none;cursor:pointer;position:relative;display:inline-block;border-radius:999px;transition:background .15s;background:var(--border-hover)}
+.switch.on{background:var(--accent)}
+.switch i{position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .15s}
+.switch.on i{left:18px}
+.rule-card{display:flex;flex-direction:column;gap:8px;padding:12px;cursor:pointer;border-radius:8px;border:1px solid var(--border-4);background:var(--surface);transition:border-color .15s,box-shadow .15s,transform .15s}
+.rule-card:hover{border-color:var(--border-hover);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.06)}
+.rule-card.sel{border-color:var(--accent);background:var(--sel-bg);box-shadow:0 0 0 1px var(--accent)}
+.rule-card.off{opacity:.6}
+.product-card{display:flex;flex-direction:column;border:1px solid var(--border-4);border-radius:8px;overflow:hidden;background:var(--surface);transition:border-color .15s,box-shadow .15s,transform .15s}
+.product-card:hover{border-color:var(--border-hover);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.06)}
+.product-card.dim{opacity:.62}
+.meta-ico{display:inline-flex;align-items:center;gap:3px}
+.dlg-mask{position:fixed;inset:0;display:grid;place-items:center;padding:16px;background:rgba(24,24,27,.4);backdrop-filter:blur(2px);z-index:50}
+.dlg{width:min(440px,100%);background:var(--surface);border-radius:12px;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.2);display:flex;flex-direction:column;gap:10px}
+.toast{position:fixed;right:20px;top:64px;background:#18181b;color:#fafafa;padding:10px 18px;font-size:13px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:60}
+[data-theme="dark"] .toast{background:#f4f4f5;color:#18181b}
+.hidden{display:none!important}
+.statgrid{display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden;border-radius:12px}
+.stat{border-right:1px solid var(--border-3);display:flex;align-items:stretch;min-height:70px}
+.stat:last-child{border-right:none}
+.stat .ico{width:auto;min-width:70px;aspect-ratio:1/1;align-self:stretch;flex:none;display:grid;place-items:center;background:var(--surface-3);border-right:1px solid var(--border-3);color:var(--ink-3)}
+.stat .tx{padding:10px 16px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.stat .tx>div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:1500px){.statgrid{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:none}.stat:nth-child(-n+2){border-bottom:1px solid var(--border-3)}}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;padding:18px 20px}
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:10px;padding:14px 20px 20px}
+.logrow{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-3);font-size:13px}
+@media (max-width:1180px){.tgcol{display:none}.tgrail{display:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="hdr">
+    <div class="logo">值</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0">
+      <span style="font-weight:600;font-size:15px;letter-spacing:-.01em;white-space:nowrap">什么值得买 · 商品提醒</span>
+      <span style="width:1px;height:16px;background:var(--border);flex:none"></span>
+      <span id="hdrMeta" style="font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">加载中…</span>
+    </div>
+    <span id="demoBadge" class="pill hidden" style="color:var(--warn);background:var(--warn-bg)">演示模式 · 未连接后端</span>
+    <span class="pill" id="scanPill" style="color:var(--ok);background:var(--ok-bg);border:1px solid var(--ok-border)"><i style="width:6px;height:6px;border-radius:50%;background:var(--ok-dot)"></i>扫描运行中</span>
+    <button class="icon-btn" id="themeBtn" title="切换明暗主题" aria-label="切换明暗主题"></button>
+    <button class="icon-btn" id="logsBtn" title="推送记录" aria-label="推送记录">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.294.295-.604.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.196 1.006.128.832.941z"/></svg>
+    </button>
+  </header>
+  <div class="cols">
+    <aside class="side">
+      <div style="flex:none;padding:16px 16px 12px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;font-weight:600;color:var(--ink-2);margin-right:auto">商品规则</span>
+          <button class="ghost-btn" style="width:28px;height:28px" id="reloadBtn" title="刷新">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+          </button>
+          <button id="addBtn" style="height:28px;display:inline-flex;align-items:center;gap:5px;padding:0 10px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12.5px;font-weight:500">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>新建
+          </button>
+        </div>
+        <div class="seg" id="tabSeg">
+          <button data-tab="all" class="on" style="flex:1">全部</button>
+          <button data-tab="on" style="flex:1">仅启用</button>
+          <button data-tab="off" style="flex:1">仅停用</button>
+        </div>
+        <div style="position:relative">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:10px;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input class="input" id="ruleSearch" placeholder="搜索规则名称 / 关键词" style="height:32px;padding-left:30px;font-size:13px">
+        </div>
+      </div>
+      <div style="flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:2px 10px 10px;display:flex;flex-direction:column;gap:6px" id="ruleList"></div>
+      <div style="flex:none;padding:10px 16px;font-size:11.5px;color:var(--muted-2);border-top:1px solid var(--border-3)" id="listFooter"></div>
+    </aside>
+
+    <main class="main">
+      <div class="wrap">
+        <section class="card statgrid" id="statsBar"></section>
+        <section class="card" id="ruleEditor"></section>
+        <section class="card" id="searchRule">
+          <div style="display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border-3)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" style="flex:none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><h3 style="margin:0;font-size:14.5px;font-weight:600">搜索预览</h3>
+            <span style="font-size:12px;color:var(--muted-2)" id="previewSub">等待搜索</span>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+              <div style="position:relative">
+                <select id="sortSel" style="appearance:none;-webkit-appearance:none;height:30px;padding:0 26px 0 10px;border:1px solid var(--border-2);border-radius:6px;background:var(--surface);font-size:12.5px;color:var(--ink-2);cursor:pointer">
+                  <option>按值率</option><option>按价格</option><option>按评论数</option><option>按时间</option>
+                </select>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted-2)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <a id="openExt" class="icon-btn hidden" style="width:30px;height:30px" title="在什么值得买打开" target="_blank" rel="noopener">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+              </a>
+            </div>
+          </div>
+          <div id="previewBody"></div>
+        </section>
+      </div>
+    </main>
+
+    <aside class="tgcol" id="tgPanel"></aside>
+    <aside class="tgrail hidden" id="tgRail">
+      <button class="icon-btn" style="width:28px;height:28px" id="tgExpand" title="展开 Telegram 面板">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <span style="writing-mode:vertical-rl;font-size:11px;letter-spacing:.14em;color:var(--muted-2)">TELEGRAM 通知</span>
+    </aside>
+  </div>
+</div>
+<div id="dlgHost"></div>
+<div id="toastHost"></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- state ---------- */
+var state = {
+  config: null, demo: false, dirty: false,
+  sel: { kind: 'product', idx: 0 },   // kind: product | hot | author
+  tab: 'all', q: '', tgOpen: true, advOpen: false,
+  pendingSel: null, preview: 'idle', results: [], previewMeta: null,
+  logs: [], lastPushable: null,
+  gatePresets: loadJSON('smzdm_gate_presets', { loose:{c:0,r:0}, mid:{c:10,r:10}, strict:{c:50,r:20} })
+};
+var COMMON_FILTERS = loadJSON('smzdm_common_filters', ['临期','过期','售罄','二手']);
+var TG_PATH = 'M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.294.295-.604.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.196 1.006.128.832.941z';
+function tgIcon(size, color){ return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="'+color+'"><path d="'+TG_PATH+'"/></svg>'; }
+var selectedRuleKind = 'product';
+
+function loadJSON(k, dft){ try{ var v=JSON.parse(localStorage.getItem(k)); return v||dft; }catch(e){ return dft; } }
+function saveJSON(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function esc(s){ var d=document.createElement('div'); d.textContent=s==null?'':String(s); return d.innerHTML; }
+function el(id){ return document.getElementById(id); }
+function num(v){ var n=parseFloat(String(v==null?'':v).replace(/[^0-9.]/g,'')); return isNaN(n)?0:n; }
+
+/* ---------- api ---------- */
+function api(path, opts){
+  return fetch(path, opts).then(function(r){ return r.json(); }).then(function(j){
+    if (j.code !== '0' && j.code !== 0) throw new Error(j.msg || '请求失败');
+    return j;
+  });
+}
+function demoConfig(){
+  return {
+    keyWords:['显示器','面包'], filterWords:['二手','支架'],
+    lowCommentNum:5, lowWorthyNum:20, minPrice:300, maxPrice:2000,
+    satisfyNum:5, tickTime:7200, maxArticleAgeDays:7, cron:'0 10 10 ? * *',
+    telegram:{enabled:true, botToken:'demo-token', chatId:'-100123', parseMode:'HTML', disableWebPagePreview:false},
+    keywordRules:[
+      {enabled:true, words:['显示器'], filterWords:['二手','支架'], lowCommentNum:5, lowWorthyNum:20, minPrice:300, maxPrice:2000},
+      {enabled:true, words:['面包'], filterWords:['临期'], lowCommentNum:1, lowWorthyNum:6, minPrice:0, maxPrice:0}
+    ],
+    globalHot:{enabled:true, windowHours:3, minCommentNum:200, hotKeywords:[], followAuthorsEnabled:false, followedAuthors:[], authorKeywords:[], filterWords:[], lowCommentNum:0, lowWorthyNum:0, minPrice:0, maxPrice:0}
+  };
+}
+function demoItems(kw){
+  function mk(t,p,w,c,d,st){ return {title:t,price:p,worthy:w,comment:c,pic:'',url:'#',referral:'',date:d,pushState:st}; }
+  return { keyword:kw, openUrl:'', pushable:2, alreadyPushed:1, tooOld:1, items:[
+    mk('今日必买：'+kw+' 高性价比款 演示数据','¥329','40','76','07-25 09:52','ok'),
+    mk(kw+' 旗舰款 演示数据','¥458','15','89','07-25 18:13','ok'),
+    mk('百亿补贴：'+kw+' 入门款 演示数据','¥229','20','569','07-25 13:09','already_pushed'),
+    mk(kw+' 老款 演示数据','¥199','12','33','07-18 10:11','too_old')
+  ]};
+}
+
+/* ---------- config helpers ---------- */
+function rules(){ return state.config.keywordRules || []; }
+function gh(){ return state.config.globalHot; }
+function ruleName(r){ return (r.words && r.words.length) ? r.words.join('、') : '新规则'; }
+function tickLabel(){ var t=state.config.tickTime||10800; return t%3600===0 ? '每 '+(t/3600)+' 小时' : '每 '+Math.round(t/60)+' 分钟'; }
+function currentRule(){
+  if (state.sel.kind==='product') return rules()[state.sel.idx] || null;
+  return null;
+}
+function selEnabled(){
+  if (state.sel.kind==='product'){ var r=currentRule(); return r ? r.enabled!==false : false; }
+  if (state.sel.kind==='hot') return !!gh().enabled;
+  return !!gh().followAuthorsEnabled;
+}
+function setSelEnabled(v){
+  if (state.sel.kind==='product'){ var r=currentRule(); if(r) r.enabled=v; }
+  else if (state.sel.kind==='hot') gh().enabled=v;
+  else gh().followAuthorsEnabled=v;
+}
+function selName(){
+  if (state.sel.kind==='hot') return '搜索热门';
+  if (state.sel.kind==='author') return '搜索作者';
+  var r=currentRule(); return r?ruleName(r):'—';
+}
+function buildPayload(){
+  var c=state.config;
+  var kws=[]; rules().forEach(function(r){ (r.words||[]).forEach(function(w){ if(kws.indexOf(w)<0) kws.push(w); }); });
+  var first=rules()[0]||{};
+  return {
+    keyWords:kws, filterWords:first.filterWords||[],
+    lowCommentNum:first.lowCommentNum||0, lowWorthyNum:first.lowWorthyNum||0,
+    minPrice:first.minPrice||0, maxPrice:first.maxPrice||0,
+    satisfyNum:c.satisfyNum, tickTime:c.tickTime, maxArticleAgeDays:c.maxArticleAgeDays,
+    cron:c.cron||'', telegram:c.telegram, keywordRules:rules(), globalHot:gh()
+  };
+}
+function saveConfig(okMsg){
+  if (state.demo){ state.dirty=false; refreshButtons(); renderList(); toast('演示模式：改动未发送到后端'); return Promise.resolve(); }
+  return api('/productConfig', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(buildPayload())})
+    .then(function(j){
+      if (j.data) state.config=j.data;
+      state.dirty=false;
+      renderAll();
+      toast(okMsg || j.msg || '保存成功');
+      loadLogs();
+    })
+    .catch(function(e){ toast('保存失败：'+e.message); });
+}
+
+/* ---------- rendering ---------- */
+function markDirty(){ if(!state.dirty){ state.dirty=true; refreshButtons(); } }
+function refreshButtons(){
+  var s=el('saveEnableBtn'), d=el('saveOnlyBtn'), n=el('dirtyNote');
+  if (!s) return;
+  s.disabled=!state.dirty; d.disabled=!state.dirty;
+  n.textContent=state.dirty?'编辑尚未保存':'所有更改已保存';
+}
+function kindIcon(kind){
+  if (kind==='hot') return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
+  if (kind==='author') return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>';
+  return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>';
+}
+function viewRules(){
+  var list=[];
+  rules().forEach(function(r,i){ list.push({kind:'product', idx:i, name:ruleName(r), on:r.enabled!==false,
+    sub:'关键词 · '+tickLabel(), tags:(r.filterWords||[]).slice(0,2),
+    meta:'评论'+(r.lowCommentNum||0)+' · '+(r.lowWorthyNum||0)+'%'+priceMeta(r)}); });
+  list.push({kind:'hot', name:'搜索热门', on:!!gh().enabled, sub:'热门榜 · 近 '+(gh().windowHours||3)+' 小时',
+    tags:(gh().hotKeywords||[]).slice(0,2), meta:'评论 ≥'+(gh().minCommentNum||200)});
+  list.push({kind:'author', name:'搜索作者', on:!!gh().followAuthorsEnabled, sub:'作者订阅 · '+(gh().followedAuthors||[]).length+' 位作者',
+    tags:(gh().followedAuthors||[]).slice(0,2), meta:(gh().authorKeywords||[]).length+' 个标题关键词'});
+  return list;
+}
+function priceMeta(r){
+  var lo=r.minPrice||0, hi=r.maxPrice||0;
+  if(!lo&&!hi) return '';
+  if(lo&&hi) return ' · ¥'+lo+'–'+hi;
+  if(hi) return ' · ¥≤'+hi;
+  return ' · ¥≥'+lo;
+}
+function renderList(){
+  var host=el('ruleList'); host.innerHTML='';
+  var all=viewRules(), shown=0;
+  all.forEach(function(v){
+    if (state.tab==='on'&&!v.on) return;
+    if (state.tab==='off'&&v.on) return;
+    if (state.q && v.name.indexOf(state.q)<0) return;
+    shown++;
+    var selNow=(v.kind===state.sel.kind)&&(v.kind!=='product'||v.idx===state.sel.idx);
+    var card=document.createElement('div');
+    card.className='rule-card'+(selNow?' sel':'')+(v.on?'':' off');
+    card.setAttribute('data-rule-kind', v.kind);
+    card.innerHTML=
+      '<div style="display:flex;align-items:flex-start;gap:12px">'+
+        '<div style="width:56px;height:56px;flex:none;display:grid;place-items:center;border-radius:12px;background:var(--k-'+v.kind+'-bg);color:var(--k-'+v.kind+'-fg)">'+kindIcon(v.kind)+'</div>'+
+        '<div style="min-width:0;flex:1;display:flex;flex-direction:column;gap:3px">'+
+          '<div style="display:flex;align-items:center;gap:8px">'+
+            '<div style="min-width:0;margin-right:auto;font-weight:600;font-size:14px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(v.name)+'</div>'+
+            '<span class="pill st" role="switch" style="cursor:pointer;color:'+(v.on?'var(--ok)':'var(--muted)')+';background:'+(v.on?'var(--ok-bg)':'var(--surface-3)')+';border:1px solid '+(v.on?'var(--ok-border)':'var(--border-2)')+'" title="'+(v.on?'点击停用':'点击启用')+'">'+
+              '<i style="width:6px;height:6px;border-radius:50%;background:'+(v.on?'var(--ok-dot)':'var(--muted-2)')+'"></i>'+(v.on?'运行中':'已停用')+'</span>'+
+          '</div>'+
+          '<div style="font-size:11.5px;color:var(--muted-2)">'+esc(v.sub)+'</div>'+
+          '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">'+
+            v.tags.map(function(t){ return '<span style="font-size:11px;color:var(--ink-3);background:var(--surface-3);padding:2px 8px;border-radius:999px">'+esc(t)+'</span>'; }).join('')+
+            '<span style="margin-left:auto;white-space:nowrap;font-size:11px;color:var(--muted-2)">'+esc(v.meta)+'</span>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    card.addEventListener('click', function(){ trySelect(v.kind, v.idx||0); });
+    card.querySelector('.st').addEventListener('click', function(e){
+      e.stopPropagation();
+      var was=state.sel;
+      state.sel={kind:v.kind, idx:v.idx||0};
+      setSelEnabled(!v.on);
+      state.sel=was;
+      saveConfig((v.on?'已停用':'已启用')+'「'+v.name+'」');
+    });
+    host.appendChild(card);
+  });
+  var add=document.createElement('div');
+  add.style.cssText='display:flex;align-items:center;justify-content:center;gap:7px;padding:16px;cursor:pointer;border-radius:8px;border:1.5px dashed var(--border-hover);color:var(--muted);font-size:13px;font-weight:500';
+  add.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>新建规则';
+  add.addEventListener('mouseenter', function(){ add.style.borderColor='var(--accent)'; add.style.color='var(--accent)'; add.style.background='var(--sel-bg)'; });
+  add.addEventListener('mouseleave', function(){ add.style.borderColor='var(--border-hover)'; add.style.color='var(--muted)'; add.style.background='transparent'; });
+  add.addEventListener('click', addRule);
+  host.appendChild(add);
+  var on=viewRules().filter(function(v){return v.on;}).length;
+  el('listFooter').textContent='共 '+all.length+' 条规则 · '+on+' 条启用 · 后台'+tickLabel()+'扫描';
+  el('hdrMeta').textContent='规则 '+all.length+' · 启用 '+on;
+}
+function trySelect(kind, idx){
+  if (kind===state.sel.kind && (kind!=='product'||idx===state.sel.idx)) return;
+  if (state.dirty){ state.pendingSel={kind:kind, idx:idx}; renderSwitchDialog(); return; }
+  doSelect(kind, idx);
+}
+function doSelect(kind, idx){
+  state.sel={kind:kind, idx:idx}; selectedRuleKind=kind;
+  state.dirty=false; state.pendingSel=null;
+  state.preview='idle'; state.results=[]; state.previewMeta=null;
+  renderList(); renderEditor(); renderPreview();
+}
+function addRule(){
+  rules().push({enabled:false, words:[], filterWords:[], lowCommentNum:0, lowWorthyNum:0, minPrice:0, maxPrice:0});
+  state.sel={kind:'product', idx:rules().length-1};
+  state.dirty=true; state.preview='idle'; state.results=[];
+  renderList(); renderEditor(); renderPreview(); refreshButtons();
+  toast('已创建新规则，请填写关键词后保存');
+}
+
+/* ---------- stats ---------- */
+function renderStats(){
+  var succ=0, fail=0;
+  state.logs.forEach(function(l){ if(l.status==='success') succ++; else if(l.status==='fail') fail++; });
+  var on=viewRules().filter(function(v){return v.on;}).length;
+  var icons={
+    rules:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>',
+    hit:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+    push:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="'+TG_PATH+'"/></svg>',
+    warn:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
+  };
+  function cell(ico,label,val,extra){
+    return '<div class="stat"><div class="ico">'+ico+'</div><div class="tx">'+
+      '<div style="font-size:12.5px;color:var(--muted);margin-bottom:1px">'+label+'</div>'+
+      '<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:22px;font-weight:700;letter-spacing:-.02em">'+val+'</span><span style="font-size:11.5px;color:var(--muted-2)">'+extra+'</span></div>'+
+      '</div></div>';
+  }
+  el('statsBar').innerHTML=
+    cell(icons.rules,'全部规则扫描',String(on),'已启用规则')+
+    cell(icons.hit,'可推送商品',state.lastPushable==null?'—':String(state.lastPushable),'最近一次预览')+
+    cell(icons.push,'推送成功',String(succ),'<a href="#" id="statLogsLink">近 80 条记录</a>')+
+    cell(icons.warn,'推送失败 / 跳过',String(fail+state.logs.filter(function(l){return l.status==='skip';}).length),'点击查看原因');
+  var link=el('statLogsLink'); if(link) link.addEventListener('click', function(e){ e.preventDefault(); openLogs(); });
+  el('statsBar').lastElementChild.style.cursor='pointer';
+  el('statsBar').lastElementChild.addEventListener('click', openLogs);
+}
+
+/* ---------- editor ---------- */
+function chipEditor(hostId, getArr, opts){
+  opts=opts||{};
+  var host=el(hostId);
+  function draw(){
+    var arr=getArr();
+    host.innerHTML='';
+    var box=document.createElement('div'); box.className='chipbox';
+    arr.forEach(function(w,i){
+      var c=document.createElement('span'); c.className='chip';
+      var pinned=COMMON_FILTERS.indexOf(w)>=0;
+      c.innerHTML=esc(w)+(opts.quick&&!pinned?'<span class="pin" title="收藏到常用">☆</span>':'')+'<span class="x" title="移除">×</span>';
+      var pin=c.querySelector('.pin');
+      if(pin) pin.addEventListener('click', function(){
+        COMMON_FILTERS.push(w); saveJSON('smzdm_common_filters', COMMON_FILTERS);
+        toast('已收藏「'+w+'」到常用'); draw();
+      });
+      c.querySelector('.x').addEventListener('click', function(){ arr.splice(i,1); markDirty(); draw(); });
+      box.appendChild(c);
+    });
+    var inp=document.createElement('input');
+    if (opts.inputId) inp.id=opts.inputId;
+    inp.placeholder=opts.placeholder||'输入后回车添加，支持粘贴';
+    inp.addEventListener('keydown', function(e){
+      if(e.key==='Enter'&&inp.value.trim()){
+        inp.value.split(/[,，\n]/).forEach(function(p){ p=p.trim(); if(p&&arr.indexOf(p)<0) arr.push(p); });
+        inp.value=''; markDirty(); draw();
+        var ni=host.querySelector('input'); if(ni) ni.focus();
+      }
+    });
+    box.appendChild(inp);
+    host.appendChild(box);
+    if (opts.quick){
+      var q=document.createElement('div');
+      q.style.cssText='display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:8px';
+      q.innerHTML='<span style="font-size:11.5px;color:var(--muted-2)">常用:</span>';
+      COMMON_FILTERS.forEach(function(w){
+        var onNow=arr.indexOf(w)>=0;
+        var b=document.createElement('span');
+        b.className='qchip'+(onNow?' on':'');
+        b.innerHTML=esc(w)+(onNow?' ✓':'')+'<span class="qx" title="从常用移除">×</span>';
+        b.addEventListener('click', function(){
+          var j=arr.indexOf(w); if(j>=0) arr.splice(j,1); else arr.push(w);
+          markDirty(); draw();
+        });
+        b.querySelector('.qx').addEventListener('click', function(e){
+          e.stopPropagation();
+          COMMON_FILTERS.splice(COMMON_FILTERS.indexOf(w),1);
+          saveJSON('smzdm_common_filters', COMMON_FILTERS); draw();
+        });
+        q.appendChild(b);
+      });
+      host.appendChild(q);
+    }
+  }
+  draw();
+}
+function stepperHTML(id, unitHTML){
+  return '<div class="stepper"><button type="button" data-step="-1" data-for="'+id+'">−</button>'+
+    '<input id="'+id+'" type="number">'+unitHTML+
+    '<button type="button" data-step="1" data-for="'+id+'">＋</button></div>';
+}
+function bindStepper(id, get, set, min){
+  var inp=el(id);
+  inp.value=get();
+  inp.addEventListener('change', function(){ var v=Math.max(min,parseInt(inp.value,10)||min); inp.value=v; set(v); markDirty(); });
+  document.querySelectorAll('[data-for="'+id+'"]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var v=Math.max(min,(parseInt(inp.value,10)||min)+parseInt(b.getAttribute('data-step'),10));
+      inp.value=v; set(v); markDirty();
+    });
+  });
+}
+function bindNum(id, get, set){
+  var inp=el(id); inp.value=get()||'';
+  inp.addEventListener('input', function(){ set(num(inp.value)); markDirty(); });
+}
+function gateOf(){ /* which preset matches current thresholds */
+  var t=thresholdTarget();
+  var p=state.gatePresets;
+  if(t.c()===p.loose.c&&t.r()===p.loose.r) return 'loose';
+  if(t.c()===p.strict.c&&t.r()===p.strict.r) return 'strict';
+  if(t.c()===p.mid.c&&t.r()===p.mid.r) return 'mid';
+  return null;
+}
+function thresholdTarget(){
+  if (state.sel.kind==='product'){
+    var r=currentRule();
+    return { c:function(){return r.lowCommentNum||0;}, r:function(){return r.lowWorthyNum||0;},
+      setC:function(v){r.lowCommentNum=v;}, setR:function(v){r.lowWorthyNum=v;} };
+  }
+  var g=gh();
+  return { c:function(){return g.lowCommentNum||0;}, r:function(){return g.lowWorthyNum||0;},
+    setC:function(v){g.lowCommentNum=v;}, setR:function(v){g.lowWorthyNum=v;} };
+}
+function priceTarget(){
+  if (state.sel.kind==='product') return currentRule();
+  return gh();
+}
+function lblIco(paths){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+paths+'</svg>'; }
+var LBL_I={
+  type:'<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>',
+  price:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/>',
+  gauge:'<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+  check:'<path d="M21.8 10A10 10 0 1 1 17 3.34"/><path d="m9 11 3 3L22 4"/>',
+  filter:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>'
+};
+function renderEditor(){
+  var kind=state.sel.kind, r=currentRule(), g=gh();
+  var isProduct=kind==='product';
+  var name=selName();
+  var host=el('ruleEditor');
+  var priceFld='<div class="field"><label class="lbl">'+lblIco(LBL_I.price)+'价格区间（元）<span class="dim">· 0 或留空不限</span></label>'+
+    '<div style="display:flex;align-items:center;gap:8px"><input class="input" type="number" id="minPrice" style="width:0;flex:1"><span style="color:var(--border-hover)">—</span><input class="input" type="number" id="maxPrice" style="width:0;flex:1"></div></div>';
+  var gateFld='<div class="field"><label class="lbl">'+lblIco(LBL_I.gauge)+'命中门槛</label>'+
+    '<div class="seg" id="gateSeg" style="height:36px;align-items:center"><button data-g="loose" style="flex:1;height:30px">宽松</button><button data-g="mid" style="flex:1;height:30px">中等</button><button data-g="strict" style="flex:1;height:30px">严格</button></div></div>';
+  var threshFld='<div class="field"><label class="lbl">'+lblIco(LBL_I.check)+'达标条件</label>'+
+    '<div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)"><span style="white-space:nowrap">评论 ≥</span><input class="input" type="number" id="minComments" style="width:0;flex:1;min-width:52px"><span style="white-space:nowrap">· 值率 ≥</span><input class="input" type="number" id="minRate" style="width:0;flex:1;min-width:52px"><span>%</span></div></div>';
+  var top='', wide='';
+  if (isProduct){
+    top='<div class="field"><label class="lbl">'+lblIco(LBL_I.type)+'关键词 <span class="dim">· 逗号分隔多个词</span></label><input class="input" id="productKeywordField" placeholder="商品搜索关键词" style="font-size:15px"></div>'+priceFld+gateFld+threshFld;
+    wide='<div class="field" style="grid-column:span 2"><label class="lbl">'+lblIco(LBL_I.filter)+'过滤词 <span class="dim">· 排除命中</span></label><div id="filterTokenBox"></div></div>';
+  } else if (kind==='hot'){
+    top='<div class="field" id="hotRuleEditor"><label class="lbl">'+lblIco(LBL_I.flame)+'发布时间窗口</label><div id="discoveryTimeEditor">'+stepperHTML('globalHotWindow','<span class="unit">小时</span>')+'</div></div>'+
+      '<div class="field" id="hotThresholdParam"><label class="lbl">'+lblIco(LBL_I.check)+'热门评论门槛</label>'+stepperHTML('globalHotMinComment','<span class="unit">条</span>')+'</div>'+priceFld+gateFld+threshFld;
+    wide='<div class="field"><label class="lbl">'+lblIco(LBL_I.type)+'标题关键词 <span class="dim">· 留空则不限</span></label><div id="hotKeywordTokenBox"></div></div>'+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.filter)+'共用过滤词 <span class="dim">· 热门与作者共用</span></label><div id="filterTokenBox"></div></div>';
+  } else {
+    top='<div class="field" id="authorRuleEditor" style="grid-column:span 2"><label class="lbl" for="followedAuthorsInput">'+lblIco(LBL_I.user)+'搜索作者 <span class="dim">· 值得买作者昵称</span></label><div id="followedAuthorsTokenBox"></div></div>'+priceFld+gateFld+threshFld;
+    wide='<div class="field"><label class="lbl">'+lblIco(LBL_I.type)+'标题关键词 <span class="dim">· 留空推送作者全部好价</span></label><div id="authorKeywordTokenBox"></div></div>'+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.filter)+'共用过滤词 <span class="dim">· 热门与作者共用</span></label><div id="filterTokenBox"></div></div>';
+  }
+  host.innerHTML=
+    '<div style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:1px solid var(--border-3);flex-wrap:wrap">'+
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" style="flex:none"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>'+
+      '<h2 style="margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;max-width:38%">当前规则 · '+esc(name)+'</h2>'+
+      '<span class="pill" id="ruleBadge"></span>'+
+      '<span class="rule-auto-state" id="ruleAutoState" style="font-size:12px;color:var(--muted-2)"></span>'+
+      '<span style="flex:1"></span>'+
+      '<span style="font-size:12px;color:var(--muted-2);white-space:nowrap">编辑后标记为需验证 · 保存只影响后台扫描</span>'+
+      '<span style="width:1px;height:16px;background:var(--border);flex:none"></span>'+
+      '<span style="font-size:12.5px;color:var(--muted)" id="enLabel"></span>'+
+      '<span class="switch" id="enSwitch" role="switch" title="启用 / 停用当前规则"><i></i></span>'+
+      (isProduct?'<button class="ghost-btn" id="delBtn" style="width:30px;height:30px" title="删除当前规则"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>':'')+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px 20px;padding:18px 20px 4px">'+top+'</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px 20px;padding:12px 20px 4px">'+wide+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.clock)+'扫描频率</label>'+stepperHTML('tickVal','<select id="tickUnit"><option>小时</option><option>分钟</option></select>')+'</div>'+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.cal)+'时间范围</label>'+stepperHTML('ageVal','<span class="unit">天</span>')+'</div>'+
+      '<div class="field"><label class="lbl">'+lblIco(LBL_I.send)+'单条上限</label>'+stepperHTML('satisfyVal','<span class="unit">条</span>')+'</div>'+
+    '</div>'+
+    '<div style="padding:8px 20px 16px;font-size:12px;color:var(--muted-2)">后台按此频率扫描，超出单条上限的商品分批推送 · 时间范围 0 天表示不限</div>'+
+    '<div style="display:flex;align-items:center;gap:10px;padding:14px 20px;border-top:1px solid var(--border-3);background:var(--surface-2);border-radius:0 0 12px 12px;flex-wrap:wrap">'+
+      '<button class="btn btn-pri" id="saveEnableBtn" style="height:42px;padding:0 22px;font-size:14.5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>保存并启用</button>'+
+      '<button class="btn" id="saveOnlyBtn" style="height:42px;padding:0 18px;font-size:14.5px">仅保存</button>'+
+      '<button class="btn" id="previewBtn" style="height:42px;padding:0 18px;font-size:14.5px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>搜索预览</button>'+
+      '<span style="font-size:12px;color:var(--muted-2);margin-left:auto" id="dirtyNote"></span>'+
+    '</div>';
+  if (isProduct){
+    var kwInp=el('productKeywordField');
+    kwInp.value=(r.words||[]).join(', ');
+    kwInp.addEventListener('input', function(){
+      r.words=kwInp.value.split(/[,，\n]/).map(function(s){return s.trim();}).filter(Boolean);
+      markDirty();
+    });
+    chipEditor('filterTokenBox', function(){ return r.filterWords=(r.filterWords||[]); }, {quick:true});
+    el('delBtn').addEventListener('click', renderDeleteDialog);
+  } else if (kind==='hot'){
+    bindStepper('globalHotWindow', function(){return g.windowHours||3;}, function(v){g.windowHours=v;}, 1);
+    bindStepper('globalHotMinComment', function(){return g.minCommentNum||200;}, function(v){g.minCommentNum=v;}, 1);
+    chipEditor('hotKeywordTokenBox', function(){ return g.hotKeywords=(g.hotKeywords||[]); }, {placeholder:'回车添加标题关键词'});
+    chipEditor('filterTokenBox', function(){ return g.filterWords=(g.filterWords||[]); }, {quick:true});
+  } else {
+    chipEditor('followedAuthorsTokenBox', function(){ return g.followedAuthors=(g.followedAuthors||[]); }, {placeholder:'回车添加作者昵称', inputId:'followedAuthorsInput'});
+    chipEditor('authorKeywordTokenBox', function(){ return g.authorKeywords=(g.authorKeywords||[]); }, {placeholder:'回车添加标题关键词'});
+    chipEditor('filterTokenBox', function(){ return g.filterWords=(g.filterWords||[]); }, {quick:true});
+  }
+  var pt=priceTarget();
+  bindNum('minPrice', function(){return pt.minPrice;}, function(v){pt.minPrice=v;});
+  bindNum('maxPrice', function(){return pt.maxPrice;}, function(v){pt.maxPrice=v;});
+  var tt=thresholdTarget();
+  var cInp=el('minComments'), rInp=el('minRate');
+  cInp.value=tt.c(); rInp.value=tt.r();
+  function syncGateSeg(){
+    var gcur=gateOf();
+    document.querySelectorAll('#gateSeg button').forEach(function(b){
+      b.classList.toggle('on', b.getAttribute('data-g')===gcur);
+      var p=state.gatePresets[b.getAttribute('data-g')];
+      b.title='评论 ≥'+p.c+' · 值率 ≥'+p.r+'%（修改数值自动存入该档）';
+    });
+  }
+  var gateSel=gateOf();
+  cInp.addEventListener('input', function(){ var v=Math.max(0,parseInt(cInp.value,10)||0); tt.setC(v); if(gateSel){state.gatePresets[gateSel].c=v; saveJSON('smzdm_gate_presets',state.gatePresets);} markDirty(); syncGateSeg(); });
+  rInp.addEventListener('input', function(){ var v=Math.max(0,parseInt(rInp.value,10)||0); tt.setR(v); if(gateSel){state.gatePresets[gateSel].r=v; saveJSON('smzdm_gate_presets',state.gatePresets);} markDirty(); syncGateSeg(); });
+  document.querySelectorAll('#gateSeg button').forEach(function(b){
+    b.addEventListener('click', function(){
+      gateSel=b.getAttribute('data-g');
+      var p=state.gatePresets[gateSel];
+      tt.setC(p.c); tt.setR(p.r); cInp.value=p.c; rInp.value=p.r;
+      markDirty(); syncGateSeg();
+    });
+  });
+  syncGateSeg();
+  var c=state.config;
+  var unitSel=el('tickUnit');
+  var isHour=(c.tickTime||10800)%3600===0;
+  unitSel.value=isHour?'小时':'分钟';
+  var tickInp=el('tickVal');
+  tickInp.value=isHour?(c.tickTime/3600):Math.round(c.tickTime/60);
+  function applyTick(){ var v=Math.max(1,parseInt(tickInp.value,10)||1); c.tickTime=unitSel.value==='小时'?v*3600:v*60; }
+  tickInp.addEventListener('change', function(){ applyTick(); markDirty(); renderListSoft(); });
+  unitSel.addEventListener('change', function(){ applyTick(); markDirty(); renderListSoft(); });
+  document.querySelectorAll('[data-for="tickVal"]').forEach(function(b){
+    b.addEventListener('click', function(){ tickInp.value=Math.max(1,(parseInt(tickInp.value,10)||1)+parseInt(b.getAttribute('data-step'),10)); applyTick(); markDirty(); renderListSoft(); });
+  });
+  bindStepper('ageVal', function(){return c.maxArticleAgeDays||0;}, function(v){c.maxArticleAgeDays=v;}, 0);
+  bindStepper('satisfyVal', function(){return c.satisfyNum||5;}, function(v){c.satisfyNum=v;}, 1);
+  syncEnabledUI();
+  el('enSwitch').addEventListener('click', function(){
+    setSelEnabled(!selEnabled());
+    syncEnabledUI();
+    saveConfig((selEnabled()?'已启用':'已停用')+'「'+selName()+'」');
+  });
+  el('saveEnableBtn').addEventListener('click', function(){ setSelEnabled(true); saveConfig('已保存并启用，后台立即扫描推送'); });
+  el('saveOnlyBtn').addEventListener('click', function(){ saveConfig('已保存，后台立即按新规则扫描'); });
+  el('previewBtn').addEventListener('click', runSearch);
+  refreshButtons(); syncBadge();
+}
+function renderListSoft(){ renderList(); }
+function syncEnabledUI(){
+  var on=selEnabled();
+  el('enLabel').textContent=on?'已启用':'已停用';
+  el('enSwitch').classList.toggle('on', on);
+}
+function syncBadge(){
+  var b=el('ruleBadge'); if(!b) return;
+  var done=state.preview==='done';
+  b.textContent=done?'已预览':'待搜索';
+  b.style.color=done?'var(--ok)':'var(--warn)';
+  b.style.background=done?'var(--ok-bg)':'var(--warn-bg)';
+  var st=el('ruleAutoState');
+  st.classList.toggle('is-searching', state.preview==='loading');
+  st.textContent=state.preview==='loading'?'搜索中…':'';
+}
+
+/* ---------- search preview ---------- */
+function searchRulePayload(){
+  if (state.sel.kind==='product'){
+    var r=currentRule();
+    return { words:r.words||[], filterWords:r.filterWords||[], lowCommentNum:r.lowCommentNum||0, lowWorthyNum:r.lowWorthyNum||0, minPrice:r.minPrice||0, maxPrice:r.maxPrice||0 };
+  }
+  var g=gh();
+  return { words:[], filterWords:g.filterWords||[], lowCommentNum:g.lowCommentNum||0, lowWorthyNum:g.lowWorthyNum||0, minPrice:g.minPrice||0, maxPrice:g.maxPrice||0 };
+}
+function runSearch(){
+  if (state.sel.kind==='product'){
+    var r=currentRule();
+    if (!r || !(r.words||[]).length){ toast('请先填写关键词'); return; }
+  }
+  state.preview='loading'; renderPreview(); syncBadge();
+  var p;
+  if (state.demo){
+    p=new Promise(function(res){ setTimeout(function(){ res({data:demoItems(selName())}); }, 600); });
+  } else if (state.sel.kind==='product'){
+    p=api('/productSearch', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({rule:searchRulePayload(), limit:20})});
+  } else {
+    p=api('/discoverySearch', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({type:state.sel.kind, globalHot:gh(), rule:searchRulePayload(), limit:20})});
+  }
+  p.then(function(j){
+    state.preview='done';
+    state.previewMeta=j.data;
+    state.results=j.data.items||[];
+    state.lastPushable=j.data.pushable||0;
+    renderPreview(); renderStats(); syncBadge();
+  }).catch(function(e){
+    state.preview='idle'; renderPreview(); syncBadge();
+    toast('搜索失败：'+e.message);
+  });
+}
+function sortedResults(){
+  var mode=el('sortSel')?el('sortSel').value:'按值率';
+  var arr=state.results.slice();
+  arr.sort(function(a,b){
+    if(mode==='按价格') return num(a.price)-num(b.price);
+    if(mode==='按评论数') return num(b.comment)-num(a.comment);
+    if(mode==='按时间') return String(b.date).localeCompare(String(a.date));
+    return num(b.worthy)-num(a.worthy);
+  });
+  return arr;
+}
+function pushStateInfo(st){
+  if(st==='ok') return {label:'可推送', color:'var(--ok)', bg:'var(--ok-bg)', note:'满足门槛且未推送过'};
+  if(st==='already_pushed') return {label:'已推送', color:'var(--accent)', bg:'var(--accent-bg)', note:'此前已推送，自动去重'};
+  if(st==='too_old') return {label:'超出时间', color:'var(--muted)', bg:'var(--surface-3)', note:'发布时间超出扫描范围'};
+  return {label:'日期异常', color:'var(--muted)', bg:'var(--surface-3)', note:'无法解析发布时间'};
+}
+function renderPreview(){
+  var host=el('previewBody');
+  var sub=el('previewSub');
+  var ext=el('openExt');
+  if (state.preview==='idle'){
+    sub.textContent='等待搜索';
+    ext.classList.add('hidden');
+    host.innerHTML=
+      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:48px 24px;min-height:360px;text-align:center">'+
+        '<div style="position:relative;width:128px;height:128px;display:grid;place-items:center;margin-bottom:6px">'+
+          '<span style="position:absolute;inset:0;border:1.5px dashed var(--border-2);border-radius:50%"></span>'+
+          '<span style="position:absolute;inset:24px;border:1.5px dashed var(--border-2);border-radius:50%"></span>'+
+          '<span style="position:absolute;inset:46px;border-radius:50%;background:var(--accent-bg)"></span>'+
+          '<span style="position:absolute;top:16px;right:28px;width:7px;height:7px;border-radius:50%;background:var(--accent)"></span>'+
+          '<span style="position:absolute;bottom:26px;left:20px;width:5px;height:5px;border-radius:50%;background:var(--border-hover)"></span>'+
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" style="position:relative"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'+
+        '</div>'+
+        '<div style="font-size:14.5px;font-weight:600">暂无搜索结果</div>'+
+        '<p style="margin:0;font-size:12.5px;color:var(--muted-2);max-width:340px;line-height:1.6">当前规则尚未运行搜索。立即搜索可查看「'+esc(selName())+'」在当前门槛下的匹配商品，不会触发推送。</p>'+
+        '<button class="btn" id="emptySearchBtn" style="height:36px;padding:0 16px;margin-top:8px;color:var(--accent);border-color:var(--accent-border);font-weight:600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>立即搜索</button>'+
+      '</div>';
+    el('emptySearchBtn').addEventListener('click', runSearch);
+    return;
+  }
+  if (state.preview==='loading'){
+    sub.textContent='搜索中…';
+    host.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:48px 24px;min-height:360px;font-size:13px;color:var(--muted)">'+
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.2-8.56"/></svg>正在搜索「'+esc(selName())+'」…</div>';
+    return;
+  }
+  var m=state.previewMeta||{};
+  sub.textContent=(m.keyword||selName())+' · '+state.results.length+' 条结果 · '+(m.pushable||0)+' 可推送 · '+(m.alreadyPushed||0)+' 已推送 · '+(m.tooOld||0)+' 超时';
+  if (m.openUrl){ ext.href=m.openUrl; ext.classList.remove('hidden'); } else { ext.classList.add('hidden'); }
+  var grid=document.createElement('div');
+  grid.className='results';
+  sortedResults().forEach(function(p){
+    var info=pushStateInfo(p.pushState);
+    var card=document.createElement('div');
+    card.className='product-card'+(p.pushState==='ok'?'':' dim');
+    var img=p.pic?'<img src="/imageProxy?url='+encodeURIComponent(p.pic)+'" loading="lazy" alt="" style="width:104px;height:104px;object-fit:cover;border-radius:8px;border:1px solid var(--border-3);flex:none" onerror="this.replaceWith(document.createElement(\'span\'))">'
+      :'<div style="width:104px;height:104px;flex:none;display:grid;place-items:center;background:var(--thumb-bg);border-radius:8px;border:1px solid var(--border-3)"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--muted-3)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg></div>';
+    card.innerHTML=
+      '<div style="display:flex;gap:14px;padding:12px 12px 10px;flex:1">'+img+
+        '<div style="min-width:0;display:flex;flex-direction:column;gap:6px;justify-content:center">'+
+          '<a href="'+esc(p.url)+'" target="_blank" rel="noopener" style="color:var(--ink);font-size:14.5px;font-weight:500;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+esc(p.title)+'</a>'+
+          '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px;font-weight:700;font-variant-numeric:tabular-nums">'+esc(p.price)+'</span>'+
+          (p.referral?'<a href="'+esc(p.referral)+'" target="_blank" rel="noopener" style="font-size:10.5px;font-weight:500;color:var(--coupon);background:var(--coupon-bg);border:1px solid var(--coupon-border);padding:1px 6px;border-radius:4px">直达链接</a>':'')+'</div>'+
+          '<div style="display:flex;align-items:center;gap:11px;font-size:12.5px;color:var(--muted)">'+
+            '<span class="meta-ico" style="font-weight:600;color:var(--accent)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>'+esc(p.worthy)+'%</span>'+
+            '<span class="meta-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>'+esc(p.comment)+'</span>'+
+            '<span class="meta-ico" style="color:var(--muted-2)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'+esc(p.date)+'</span>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--surface-2);border-top:1px solid var(--border-3);font-size:12.5px;color:var(--muted)">'+
+        '<span class="pill" style="font-size:11px;padding:1px 8px;color:'+info.color+';background:'+info.bg+'">'+info.label+'</span>'+esc(info.note)+
+      '</div>';
+    grid.appendChild(card);
+  });
+  host.innerHTML='';
+  host.appendChild(grid);
+}
+
+/* ---------- telegram panel ---------- */
+function tgConfigured(){ var t=state.config.telegram||{}; return !!(t.botToken&&t.chatId); }
+function renderTg(){
+  var panel=el('tgPanel'), rail=el('tgRail');
+  panel.classList.toggle('hidden', !state.tgOpen);
+  rail.classList.toggle('hidden', state.tgOpen);
+  if (!state.tgOpen) return;
+  var t=state.config.telegram||{};
+  var ok=tgConfigured();
+  var succ=0, last='—';
+  state.logs.forEach(function(l){ if(l.status==='success') succ++; });
+  if (state.logs.length) last=state.logs[0].time||'—';
+  panel.innerHTML=
+    '<div style="display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--border-3)">'+
+      '<span style="font-size:13px;font-weight:600;color:var(--ink-2);margin-right:auto">Telegram 通知</span>'+
+      '<button class="ghost-btn" id="tgCollapse" style="width:26px;height:26px" title="折叠面板"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>'+
+    '</div>'+
+    '<div style="padding:16px;display:flex;flex-direction:column;gap:14px">'+
+      '<div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border-3);background:var(--surface-2);border-radius:8px">'+
+        '<div style="width:38px;height:38px;flex:none;display:grid;place-items:center;background:var(--accent-bg);border-radius:8px;overflow:hidden">'+
+          (ok&&!state.demo?'<img src="/telegramAvatar" alt="" style="width:38px;height:38px;object-fit:cover;position:relative;z-index:1" onerror="this.style.display=\'none\'">':'')+
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="#26A5E4" style="position:absolute"><path d="'+TG_PATH+'"/></svg></div>'+
+        '<div style="margin-right:auto"><div style="font-weight:600;font-size:13.5px">'+(ok?'配置完成':'未配置')+'</div>'+
+        '<div style="font-size:11.5px;color:var(--muted-2)">'+esc(t.parseMode||'HTML')+' 模式</div></div>'+
+        '<span class="pill" style="color:'+(ok&&t.enabled?'var(--ok)':'var(--muted)')+';background:'+(ok&&t.enabled?'var(--ok-bg)':'var(--surface-3)')+';border:1px solid '+(ok&&t.enabled?'var(--ok-border)':'var(--border-2)')+'">'+(ok&&t.enabled?'可推送':'未启用')+'</span>'+
+      '</div>'+
+      '<div id="tgForm" class="'+(state.tgEdit?'':'hidden')+'" style="display:flex;flex-direction:column;gap:10px">'+
+        '<div class="field"><label class="lbl">Bot Token</label><input class="input" id="tgToken" type="password" autocomplete="off" style="height:32px;font-size:13px"></div>'+
+        '<div class="field"><label class="lbl">Chat ID</label><input class="input" id="tgChat" style="height:32px;font-size:13px"></div>'+
+        '<div class="field"><label class="lbl">Parse Mode</label><select class="input" id="tgMode" style="height:32px;font-size:13px"><option>HTML</option><option>Markdown</option><option>MarkdownV2</option></select></div>'+
+        '<label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);cursor:pointer"><input type="checkbox" id="tgNoPreview">关闭链接预览</label>'+
+        '<label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);cursor:pointer"><input type="checkbox" id="tgEnabled">启用推送</label>'+
+      '</div>'+
+      '<div style="display:flex;flex-direction:column;gap:8px">'+
+        '<button class="btn btn-pri" id="tgEditBtn" style="height:36px;font-size:13px">'+(state.tgEdit?'保存配置':'编辑配置')+'</button>'+
+        '<button class="btn" id="tgTestBtn" style="height:36px;font-size:13px">'+tgIcon(14,'currentColor')+'测试发送</button>'+
+      '</div>'+
+      '<div style="border-top:1px solid var(--border-3);padding-top:14px;display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:var(--muted)">'+
+        '<div style="display:flex;justify-content:space-between"><span>推送成功（近 80 条）</span><span style="font-weight:600;color:var(--ink)">'+succ+' 条</span></div>'+
+        '<div style="display:flex;justify-content:space-between"><span>最近记录</span><span style="font-weight:600;color:var(--ink)">'+esc(last)+'</span></div>'+
+        '<a href="#" id="tgLogsLink" style="font-size:12.5px">查看推送记录 →</a>'+
+      '</div>'+
+    '</div>';
+  el('tgCollapse').addEventListener('click', function(){ state.tgOpen=false; renderTg(); });
+  el('tgLogsLink').addEventListener('click', function(e){ e.preventDefault(); openLogs(); });
+  if (state.tgEdit){
+    el('tgToken').value=t.botToken||''; el('tgChat').value=t.chatId||'';
+    el('tgMode').value=t.parseMode||'HTML';
+    el('tgNoPreview').checked=!!t.disableWebPagePreview;
+    el('tgEnabled').checked=!!t.enabled;
+  }
+  el('tgEditBtn').addEventListener('click', function(){
+    if (!state.tgEdit){ state.tgEdit=true; renderTg(); return; }
+    t.botToken=el('tgToken').value.trim(); t.chatId=el('tgChat').value.trim();
+    t.parseMode=el('tgMode').value; t.disableWebPagePreview=el('tgNoPreview').checked;
+    t.enabled=el('tgEnabled').checked;
+    state.config.telegram=t; state.tgEdit=false;
+    saveConfig('Telegram 配置已保存').then(renderTg);
+  });
+  el('tgTestBtn').addEventListener('click', function(){
+    var payload={telegram: state.tgEdit?{enabled:true,botToken:el('tgToken').value.trim(),chatId:el('tgChat').value.trim(),parseMode:el('tgMode').value,disableWebPagePreview:el('tgNoPreview').checked}:t};
+    if (state.demo){ toast('演示模式：测试消息未发送'); return; }
+    toast('正在发送测试消息…');
+    api('/telegramTest', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)})
+      .then(function(j){ toast(j.msg||'测试发送成功'); loadLogs(); })
+      .catch(function(e){ toast('测试发送失败：'+e.message); });
+  });
+}
+
+/* ---------- push logs ---------- */
+function loadLogs(){
+  if (state.demo){
+    state.logs=[{title:'扫描完成 · 无新推送',status:'skip',reason:'没有新命中（演示数据）',time:'12:00:00',image:''}];
+    renderStats(); renderTg(); return Promise.resolve();
+  }
+  return api('/pushLogs').then(function(j){
+    state.logs=j.data||[];
+    renderStats(); renderTg();
+  }).catch(function(){ /* silent */ });
+}
+function openLogs(){
+  var rows=state.logs.length?state.logs.map(function(l){
+    var color=l.status==='success'?'var(--ok)':(l.status==='fail'?'var(--danger)':'var(--muted)');
+    var bg=l.status==='success'?'var(--ok-bg)':(l.status==='fail'?'var(--danger-bg)':'var(--surface-3)');
+    var label=l.status==='success'?'成功':(l.status==='fail'?'失败':'跳过');
+    return '<div class="logrow">'+
+      '<span class="pill" style="flex:none;color:'+color+';background:'+bg+'">'+label+'</span>'+
+      '<div style="min-width:0;flex:1"><div style="font-weight:500;line-height:1.4">'+esc(l.title)+'</div>'+
+      '<div style="font-size:12px;color:var(--muted-2)">'+esc(l.reason||'')+'</div></div>'+
+      '<span style="flex:none;font-size:12px;color:var(--muted-2)">'+esc(l.time||'')+'</span></div>';
+  }).join(''):'<div style="padding:24px;text-align:center;color:var(--muted-2);font-size:13px">暂无推送记录</div>';
+  showDialog(
+    '<div style="display:flex;align-items:center;gap:8px"><div style="font-size:15.5px;font-weight:600;margin-right:auto">推送记录 <span style="font-weight:400;color:var(--muted-2);font-size:12.5px">近 '+state.logs.length+' 条</span></div>'+
+    '<button class="ghost-btn dlg-close" style="width:28px;height:28px">✕</button></div>'+
+    '<div style="max-height:min(480px,60vh);overflow-y:auto">'+rows+'</div>'
+  );
+}
+
+/* ---------- dialogs & toast ---------- */
+function showDialog(inner, onMask){
+  var host=el('dlgHost');
+  host.innerHTML='<div class="dlg-mask"><div class="dlg">'+inner+'</div></div>';
+  var mask=host.firstChild;
+  mask.addEventListener('click', function(e){ if(e.target===mask){ closeDialog(); if(onMask)onMask(); } });
+  host.querySelectorAll('.dlg-close').forEach(function(b){ b.addEventListener('click', closeDialog); });
+}
+function closeDialog(){ el('dlgHost').innerHTML=''; }
+function renderDeleteDialog(){
+  var name=selName();
+  showDialog(
+    '<div style="width:38px;height:38px;display:grid;place-items:center;background:var(--danger-bg);border-radius:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></div>'+
+    '<div style="font-size:15.5px;font-weight:600">删除规则「'+esc(name)+'」？</div>'+
+    '<div style="font-size:13px;color:var(--muted);line-height:1.6">删除后将停止该规则的后台扫描与推送，历史推送记录保留。此操作不可撤销。</div>'+
+    '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">'+
+      '<button class="btn dlg-close" style="height:36px;padding:0 16px;font-size:13px">取消</button>'+
+      '<button class="btn btn-danger" id="dlgDelOk" style="height:36px;padding:0 16px;font-size:13px">确认删除</button></div>'
+  );
+  el('dlgDelOk').addEventListener('click', function(){
+    rules().splice(state.sel.idx,1);
+    state.sel={kind:'product', idx:0};
+    if(!rules().length) state.sel={kind:'hot', idx:0};
+    closeDialog();
+    state.dirty=false;
+    saveConfig('规则「'+name+'」已删除').then(function(){ renderEditor(); renderPreview(); });
+  });
+}
+function renderSwitchDialog(){
+  var target=state.pendingSel;
+  var names={hot:'搜索热门', author:'搜索作者'};
+  var tname=target.kind==='product'?ruleName(rules()[target.idx]||{}):names[target.kind];
+  showDialog(
+    '<div style="width:38px;height:38px;display:grid;place-items:center;background:var(--warn-bg);border-radius:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div>'+
+    '<div style="font-size:15.5px;font-weight:600">当前规则有未保存的改动</div>'+
+    '<div style="font-size:13px;color:var(--muted);line-height:1.6">切换到「'+esc(tname)+'」将丢弃这些改动。可以先返回保存，或直接放弃。</div>'+
+    '<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">'+
+      '<button class="btn" id="dlgDiscard" style="height:36px;padding:0 16px;font-size:13px;color:var(--danger)">放弃改动并切换</button>'+
+      '<button class="btn btn-pri dlg-close" style="height:36px;padding:0 16px;font-size:13px">返回继续编辑</button></div>',
+    function(){ state.pendingSel=null; }
+  );
+  el('dlgDiscard').addEventListener('click', function(){
+    closeDialog();
+    loadConfig().then(function(){ doSelect(target.kind, target.idx); });
+  });
+}
+var toastTimer=null;
+function toast(msg){
+  el('toastHost').innerHTML='<div class="toast">'+esc(msg)+'</div>';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){ el('toastHost').innerHTML=''; }, 2600);
+}
+
+/* ---------- theme ---------- */
+var mediaDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+function themeMode(){ return localStorage.getItem('smzdm_theme') || 'auto'; }
+function applyTheme(){
+  var m = themeMode();
+  var t = m === 'auto' ? ((mediaDark && mediaDark.matches) ? 'dark' : 'light') : m;
+  document.documentElement.setAttribute('data-theme', t);
+  var sun='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+  var moon='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+  var mon='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
+  el('themeBtn').innerHTML = m==='light' ? sun : (m==='dark' ? moon : mon);
+  el('themeBtn').title = '主题：' + (m==='light' ? '浅色' : (m==='dark' ? '深色' : '跟随系统')) + ' · 点击切换';
+}
+if (mediaDark && mediaDark.addEventListener) mediaDark.addEventListener('change', function(){ if (themeMode()==='auto') applyTheme(); });
+
+/* ---------- boot ---------- *//* ---------- boot ---------- */
+function renderAll(){ renderList(); renderStats(); renderEditor(); renderPreview(); renderTg(); }
+function loadConfig(){
+  return api('/productConfig').then(function(j){
+    state.config=j.data; state.demo=false;
+  }).catch(function(){
+    state.config=demoConfig(); state.demo=true;
+    el('demoBadge').classList.remove('hidden');
+  }).then(function(){
+    state.dirty=false;
+    if (state.sel.kind==='product' && !rules()[state.sel.idx]) state.sel={kind:rules().length?'product':'hot', idx:0};
+  });
+}
+el('themeBtn').addEventListener('click', function(){
+  var order=['light','dark','auto'];
+  var m=order[(order.indexOf(themeMode())+1)%order.length];
+  localStorage.setItem('smzdm_theme', m); applyTheme();
+  toast('主题：'+(m==='light'?'浅色':(m==='dark'?'深色':'跟随系统')));
+});
+el('logsBtn').addEventListener('click', openLogs);
+el('reloadBtn').addEventListener('click', function(){
+  if (state.dirty){ toast('有未保存改动，请先保存或放弃'); return; }
+  loadConfig().then(function(){ renderAll(); toast('规则列表已刷新'); });
+});
+el('addBtn').addEventListener('click', function(){
+  if (state.dirty){ toast('有未保存改动，请先保存'); return; }
+  addRule();
+});
+el('tabSeg').addEventListener('click', function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  state.tab=b.getAttribute('data-tab');
+  document.querySelectorAll('#tabSeg button').forEach(function(x){ x.classList.toggle('on', x===b); });
+  renderList();
+});
+el('ruleSearch').addEventListener('input', function(e){ state.q=e.target.value.trim(); renderList(); });
+el('sortSel').addEventListener('change', function(){ if(state.preview==='done') renderPreview(); });
+el('tgExpand').addEventListener('click', function(){ state.tgOpen=true; renderTg(); });
+
+applyTheme();
+loadConfig().then(function(){ renderAll(); loadLogs(); });
+})();
+</script>
+</body>
+</html>
