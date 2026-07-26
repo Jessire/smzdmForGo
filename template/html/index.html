@@ -80,7 +80,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .chipbox input{border:none;background:transparent;flex:1;min-width:140px;height:26px;padding:0 4px;font-size:13px}
 .chip .pin{cursor:pointer;font-size:11px;opacity:.75}
 .chip .pin:hover{opacity:1}
-.qchip .qx{margin-left:4px;opacity:.5;cursor:pointer}
+.qchip .qx{margin-left:4px;opacity:0;cursor:pointer;transition:opacity .12s}
+.qchip:hover .qx{opacity:.6}
 .qchip .qx:hover{opacity:1}
 .field{display:flex;flex-direction:column;gap:8px;min-width:0}
 .seg{display:flex;background:var(--surface-3);border-radius:8px;padding:3px;gap:2px}
@@ -107,7 +108,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .switch.on i{left:18px}
 .rule-card{display:flex;flex-direction:column;gap:8px;padding:12px;cursor:pointer;border-radius:8px;border:1px solid var(--border-4);background:var(--surface);transition:border-color .15s,box-shadow .15s,transform .15s}
 .rule-card:hover{border-color:var(--border-hover);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.06)}
-.rule-card.sel{border-color:var(--accent);background:var(--sel-bg)}
+.rule-card.sel{border-color:var(--accent);background:var(--sel-bg);box-shadow:0 0 0 1px var(--accent)}
 .rule-card.off{opacity:.6}
 .product-card{display:flex;flex-direction:column;border:1px solid var(--border-4);border-radius:8px;overflow:hidden;background:var(--surface);transition:border-color .15s,box-shadow .15s,transform .15s}
 .product-card:hover{border-color:var(--border-hover);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.06)}
@@ -325,15 +326,20 @@ function kindIcon(kind){
   if (kind==='author') return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>';
   return '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>';
 }
+function metaIco(paths, txt){ return '<span style="display:inline-flex;align-items:center;gap:3px;white-space:nowrap"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+paths+'</svg>'+esc(txt)+'</span>'; }
+var MI={comment:'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',trend:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',money:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/>',clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',tag:'<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5"/>'};
+function priceText(r){ var lo=r.minPrice||0, hi=r.maxPrice||0; if(!lo&&!hi) return ''; if(lo&&hi) return '¥'+lo+'–'+hi; if(hi) return '≤¥'+hi; return '≥¥'+lo; }
 function viewRules(){
   var list=[];
-  rules().forEach(function(r,i){ list.push({kind:'product', idx:i, name:ruleName(r), on:r.enabled!==false,
-    sub:'关键词 · '+tickLabel(), tags:(r.filterWords||[]).slice(0,2),
-    meta:'评论'+(r.lowCommentNum||0)+' · '+(r.lowWorthyNum||0)+'%'+priceMeta(r)}); });
-  list.push({kind:'hot', name:'搜索热门', on:!!gh().enabled, sub:'热门榜 · 近 '+(gh().windowHours||3)+' 小时',
-    tags:(gh().hotKeywords||[]).slice(0,2), meta:'评论 ≥'+(gh().minCommentNum||200)});
-  list.push({kind:'author', name:'搜索作者', on:!!gh().followAuthorsEnabled, sub:'作者订阅 · '+(gh().followedAuthors||[]).length+' 位作者',
-    tags:(gh().followedAuthors||[]).slice(0,2), meta:(gh().authorKeywords||[]).length+' 个标题关键词'});
+  rules().forEach(function(r,i){
+    var m=metaIco(MI.comment, r.lowCommentNum||0)+metaIco(MI.trend,(r.lowWorthyNum||0)+'%');
+    var ptx=priceText(r); if(ptx) m+=metaIco(MI.money, ptx);
+    list.push({kind:'product', idx:i, name:ruleName(r), on:r.enabled!==false, sub:tickLabel()+' 扫描', metaHtml:m});
+  });
+  list.push({kind:'hot', name:'搜索热门', on:!!gh().enabled, sub:'热门榜',
+    metaHtml:metaIco(MI.clock,'近 '+(gh().windowHours||3)+' 小时')+metaIco(MI.comment,'≥'+(gh().minCommentNum||200))});
+  list.push({kind:'author', name:'搜索作者', on:!!gh().followAuthorsEnabled, sub:'作者订阅',
+    metaHtml:metaIco(MI.user,(gh().followedAuthors||[]).length+' 位作者')+metaIco(MI.tag,(gh().authorKeywords||[]).length+' 个关键词')});
   return list;
 }
 function priceMeta(r){
@@ -368,10 +374,7 @@ function renderList(){
               '<i style="width:6px;height:6px;border-radius:50%;background:'+(v.on?'var(--ok-dot)':'var(--muted-2)')+'"></i>'+(v.on?'运行中':'已停用')+'</span>'+
           '</div>'+
           '<div style="font-size:11.5px;color:var(--muted-2)">'+esc(v.sub)+'</div>'+
-          '<div style="display:flex;align-items:center;gap:5px">'+
-            '<div style="display:flex;gap:5px;min-width:0;overflow:hidden">'+v.tags.map(function(t){ return '<span style="font-size:11px;color:var(--ink-3);background:var(--surface-3);padding:2px 8px;border-radius:999px;white-space:nowrap">'+esc(t)+'</span>'; }).join('')+'</div>'+
-            '<span style="margin-left:auto;flex:none;white-space:nowrap;font-size:11px;color:var(--muted-2)">'+esc(v.meta)+'</span>'+
-          '</div>'+
+          '<div style="display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted-2);overflow:hidden">'+v.metaHtml+'</div>'+
         '</div>'+
       '</div>';
     card.addEventListener('click', function(){ trySelect(v.kind, v.idx||0); });
@@ -386,7 +389,7 @@ function renderList(){
     host.appendChild(card);
   });
   var add=document.createElement('div');
-  add.style.cssText='display:flex;align-items:center;justify-content:center;gap:7px;padding:16px;cursor:pointer;border-radius:8px;border:1.5px dashed var(--border-hover);color:var(--muted);font-size:13px;font-weight:500';
+  add.style.cssText='display:flex;align-items:center;justify-content:center;gap:7px;padding:16px;cursor:pointer;border-radius:8px;border:1.5px dashed var(--border-hover);color:var(--muted);font-size:13px;font-weight:500;margin-top:auto';
   add.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>新建规则';
   add.addEventListener('mouseenter', function(){ add.style.borderColor='var(--accent)'; add.style.color='var(--accent)'; add.style.background='var(--sel-bg)'; });
   add.addEventListener('mouseleave', function(){ add.style.borderColor='var(--border-hover)'; add.style.color='var(--muted)'; add.style.background='transparent'; });
@@ -809,6 +812,10 @@ function renderPreview(){
 /* ---------- telegram panel ---------- */
 function tgConfigured(){ var t=state.config.telegram||{}; return !!(t.botToken&&t.chatId); }
 function renderTg(){
+  var sp=el('scanPill');
+  if (sp && state.config){ var tcf=state.config.telegram||{}; var okP=!!(tcf.enabled&&tcf.botToken&&tcf.chatId);
+    sp.style.color=okP?'var(--ok)':'var(--warn)'; sp.style.background=okP?'var(--ok-bg)':'var(--warn-bg)'; sp.style.border='1px solid '+(okP?'var(--ok-border)':'var(--warn-bg)');
+    sp.innerHTML='<i style="width:6px;height:6px;border-radius:50%;background:'+(okP?'var(--ok-dot)':'var(--warn)')+'"></i>'+(okP?'扫描运行中':'扫描中 · 未配置推送'); }
   var panel=el('tgPanel'), rail=el('tgRail');
   panel.classList.toggle('hidden', !state.tgOpen);
   rail.classList.toggle('hidden', state.tgOpen);
