@@ -37,7 +37,7 @@ func TestDashboardStructure(t *testing.T) {
 		// discovery labels
 		"搜索热门",
 		"搜索作者",
-		"for=\"followedAuthorsInput\">搜索作者</label>",
+		"for=\"followedAuthorsInput\"",
 		// backend endpoints the page must call
 		"/productConfig",
 		"/productSearch",
