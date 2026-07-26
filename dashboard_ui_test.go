@@ -6,62 +6,71 @@ import (
 	"testing"
 )
 
-func TestDashboardSearchFeedbackPlacement(t *testing.T) {
+// The dashboard was rebuilt (2026-07) as a vanilla-JS three-column layout.
+// These markers assert the new UI's structural invariants.
+func TestDashboardStructure(t *testing.T) {
 	html, err := os.ReadFile("template/html/index.html")
 	if err != nil {
 		t.Fatalf("read dashboard HTML: %v", err)
 	}
 	page := string(html)
+
 	required := []string{
-		"grid-auto-rows:112px",
-		".product-card{min-height:112px;height:112px}",
-		".rule-auto-state.is-searching:before",
-		"toggleClass('is-searching', state === '搜索中')",
-		"if (selector === '#searchRule')",
+		// layout containers
+		"id=\"ruleList\"",
+		"id=\"ruleEditor\"",
+		"id=\"searchRule\"",
+		"id=\"tgPanel\"",
+		"id=\"statsBar\"",
+		// rule editors per kind
+		"id=\"productKeywordField\"",
+		"id=\"hotRuleEditor\"",
+		"id=\"authorRuleEditor\"",
+		"id=\"discoveryTimeEditor\"",
 		"id=\"globalHotWindow\" type=\"number\"",
 		"id=\"globalHotMinComment\" type=\"number\"",
 		"id=\"hotKeywordTokenBox\"",
 		"id=\"followedAuthorsTokenBox\"",
 		"id=\"authorKeywordTokenBox\"",
-		"id=\"productKeywordField\"",
-		"id=\"discoveryTimeEditor\"",
-		"id=\"discoveryFieldsRow\"",
-		"discovery-fields-row",
-		"discovery-params-field",
-		"discovery-params-row",
-		"id=\"hotThresholdParam\"",
-		"discovery-grow-field",
-		"flex-wrap:wrap!important",
-		"function bindDiscoveryTokenEditor",
-		"function normalizeGlobalHot(value)",
+		"data-rule-kind",
 		"var selectedRuleKind = 'product'",
-		"function openRuleTypePicker",
-		"offset: [top + 'px', left + 'px']",
-		"data-rule-kind=\"hot\"",
-		"id=\"hotRuleEditor\"",
-		"id=\"authorRuleEditor\"",
+		// discovery labels
+		"搜索热门",
+		"搜索作者",
+		"for=\"followedAuthorsInput\">搜索作者</label>",
+		// backend endpoints the page must call
+		"/productConfig",
+		"/productSearch",
 		"/discoverySearch",
+		"/telegramTest",
+		"/pushLogs",
+		"/imageProxy",
+		// search feedback
+		"rule-auto-state",
+		"is-searching",
+		// theming
+		"data-theme=\"dark\"",
 	}
 	for _, marker := range required {
 		if !strings.Contains(page, marker) {
-			t.Errorf("dashboard HTML missing search feedback marker %q", marker)
+			t.Errorf("dashboard HTML missing marker %q", marker)
 		}
 	}
+
+	// obsolete pieces that must not come back
 	if strings.Contains(page, "本次临时搜索") {
 		t.Error("dashboard still shows the obsolete label 本次临时搜索")
 	}
+	if strings.Contains(page, "$.ajax") || strings.Contains(page, "jquery") {
+		t.Error("dashboard should not depend on jQuery")
+	}
 	if strings.Contains(page, "id=\"globalHotEnabled\"") || strings.Contains(page, "id=\"followAuthorsEnabled\"") {
-		t.Error("discovery editors still contain redundant enable switches")
+		t.Error("discovery editors must not contain redundant enable switches")
+	}
+	if strings.Contains(page, "<select id=\"globalHotWindow\"") || strings.Contains(page, "<select id=\"globalHotMinComment\"") {
+		t.Error("global hot numeric settings must be number inputs, not preset selects")
 	}
 	if strings.Contains(page, "product-author") {
 		t.Error("search result cards should not display author metadata")
-	}
-	for _, marker := range []string{"<strong>搜索关键词</strong>", "<strong>搜索热门</strong>", "<strong>搜索作者</strong>", "for=\"followedAuthorsInput\">搜索作者</label>"} {
-		if !strings.Contains(page, marker) {
-			t.Errorf("dashboard HTML missing discovery search label %q", marker)
-		}
-	}
-	if strings.Contains(page, "<select id=\"globalHotWindow\"") || strings.Contains(page, "<select id=\"globalHotMinComment\"") {
-		t.Error("global hot numeric settings still use preset selects")
 	}
 }
