@@ -29,7 +29,7 @@
 - [x] Go tests和内联 JavaScript 语法检查通过.
 - [x] 桌面与移动浏览器验证主题、删除、新建规则、搜索动画、商品状态和内联推送记录.
 - [x] 保存与 Telegram 面板折叠操作无固定两秒等待, UI 在点击后立即更新.
-- [ ] 提交推送后 Render 部署状态为 `live`, `/health` 返回 `200 {"status":"ok"}`.
+- [x] 提交推送后 Render 部署状态为 `live`, `/health` 返回 `200 {"status":"ok"}`.
 
 ## Out Of Scope
 
