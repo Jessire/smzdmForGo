@@ -105,6 +105,7 @@ func init() {
 	http.HandleFunc("/productSearch", ProductSearchHandler)
 	http.HandleFunc("/discoverySearch", DiscoverySearchHandler)
 	http.HandleFunc("/imageProxy", ImageProxyHandler)
+	http.Handle("/favicon.ico", http.FileServer(http.Dir("template")))
 	http.HandleFunc("/telegramTest", TelegramTestHandler)
 	http.HandleFunc("/telegramAvatar", TelegramAvatarHandler)
 	http.HandleFunc("/pushLogs", PushLogsHandler)

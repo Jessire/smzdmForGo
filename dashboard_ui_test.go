@@ -22,13 +22,14 @@ func TestDashboardStructure(t *testing.T) {
 		"id=\"searchRule\"",
 		"id=\"tgPanel\"",
 		"id=\"statsBar\"",
+		"href=\"/favicon.ico\"",
 		// rule editors per kind
 		"id=\"productKeywordField\"",
 		"id=\"hotRuleEditor\"",
 		"id=\"authorRuleEditor\"",
 		"id=\"discoveryTimeEditor\"",
-		"id=\"globalHotWindow\" type=\"number\"",
-		"id=\"globalHotMinComment\" type=\"number\"",
+		"stepperHTML('globalHotWindow'",
+		"stepperHTML('globalHotMinComment'",
 		"id=\"hotKeywordTokenBox\"",
 		"id=\"followedAuthorsTokenBox\"",
 		"id=\"authorKeywordTokenBox\"",
@@ -48,8 +49,17 @@ func TestDashboardStructure(t *testing.T) {
 		// search feedback
 		"rule-auto-state",
 		"is-searching",
+		"search-loader-mark",
+		"product-price",
+		"rule-card-delete",
+		"pushLogRows(12)",
+		"pushLogSection",
+		"#229ED9",
+		"saveSeq",
 		// theming
 		"data-theme=\"dark\"",
+		"color-scheme:dark",
+		"syncAutoTheme",
 	}
 	for _, marker := range required {
 		if !strings.Contains(page, marker) {
@@ -72,5 +82,11 @@ func TestDashboardStructure(t *testing.T) {
 	}
 	if strings.Contains(page, "product-author") {
 		t.Error("search result cards should not display author metadata")
+	}
+	if !strings.Contains(page, ".product-card.dim{opacity:.36}") {
+		t.Error("already-pushed product cards must be visibly de-emphasized")
+	}
+	if _, err := os.Stat("template/favicon.ico"); err != nil {
+		t.Fatalf("official smzdm favicon is missing: %v", err)
 	}
 }
